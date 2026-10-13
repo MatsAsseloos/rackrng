@@ -156,6 +156,25 @@ button.pc{cursor:pointer}
 .help{text-align:left; font-size:13.5px; line-height:1.5; max-height:60vh; overflow:auto; margin:10px 0 14px}
 .help p{margin:0 0 8px}
 .qtm{animation:hue 3s linear infinite}
+.mut{font:700 9.5px var(--mono); color:var(--mc); border:1px solid color-mix(in srgb,var(--mc) 70%,transparent); border-radius:4px; padding:0 3px; margin-right:4px; vertical-align:1px; white-space:nowrap}
+.chip.rar{border-color:color-mix(in srgb,var(--tc) 45%,transparent); color:color-mix(in srgb,var(--tc) 60%,var(--muted))}
+.chip.rar.on{background:color-mix(in srgb,var(--tc) 18%,transparent); color:var(--tc); border-color:var(--tc)}
+/* Glitch-effect */
+#glitch{position:fixed; inset:0; pointer-events:none; z-index:60; display:none; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.35) 0 2px,transparent 2px 4px)}
+#glitch.on{display:flex; animation:gflash 1.5s steps(14) forwards}
+#glitch .gt{position:relative; font:800 clamp(30px,7vw,72px) var(--mono); color:#fff; letter-spacing:6px; text-transform:uppercase}
+#glitch .gt::before,#glitch .gt::after{content:attr(data-t); position:absolute; inset:0}
+#glitch .gt::before{color:#0ff; animation:gl1 .28s steps(2) infinite}
+#glitch .gt::after{color:#f0f; animation:gl2 .22s steps(2) infinite}
+#glitch .gs{font:600 13px var(--mono); color:#a7f3d0; background:rgba(0,0,0,.6); padding:4px 10px; border-radius:4px}
+#glitch .bar{position:absolute; left:0; right:0; height:14px; background:rgba(255,0,255,.25); animation:gbar .6s steps(5) infinite}
+@keyframes gl1{0%{transform:translate(-5px,-2px); clip-path:inset(0 0 62% 0)}50%{transform:translate(5px,1px); clip-path:inset(30% 0 35% 0)}100%{transform:translate(-3px,2px); clip-path:inset(70% 0 5% 0)}}
+@keyframes gl2{0%{transform:translate(5px,2px); clip-path:inset(55% 0 10% 0)}50%{transform:translate(-4px,-1px); clip-path:inset(10% 0 65% 0)}100%{transform:translate(3px,0); clip-path:inset(35% 0 40% 0)}}
+@keyframes gbar{0%{top:12%}25%{top:58%}50%{top:31%}75%{top:84%}100%{top:4%}}
+@keyframes gflash{0%{background-color:rgba(255,0,255,.16)}15%{background-color:rgba(0,255,255,.14)}30%{background-color:rgba(255,0,255,.08)}85%{opacity:1}100%{opacity:0}}
+body.glitching .wrap{animation:gshake .1s steps(2) infinite; filter:hue-rotate(80deg) saturate(1.8) contrast(1.2)}
+@keyframes gshake{0%{transform:translate(3px,-1px) skewX(2deg)}50%{transform:translate(-4px,2px) skewX(-3deg)}100%{transform:translate(1px,0)}}
 .adm{box-shadow:0 0 0 1px rgba(253,224,71,.5),0 0 14px rgba(253,224,71,.35)}
 .adminbox{text-align:left}
 .adminbox label{display:block; font-size:12px; color:var(--muted); margin:10px 0 4px}
@@ -337,6 +356,7 @@ textarea.code{width:100%; height:110px; background:#0d121c; color:var(--text); b
 <div class="selbar" id="selbar" hidden></div>
 <div id="toasts"></div>
 <div id="flash"></div>
+<div id="glitch"><div class="bar"></div><div class="gt" id="glitchT" data-t="DUPLICATE">DUPLICATE</div><div class="gs" id="glitchS"></div></div>
 <div id="modal"></div>
 
 <script>
@@ -428,13 +448,33 @@ const UPGRADES = [
     desc: 'Rolt automatisch, stopt bij een goede vondst.',       eff: l => l ? 'Ontgrendeld' : 'Vergrendeld' },
   { id: 'filter',   icon: '🔑', name: 'Labo-sleutel',     base: 12000, growth: 1,   max: 1,
     desc: 'Kies zelf welk type onderdeel je rolt.',              eff: l => l ? 'Ontgrendeld' : 'Vergrendeld' },
+  { id: 'firmware', icon: '📈', name: 'Firmware-update',  base: 20000, growth: 2.6, max: 10,
+    desc: 'Kans dat een roll een tier hoger uitvalt.',           eff: l => `${fmtNum(l * 1.5, 1)}% kans op +1 tier` },
+  { id: 'mutlab',   icon: '🧪', name: 'Stralingslab',     base: 15000, growth: 2.5, max: 10,
+    desc: 'Meer kans op mutaties (Goud, Gekoeld, Bit-flip, …).', eff: l => `${Math.round(mutChanceAt(l) * 100)}% mutatiekans` },
+  { id: 'glitch',   icon: '👾', name: 'Glitch in de Matrix', base: 50000, growth: 2.8, max: 10,
+    desc: 'Kans dat een gekocht item dubbel geleverd wordt.',    eff: l => `${fmtNum(l * 0.1, 1)}% kans op een gratis kopie` },
+  { id: 'orderbot', icon: '🛒', name: 'Bestel-bot',       base: 10e9,  growth: 10,  max: 2,
+    desc: 'Niveau 1: koopt automatisch de rarities die jij kiest. Niveau 2: zet upgrades ook meteen in je rack.',
+    eff: l => ['Vergrendeld', 'Auto-kopen (naar opslag)', 'Auto-kopen & equippen'][l] },
   { id: 'supplier', icon: '📦', name: 'Leverancierscontract', base: 5000, growth: 4, max: 6,
     desc: 'Meer plekken en zeldzamere boosts in de boost-shop.', eff: l => `${shopSlots(l)} plekken · zeldzaamheid ×${fmtNum(shopLuck(l))}` },
 ];
 
 /* Admin-codes: plak hier je PUBLIC key uit het admin panel (open de game met ?admin achter de link).
    Je private key blijft alleen in jouw browser. Zonder die sleutel kan niemand geldige codes maken. */
-const ADMIN_PUBLIC_KEY = 'jn5v0Ds8SAYnW69Scg-uuwGXhDKE0QxBTBOoV2aracE.nmywFxVFe_2vIlMiRvwN2ym4j3vJJQQuX94P4BvO6Mc';
+const ADMIN_PUBLIC_KEY = '';
+
+/* Mutaties: zeldzame extra eigenschap bovenop een item (los van OC, ze kunnen samen voorkomen).
+   w = hoe vaak (gewicht), mult = waarde-vermenigvuldiger */
+const MUTATIONS = {
+  gold:    { icon: '🟡', name: 'Goud',        color: '#facc15', w: 20, mult: 3,   desc: '×3 waarde' },
+  cold:    { icon: '❄️', name: 'Gekoeld',     color: '#7dd3fc', w: 25, mult: 1.5, desc: '×1,5 en telt als 1 tier hoger voor de match-bonus' },
+  bitflip: { icon: '💾', name: 'Bit-flip',    color: '#a78bfa', w: 25,            desc: 'willekeurig ×0,5 tot ×6 (vast bij het rollen)' },
+  rad:     { icon: '☢️', name: 'Radioactief', color: '#a3e635', w: 15, mult: 2,   desc: '×2 en +10% luck zolang hij in je rack zit' },
+  rgb:     { icon: '🌈', name: 'RGB',         color: '#f472b6', w: 15, mult: 1.5, desc: '×1,5 en de hele U krijgt +25%' },
+};
+const mutChanceAt = l => 0.03 + 0.02 * l;   // 3% basis, +2% per Stralingslab-niveau
 
 /* Rack-skins (puur cosmetisch). tier bepaalt de kleur in de shop. */
 const SKINS = [
@@ -554,6 +594,8 @@ const ITEMS = {
 const SAVE_KEY = 'rackrng-save-v1';
 const SAVE_VERSION = 2;
 const $ = id => document.getElementById(id);
+// Alleen vervangen als de inhoud echt verandert: zo gaan klikken niet verloren als er tijdens een animatie opnieuw getekend wordt
+const setHTML = (el, h) => { if (el._h !== h) { el.innerHTML = h; el._h = h; } };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const SUF = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'];
 
@@ -592,10 +634,15 @@ class Item {
   get name() { return this.d.name; }
   get spec() { return this.d.spec; }
   get q() { return this.d.q; }
-  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined, custom: this.custom }; }
+  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined, custom: this.custom, mut: this.mut, mv: this.mv }; }
 }
 // Laadt een item uit een save. Werkt ook voor v1-saves en hernoemde items.
 function hyd(o) {
+  const it = hyd0(o);
+  if (it && o.mut && MUTATIONS[o.mut]) { it.mut = o.mut; if (o.mv) it.mv = o.mv; }
+  return it;
+}
+function hyd0(o) {
   if (!o) return null;
   if (o.custom) return new Item(null, o.id ?? null, !!o.oc, o.custom); // admin-item
   let ref = o.ref;
@@ -626,6 +673,7 @@ function newState() {
   return { v: SAVE_VERSION, money: CFG.startMoney, rack: [emptyU()], router: null, switches: [null], inv: [],
            current: null, currentBought: false, conn: 0, rollReadyAt: 0, rolls: 0, nextId: 1,
            lastSave: Date.now(), muted: false, up: {}, pity: 0, autoRoll: false, rollFilter: null,
+           autoBuy: false, autoBuyTiers: [false, true, true, true, true, true, true], autoBuyOnlyUp: true, autoBuyEquip: true, autoBuyPct: 0.25, autoSellTier: -1,
            autoStopTier: 2, autoStopOC: true,
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
            skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
@@ -641,9 +689,9 @@ function fromJSON(raw) {
   s.current = hyd(raw.current);
   if (raw.current && raw.current.bought) s.currentBought = true; // v1
   s.up = raw.up || {};
+  if (!Array.isArray(s.autoBuyTiers) || s.autoBuyTiers.length !== 7) s.autoBuyTiers = newState().autoBuyTiers;
   if (!Array.isArray(s.skins) || !s.skins.includes('default')) s.skins = ['default', ...(Array.isArray(s.skins) ? s.skins : [])];
   if (s.up.autobuy) { s.money += 20000; delete s.up.autobuy; } // Bestel-bot verwijderd: geld terug
-  delete s.autoBuy;
   for (const u of UPGRADES) if ((s.up[u.id] || 0) > u.max) s.up[u.id] = u.max;
   s.v = SAVE_VERSION;
   // zorg dat nieuwe ID's nooit botsen
@@ -686,7 +734,7 @@ const boostMod = k => { const b = activeBoost(k); return b ? b.val : (k === 'oc'
 const activeEv = () => state.event && Date.now() < state.event.until ? EV[state.event.id] : null;
 const evMod = k => { const e = activeEv(); return e && e.fx && e.fx[k] != null ? e.fx[k] : (k === 'ocAdd' ? 0 : 1); };
 
-const luck       = () => (1 + 0.1 * lvl('luck')) * evMod('luck') * boostMod('luck');
+const luck       = () => (1 + 0.1 * lvl('luck')) * evMod('luck') * boostMod('luck') * radLuck();
 const goldenMult = () => 1 + lvl('golden');
 const nextGolden = () => lvl('golden') > 0 && (state.rolls + 1) % CFG.goldenEvery === 0;
 const ocChance   = () => Math.min(1, 0.02 * lvl('oc') + evMod('ocAdd') + boostMod('oc'));
@@ -698,7 +746,11 @@ const cooldown   = () => CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd'
 const unitCost   = () => Math.round(CFG.unitBaseCost * CFG.unitCostGrowth ** (state.rack.length - 1) * (1 - 0.05 * lvl('permit')));
 
 /* Item-waardes */
-const ocM      = it => it.oc ? CFG.ocMult : 1;
+const ocM      = it => (it.oc ? CFG.ocMult : 1) * mutM(it);
+const mutM     = it => !it.mut ? 1 : it.mut === 'bitflip' ? (it.mv || 1) : MUTATIONS[it.mut].mult;
+const matchTier = it => it.mut === 'cold' ? Math.min(6, it.tier + 1) : it.tier;
+const placedItems = () => [state.router, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(Boolean);
+const radLuck  = () => 1 + 0.1 * placedItems().filter(x => x.mut === 'rad').length;
 const income   = it => TIERS[it.tier].income * it.q * ocM(it);
 const swBonus  = it => Math.round(TIERS[it.tier].sw * it.q * ocM(it));
 const rtMult   = it => Math.round((1 + (TIERS[it.tier].rt - 1) * it.q * ocM(it)) * 100) / 100;
@@ -720,7 +772,9 @@ function statShort(it) {
   if (it.type === 'router') return `${TIERS[it.tier].name} · ×${fmtNum(rtMult(it))}`;
   return `${TIERS[it.tier].name} · ${fmt(income(it))}/s`;
 }
-const nameHtml = it => (isAdminItem(it) ? '🛠️ ' : '') + (it.oc ? '<span class="oc">OC</span>' : '') + esc(it.name);
+const mutLabel = it => it.mut ? `${MUTATIONS[it.mut].name}${it.mut === 'bitflip' ? ' ×' + fmtNum(it.mv) : ''}` : '';
+const mutHtml  = it => it.mut ? `<span class="mut" style="--mc:${MUTATIONS[it.mut].color}">${MUTATIONS[it.mut].icon} ${mutLabel(it)}</span>` : '';
+const nameHtml = it => (isAdminItem(it) ? '🛠️ ' : '') + mutHtml(it) + (it.oc ? '<span class="oc">OC</span>' : '') + esc(it.name);
 
 /* Kansen (met huidige luck) */
 const tierChance = (i, L) => Math.min(1, L / TIERS[i].oneIn);
@@ -748,7 +802,12 @@ function rollOne(L, minTier = 0, useFilter = true) {
   const type = useFilter && lvl('filter') && state.rollFilter ? state.rollFilter : pickWeighted(CFG.typeWeights);
   const tier = Math.max(rollTier(L), minTier);
   const refs = DEFS_BY[type][tier];
-  return new Item(refs[Math.floor(Math.random() * refs.length)], null, Math.random() < ocChance());
+  const it = new Item(refs[Math.floor(Math.random() * refs.length)], null, Math.random() < ocChance());
+  if (Math.random() < mutChanceAt(lvl('mutlab'))) {
+    it.mut = pickWeighted(Object.fromEntries(Object.entries(MUTATIONS).map(([k, m]) => [k, m.w])));
+    if (it.mut === 'bitflip') it.mv = Math.round((0.5 + Math.random() ** 2 * 5.5) * 100) / 100; // meestal laag, soms hoog
+  }
+  return it;
 }
 function generateRoll() {
   const golden = nextGolden();
@@ -759,8 +818,16 @@ function generateRoll() {
   cands.forEach((c, i) => { if (price(c) > price(cands[win])) win = i; });
   let best = cands[win], pityHit = false;
   if (lvl('pity') && best.tier < 2 && state.pity + 1 >= PITY[lvl('pity')]) { best = rollOne(L, 2); cands[win] = best; pityHit = true; }
+  let fwHit = false;
+  if (best.tier < 6 && Math.random() < 0.015 * lvl('firmware')) {
+    const refs = DEFS_BY[best.type][best.tier + 1];
+    const up = new Item(refs[Math.floor(Math.random() * refs.length)], null, best.oc);
+    if (best.mut) { up.mut = best.mut; up.mv = best.mv; }
+    best = up;
+    cands[win] = best; fwHit = true;
+  }
   best.id = state.nextId++;
-  return { item: best, cands, win, golden, pityHit };
+  return { item: best, cands, win, golden, pityHit, fwHit };
 }
 
 /* =====================================================================
@@ -770,7 +837,7 @@ const emptyM = { mult: 1, label: 'Onvolledig', cls: '' };
 function matchInfo(u) {
   const its = COMP.map(k => u[k]);
   if (its.some(x => !x)) return emptyM;
-  const ts = its.filter(x => !isAdminItem(x)).map(x => x.tier);  // admin-items matchen met alles
+  const ts = its.filter(x => !isAdminItem(x)).map(matchTier);  // admin-items matchen met alles
   if (!ts.length) return { mult: CFG.match[0], label: `✨ Perfect ×${fmtNum(CFG.match[0])}`, cls: 'b-perfect', perfect: true };
   const spread = Math.max(...ts) - Math.min(...ts);
   const m = CFG.match[Math.min(spread, 3)];
@@ -779,7 +846,7 @@ function matchInfo(u) {
   if (spread === 2) return { mult: m, label: `Oké ×${fmtNum(m)}`, cls: '' };
   return { mult: m, label: `⚠ Bottleneck ×${fmtNum(m)}`, cls: 'b-bad' };
 }
-const uBase    = u => COMP.reduce((a, k) => a + (u[k] ? income(u[k]) : 0), 0) * matchInfo(u).mult;
+const uBase    = u => COMP.reduce((a, k) => a + (u[k] ? income(u[k]) : 0), 0) * matchInfo(u).mult * 1.25 ** COMP.filter(k => u[k] && u[k].mut === 'rgb').length;
 const routerM  = () => state.router ? rtMult(state.router) : 1;
 const switchB  = () => state.switches.reduce((a, s) => a + (s ? swBonus(s) : 0), 0);
 const steadyMult = () => routerM() * (1 + switchB() / 100) * incomeMult();   // zonder events
@@ -885,6 +952,27 @@ function flash(tier) {
   f.style.setProperty('--fc', c + '99');
   f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
 }
+function glitchFx(it) {
+  const g = $('glitch');
+  $('glitchS').textContent = `ERR 0x0D0B · ${it.name} gedupliceerd → opslag`;
+  g.classList.remove('on'); void g.offsetWidth; g.classList.add('on');
+  document.body.classList.add('glitching');
+  setTimeout(() => document.body.classList.remove('glitching'), 650);
+  setTimeout(() => g.classList.remove('on'), 1500);
+  toast(`👾 Glitch in de Matrix! Gratis kopie van ${it.name}`);
+  if (!state.muted) try { // ruis + kapotte piepjes
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const n = actx.sampleRate * 0.45, buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (i % 900 < 450 ? 0.25 : 0.05);
+    const src = actx.createBufferSource(), gn = actx.createGain();
+    src.buffer = buf; gn.gain.value = 0.35; src.connect(gn).connect(actx.destination); src.start();
+  } catch (e) {}
+  beep([1800, 200, 1400, 90, 2200], 0.05, 'square');
+}
+function flashColor(c) {
+  const f = $('flash'); f.style.setProperty('--fc', c + '99');
+  f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
+}
 function shake() {
   document.body.classList.remove('shake'); void document.body.offsetWidth;
   document.body.classList.add('shake');
@@ -909,7 +997,7 @@ function afterChange(before) {
 function roll() {
   const now = Date.now();
   if (rolling || now < state.rollReadyAt) return;
-  const { item, cands, win, golden, pityHit } = generateRoll();
+  const { item, cands, win, golden, pityHit, fwHit } = generateRoll();
   lastSpin = { cands, win };
   state.current = item;
   state.currentBought = false;
@@ -924,8 +1012,16 @@ function roll() {
     rolling = false;
     if (golden) toast(`🪙 Gouden roll! (luck ×${fmtNum(luck() * goldenMult())})`);
     if (pityHit) toast('📜 Garantiecontract: gegarandeerde Rare+!');
+    if (fwHit) toast('📈 Firmware-update: deze roll is een tier hoger uitgevallen!');
     reveal(item);
-    if (state.autoRoll && (item.tier >= state.autoStopTier || (state.autoStopOC && item.oc))) {
+    // Eerst de Bestel-bot: koopt hij het item, dan hoeft auto-roll niet te stoppen
+    if (state.autoBuy && lvl('orderbot') && state.autoBuyTiers[item.tier] && price(item) <= state.money * state.autoBuyPct) {
+      const cmp = compareInfo(item);
+      if (cmp.up || !state.autoBuyOnlyUp)
+        buyCurrent(lvl('orderbot') >= 2 && state.autoBuyEquip && cmp.up ? 'place' : 'store', true);
+    }
+    // Auto-roll stopt alleen bij een goede vondst die NIET automatisch gekocht is, zodat jij kunt beslissen
+    if (state.autoRoll && !state.currentBought && (item.tier >= state.autoStopTier || (state.autoStopOC && item.oc))) {
       state.autoRoll = false;
       toast(`⏱️ Auto-roll gestopt: ${item.oc ? '⚡OC ' : ''}${TIERS[item.tier].name} gevonden`);
     }
@@ -939,11 +1035,12 @@ function reveal(it) {
   SFX.tier(it.tier);
   if (it.tier >= 3) { flash(it.tier); toast(`🎉 ${TIERS[it.tier].name}! ${it.oc ? '⚡OC ' : ''}${it.name}`); }
   else if (it.oc) toast(`⚡ Overclocked ${it.name}!`);
+  if (it.mut) { const m = MUTATIONS[it.mut]; toast(`${m.icon} Mutatie: ${mutLabel(it)}! ${m.desc}`); flashColor(m.color); }
   if (it.tier >= 5) shake();
 }
 
 // mode 'place': op de beste plek zetten (oude item → opslag) · mode 'store': naar opslag
-function buyCurrent(mode) {
+function buyCurrent(mode, auto = false) {
   const it = state.current;
   if (!it || state.currentBought || rolling) return;
   const p = price(it);
@@ -954,12 +1051,21 @@ function buyCurrent(mode) {
   if (mode === 'place') {
     const b = bestPlacement(it);
     const old = getAt(b.loc);
-    if (old) state.inv.push(old);
+    let note = '';
+    if (old && auto && old.tier <= state.autoSellTier && !isAdminItem(old)) { state.money += sellPrice(old); note = ` · ${old.name} verkocht`; }
+    else if (old) { state.inv.push(old); note = ` · ${old.name} → opslag`; }
     setAt(b.loc, it);
-    toast(`Geplaatst in ${locName(b.loc)}` + (old ? ` · ${old.name} → opslag` : ''));
+    toast((auto ? '🛒 Bestel-bot: ' : '') + `geplaatst in ${locName(b.loc)}` + note);
   } else {
     state.inv.push(it);
-    toast('Gekocht, staat in je opslag');
+    toast((auto ? '🛒 Bestel-bot: ' : '') + 'gekocht, staat in je opslag');
+  }
+  // Glitch in de Matrix: gratis kopie
+  if (Math.random() < 0.001 * lvl('glitch')) {   // 0,1% per niveau → max 1%
+    const copy = new Item(it.ref, state.nextId++, it.oc);
+    if (it.mut) { copy.mut = it.mut; copy.mv = it.mv; }
+    state.inv.push(copy);
+    glitchFx(it);
   }
   SFX.buy();
   afterChange(before);
@@ -1178,7 +1284,7 @@ function ransomChoice(c) {
 let evKey = '';
 function renderEvent(force) {
   const bar = $('eventBar'), e = state.event, d = e && EV[e.id];
-  if (!d) { if (evKey) { bar.className = ''; bar.innerHTML = ''; evKey = ''; } return; }
+  if (!d) { if (evKey) { bar.className = ''; setHTML(bar, ''); evKey = ''; } return; }
   const key = e.id + e.until + e.fixes;
   if (force || key !== evKey) {
     evKey = key;
@@ -1187,7 +1293,7 @@ function renderEvent(force) {
     if (d.fixes) btns = `<button class="btn sm" data-act="evFix">🔧 Repareer (${e.fixes}/${d.fixes})</button>`;
     if (d.choice) btns = `<button class="btn sm sec" data-act="evPay">Betaal ${fmt(ransomCost())}</button>
                           <button class="btn sm" data-act="evBackup">Back-up terugzetten (45s)</button>`;
-    bar.innerHTML = `<div class="eic">${d.icon}</div><div class="ebody"><div class="ename">${d.name}<span class="etime" id="evTime"></span></div><div class="sub">${d.desc}</div></div>${btns}`;
+    setHTML(bar, `<div class="eic">${d.icon}</div><div class="ebody"><div class="ename">${d.name}<span class="etime" id="evTime"></span></div><div class="sub">${d.desc}</div></div>${btns}`);
   }
   const t = $('evTime');
   if (t) t.textContent = `${Math.max(0, Math.ceil((e.until - Date.now()) / 1000))}s`;
@@ -1320,8 +1426,8 @@ const cardHtml = (c, extra = '', tag = 'div', attrs = '') => c
   : `<div class="pc back"></div>`;
 function renderCasinoControls() {
   const tabs = [['bj', '🃏 Blackjack'], ['crash', '📈 Crash']];
-  $('ctabs').innerHTML = tabs.map(([k, n]) => `<button class="chip ${ctab === k ? 'on' : ''}" data-act="ctab" data-t="${k}">${n}</button>`).join('');
-  $('ctables').innerHTML = TABLES.map((t, i) => `<button class="chip ${state.table === i ? 'on' : ''}" data-act="ctable" data-i="${i}">${t.name} · max ${fmt(maxBet(i))}</button>`).join('');
+  setHTML($('ctabs'), tabs.map(([k, n]) => `<button class="chip ${ctab === k ? 'on' : ''}" data-act="ctab" data-t="${k}">${n}</button>`).join(''));
+  setHTML($('ctables'), TABLES.map((t, i) => `<button class="chip ${state.table === i ? 'on' : ''}" data-act="ctable" data-i="${i}">${t.name} · max ${fmt(maxBet(i))}</button>`).join(''));
   const n = state.casinoNet;
   $('casinoNet').innerHTML = `Totaal: <span style="color:${n >= 0 ? 'var(--good)' : 'var(--bad)'}">${n >= 0 ? '+' : ''}${fmt(n)}</span>`;
 }
@@ -1419,7 +1525,7 @@ const mmss = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); return `${Math
 const shopTimerTxt = () => mmss((curHour() + 1) * HOUR - Date.now());
 function renderBoostShop() {
   ensureShop();
-  $('ups').innerHTML = state.shop.offers.map((o, i) => {
+  setHTML($('ups'), state.shop.offers.map((o, i) => {
     const b = BOOSTS[o.kind];
     const btn = o.sold ? '<span class="badge">Uitverkocht</span>'
       : `<button class="btn sm" data-act="buyBoost" data-i="${i}">${fmt(boostPrice(o))}</button>`;
@@ -1428,7 +1534,7 @@ function renderBoostShop() {
       <div class="ub"><div class="un">${boostName(o)} <span class="tbadge">${TIERS[o.tier].name}</span></div>
         <div class="ue">${boostEffTxt(o.kind, boostVal(o))} · ${BOOST_MIN[o.tier]} min</div></div>
       ${btn}</div>`;
-  }).join('') + `<div class="sub" style="grid-column:1/-1">Nieuwe voorraad elk vol uur. Dezelfde soort stapelt niet: een sterkere boost vervangt de zwakkere, anders komt de tijd erbij.</div>`;
+  }).join('') + `<div class="sub" style="grid-column:1/-1">Nieuwe voorraad elk vol uur. Dezelfde soort stapelt niet: een sterkere boost vervangt de zwakkere, anders komt de tijd erbij.</div>`);
   $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
 }
 let boostKey = '';
@@ -1678,7 +1784,7 @@ function renderRack() {
     </div>`;
   });
   celebrate.clear();
-  $('rack').innerHTML = h;
+  setHTML($('rack'), h);
   $('rack').className = 'rack skin-' + (SKINS.some(x => x.id === state.skin) ? state.skin : 'default');
   $('rackCount').textContent = `${state.rack.length}/${CFG.maxUnits}U`;
   $('rackBreakdown').textContent = `Basis ${fmt(baseIncome())}/s · Router ×${fmtNum(routerM())} · Switches +${switchB()}%` +
@@ -1693,14 +1799,15 @@ function renderRack() {
 
 function renderResult() {
   const el = $('result'), c = state.current;
-  if (rolling) { el.className = 'result'; el.innerHTML = '<div class="empty-msg">Hardware detecteren…</div>'; return; }
-  if (!c) { el.className = 'result'; el.innerHTML = '<div class="empty-msg">Nog niks gerold.<br>Druk op ROLL (of spatie) voor je eerste onderdeel.</div>'; return; }
+  if (rolling) { el.className = 'result'; setHTML(el, '<div class="empty-msg">Hardware detecteren…</div>'); return; }
+  if (!c) { el.className = 'result'; setHTML(el, '<div class="empty-msg">Nog niks gerold.<br>Druk op ROLL (of spatie) voor je eerste onderdeel.</div>'); return; }
   const cmp = compareInfo(c);
   el.className = 'result has';
   el.style.setProperty('--tc', `var(--c${c.tier})`);
-  el.innerHTML = `
+  setHTML(el, `
     <div class="tier ${c.tier === 6 ? 'qtm' : ''}">${TIERS[c.tier].name} · ${TYPES[c.type].label}${c.oc ? ' · ⚡ Overclocked' : ''}</div>
-    <div class="name">${esc(c.name)}</div>
+    <div class="name">${mutHtml(c)}${esc(c.name)}</div>
+    ${c.mut ? `<div class="sub" style="color:${MUTATIONS[c.mut].color}">${MUTATIONS[c.mut].icon} ${mutLabel(c)}: ${MUTATIONS[c.mut].desc}</div>` : ''}
     <div class="sub">${esc(c.spec)}</div>
     <div class="stat">${statText(c)}</div>
     ${state.currentBought ? '' : `<div class="cmp ${cmp.up ? 'up' : 'down'}">${cmp.text}</div>`}
@@ -1708,7 +1815,7 @@ function renderResult() {
     <div class="rbtns">
       <button class="btn" data-act="buy" data-mode="${cmp.up ? 'place' : 'store'}" id="buyBtn"></button>
       ${cmp.up && !state.currentBought ? '<button class="btn sec" data-act="buy" data-mode="store" id="buyStore">Naar opslag</button>' : ''}
-    </div>`;
+    </div>`);
   updateBuyBtn();
 }
 function updateBuyBtn() {
@@ -1730,7 +1837,9 @@ function renderRollMeta() {
   }
   if (lvl('pity')) parts.push(`📜 Rare+ binnen ${Math.max(1, PITY[lvl('pity')] - state.pity)}`);
   if (lvl('oc')) parts.push(`⚡ ${lvl('oc') * 2}% OC`);
-  $('rstat').innerHTML = parts.map(p => `<span>${p}</span>`).join('');
+  if (lvl('mutlab')) parts.push(`🧪 ${Math.round(mutChanceAt(lvl('mutlab')) * 100)}% mutatie`);
+  if (lvl('glitch')) parts.push(`👾 ${fmtNum(lvl('glitch') * 0.1, 1)}% glitch`);
+  setHTML($('rstat'), parts.map(p => `<span>${p}</span>`).join(''));
   $('rollBtn').classList.toggle('golden', nextGolden());
 
   let t = '';
@@ -1740,28 +1849,39 @@ function renderRollMeta() {
       <span class="sub">stop bij</span><select id="stopTier">${opts.map(([v, n]) => `<option value="${v}" ${state.autoStopTier === v ? 'selected' : ''}>${n}</option>`).join('')}</select>
       <button class="chip tog ${state.autoStopOC ? 'on' : ''}" data-act="togStopOC">⚡ stop bij OC</button>`;
   }
-  if (lvl('autoroll') && lvl('filter')) t += '<span style="flex-basis:100%"></span>';
+  if (lvl('orderbot')) {
+    const tiers = TIERS.filter(x => !x.hidden);
+    const eq = lvl('orderbot') >= 2;
+    t += `<span style="flex-basis:100%"></span><button class="chip tog ${state.autoBuy ? 'on' : ''}" data-act="togBuy">🛒 Auto-koop ${state.autoBuy ? 'aan' : 'uit'}</button>
+      ${tiers.map((x, i) => `<button class="chip rar ${state.autoBuyTiers[i] ? 'on' : ''}" style="--tc:var(--c${i})" data-act="abTier" data-i="${i}">${x.name}</button>`).join('')}
+      <span style="flex-basis:100%"></span>
+      <button class="chip tog ${state.autoBuyOnlyUp ? 'on' : ''}" data-act="togOnlyUp" title="Alleen kopen als het je rack beter maakt">↑ alleen upgrades</button>
+      ${eq ? `<button class="chip tog ${state.autoBuyEquip ? 'on' : ''}" data-act="togEquip" title="Upgrades meteen in je rack zetten">📥 equippen</button>` : ''}
+      <span class="sub">max</span><select id="abPct">${[0.1, 0.25, 0.5, 1].map(p => `<option value="${p}" ${state.autoBuyPct === p ? 'selected' : ''}>${p * 100}% saldo</option>`).join('')}</select>
+      ${eq ? `<span class="sub">vervangen verkopen t/m</span><select id="abSell"><option value="-1">nooit</option>${tiers.slice(0, 4).map((x, i) => `<option value="${i}" ${state.autoSellTier === i ? 'selected' : ''}>${x.name}</option>`).join('')}</select>` : ''}`;
+  }
+  if ((lvl('autoroll') || lvl('orderbot')) && lvl('filter')) t += '<span style="flex-basis:100%"></span>';
   if (lvl('filter')) t += `<span class="sub" style="margin-left:4px">🔑 Rol:</span>` +
     [null, ...Object.keys(TYPES)].map(k => `<button class="chip ${state.rollFilter === k ? 'on' : ''}" data-act="rollFilter" data-f="${k || ''}">${k ? TYPES[k].label : 'Alles'}</button>`).join('');
-  $('tools').innerHTML = t;
+  setHTML($('tools'), t);
   $('tools').style.display = t ? '' : 'none';
 }
 
 function renderConn() {
   const c = CONN[state.conn], nx = CONN[state.conn + 1];
   const cm = 0.95 ** lvl('cache');
-  $('conn').innerHTML = `<div><div style="font-weight:600">📶 ${c.name}</div><div class="sub">Cooldown ${fmtNum(cooldown())}s · ${state.conn + 1}/${CONN.length}</div></div>` +
+  setHTML($('conn'), `<div><div style="font-weight:600">📶 ${c.name}</div><div class="sub">Cooldown ${fmtNum(cooldown())}s · ${state.conn + 1}/${CONN.length}</div></div>` +
     (nx ? `<button class="btn" data-act="conn" id="connBtn">${nx.name} (${fmtNum(nx.cd * cm)}s) · ${fmt(nx.cost)}</button>`
-        : `<span class="badge b-good">Max snelheid</span>`);
+        : `<span class="badge b-good">Max snelheid</span>`));
 }
 
 let shopTab = 'up';
 function renderShop() {
-  $('shopTabs').innerHTML = [['up', '⬆️ Upgrades'], ['boosts', `⚡ Boosts <span class="sub" id="shopTimer">${shopTimerTxt()}</span>`], ['skins', '🎨 Rack-skins']]
-    .map(([k, n]) => `<button class="chip ${shopTab === k ? 'on' : ''}" data-act="shopTab" data-t="${k}">${n}</button>`).join('');
+  setHTML($('shopTabs'), [['up', '⬆️ Upgrades'], ['boosts', '⚡ Boosts <span class="sub" id="shopTimer"></span>'], ['skins', '🎨 Rack-skins']]
+    .map(([k, n]) => `<button class="chip ${shopTab === k ? 'on' : ''}" data-act="shopTab" data-t="${k}">${n}</button>`).join(''));
   if (shopTab === 'boosts') return renderBoostShop();
   if (shopTab === 'skins') {
-    $('ups').innerHTML = SKINS.map(s => {
+    setHTML($('ups'), SKINS.map(s => {
       const owned = state.skins.includes(s.id), on = state.skin === s.id;
       const btn = on ? '<span class="badge b-good">Actief</span>'
         : owned ? `<button class="btn sm sec" data-act="useSkin" data-id="${s.id}">Gebruik</button>`
@@ -1770,12 +1890,12 @@ function renderShop() {
         <div class="rack mini skin-${s.id}"><div class="u"></div><div class="u"></div><div class="u"></div></div>
         <div class="ub"><div class="un">${s.name} <span class="tbadge">${TIERS[s.tier].name}</span></div><div class="ud">${s.desc}</div></div>
         ${btn}</div>`;
-    }).join('');
+    }).join(''));
     $('upCount').textContent = `${state.skins.length}/${SKINS.length} skins`;
     return;
   }
   let owned = 0, total = 0;
-  $('ups').innerHTML = UPGRADES.map(u => {
+  setHTML($('ups'), UPGRADES.map(u => {
     const l = lvl(u.id), maxed = l >= u.max;
     owned += l; total += u.max;
     const nextTxt = maxed ? u.eff(l) : (l ? `${u.eff(l)} → ${u.eff(l + 1)}` : u.eff(1));
@@ -1785,7 +1905,7 @@ function renderShop() {
         <div class="ud">${u.desc}</div><div class="ue">${nextTxt}</div></div>
       ${maxed ? '<span class="badge b-good">Max</span>' : `<button class="btn sm" data-act="up" data-id="${u.id}">${fmt(upCost(u))}</button>`}
     </div>`;
-  }).join('');
+  }).join(''));
   $('upCount').textContent = `${owned}/${total} niveaus`;
 }
 function buySkin(id) {
@@ -1805,17 +1925,17 @@ function useSkin(id) {
 
 function renderInv() {
   const keys = ['all', ...Object.keys(TYPES)];
-  $('filters').innerHTML = keys.map(k => {
+  setHTML($('filters'), keys.map(k => {
     const n = k === 'all' ? state.inv.length : state.inv.filter(x => x.type === k).length;
     return `<button class="chip ${filter === k ? 'on' : ''}" data-act="filter" data-f="${k}">${k === 'all' ? 'Alles' : TYPES[k].label} (${n})</button>`;
-  }).join('');
+  }).join(''));
   const list = state.inv.filter(x => filter === 'all' || x.type === filter)
     .sort((a, b) => b.tier - a.tier || basePrice(b) - basePrice(a));
-  $('inv').innerHTML = list.length ? list.map(it => `
+  setHTML($('inv'), list.length ? list.map(it => `
     <button class="it ${sel && sel.src === 'inv' && sel.id === it.id ? 'selected' : ''} ${isAdminItem(it) ? 'adm' : ''}" style="--tc:var(--c${it.tier})" data-act="inv" data-id="${it.id}">
       <div class="top"><span class="ty">${TYPES[it.type].label}</span><span class="tr">${TIERS[it.tier].name}</span></div>
       <div class="n">${nameHtml(it)}</div><div class="s">${esc(it.spec)}</div><div class="v">${statText(it)}</div>
-    </button>`).join('') : `<div class="sub" style="grid-column:1/-1">Niks hier. Gekochte items die niet meer in je rack passen komen hier terecht.</div>`;
+    </button>`).join('') : `<div class="sub" style="grid-column:1/-1">Niks hier. Gekochte items die niet meer in je rack passen komen hier terecht.</div>`);
   $('invCount').textContent = `· ${state.inv.length} items`;
 }
 
@@ -1825,16 +1945,16 @@ function renderSel() {
   bar.hidden = false;
   bar.style.setProperty('--tc', `var(--c${it.tier})`);
   const hint = sel.src === 'inv' ? 'Klik op een gemarkeerd slot om te plaatsen' : 'Klik een gemarkeerd slot om te wisselen';
-  bar.innerHTML = `
+  setHTML(bar, `
     <div class="info"><div style="font-weight:600">${nameHtml(it)} <span class="sub">· ${TIERS[it.tier].name} ${TYPES[it.type].label} · ${statText(it)}</span></div><div class="hint">${hint}</div></div>
     ${sel.src === 'slot' ? '<button class="btn sec" data-act="toInv">Naar opslag</button>' : ''}
     ${isAdminItem(it) ? '<span class="sub">🛠️ Admin-item: blijft altijd bewaard</span>' : `<button class="btn sec" data-act="sell">Verkoop ${fmt(sellPrice(it))}</button>`}
-    <button class="ghost" data-act="desel">✕</button>`;
+    <button class="ghost" data-act="desel">✕</button>`);
 }
 
 function renderOdds() {
   const o = oddsFor(luck());
-  $('odds').innerHTML = TIERS.map((t, i) => t.hidden ? '' : `<span><b style="color:var(--c${i})">${t.name}</b> ${oddsText(o[i])}</span>`).join('');
+  setHTML($('odds'), TIERS.map((t, i) => t.hidden ? '' : `<span><b style="color:var(--c${i})">${t.name}</b> ${oddsText(o[i])}</span>`).join(''));
 }
 
 function updateAfford() {
@@ -1920,6 +2040,10 @@ document.addEventListener('click', e => {
     case 'buySkin': buySkin(el.dataset.id); break;
     case 'useSkin': useSkin(el.dataset.id); break;
     case 'buyBoost': buyBoost(+el.dataset.i); break;
+    case 'togBuy': state.autoBuy = !state.autoBuy; save(); renderRollMeta(); break;
+    case 'abTier': state.autoBuyTiers[+el.dataset.i] = !state.autoBuyTiers[+el.dataset.i]; save(); renderRollMeta(); break;
+    case 'togOnlyUp': state.autoBuyOnlyUp = !state.autoBuyOnlyUp; save(); renderRollMeta(); break;
+    case 'togEquip': state.autoBuyEquip = !state.autoBuyEquip; save(); renderRollMeta(); break;
     case 'slot': clickSlot(locFromEl(el)); break;
     case 'inv': {
       const id = +el.dataset.id;
@@ -1968,6 +2092,8 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'stopTier') { state.autoStopTier = +e.target.value; save(); }
+  if (e.target.id === 'abPct') { state.autoBuyPct = +e.target.value; save(); }
+  if (e.target.id === 'abSell') { state.autoSellTier = +e.target.value; save(); }
   if (e.target.id === 'admKind') { const m = e.target.value === 'money'; $('admItemF').style.display = m ? 'none' : ''; $('admMoneyF').style.display = m ? '' : 'none'; }
   if (e.target.id === 'admType') $('admValLbl').textContent = VALUE_LABEL[e.target.value];
 });
