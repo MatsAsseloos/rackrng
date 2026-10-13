@@ -2,10 +2,17 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RackRNG</title>
 <meta name="description" content="RackRNG: een gratis RNG-browsergame over serverhardware. Roll CPU's, RAM, storage en netwerkgear, bouw je serverrack uit en word rijk.">
 <meta name="theme-color" content="#0b0f17">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RackRNG">
 <meta property="og:title" content="RackRNG">
 <meta property="og:description" content="Roll serverhardware, bouw je rack en verdien geld. Gratis in je browser.">
 <meta property="og:type" content="website">
@@ -2139,6 +2146,11 @@ renderGame();
 renderStaticReels();
 requestAnimationFrame(frame);
 save();
+</script>
+<script>
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
 </script>
 </body>
 </html>
