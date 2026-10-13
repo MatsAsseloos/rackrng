@@ -14,7 +14,7 @@
 :root{
   --bg:#0b0f17; --panel:#121826; --panel2:#182031; --line:#26324a; --text:#e7ecf4; --muted:#8b97ab;
   --accent:#3b82f6; --accent2:#2563eb; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
-  --c0:#a3acb9; --c1:#4ade80; --c2:#60a5fa; --c3:#c084fc; --c4:#fb923c; --c5:#f43f5e; --c6:#22d3ee;
+  --c0:#a3acb9; --c1:#4ade80; --c2:#60a5fa; --c3:#c084fc; --c4:#fb923c; --c5:#f43f5e; --c6:#22d3ee; --c7:#fde047;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 *{box-sizing:border-box}
@@ -156,6 +156,12 @@ button.pc{cursor:pointer}
 .help{text-align:left; font-size:13.5px; line-height:1.5; max-height:60vh; overflow:auto; margin:10px 0 14px}
 .help p{margin:0 0 8px}
 .qtm{animation:hue 3s linear infinite}
+.adm{box-shadow:0 0 0 1px rgba(253,224,71,.5),0 0 14px rgba(253,224,71,.35)}
+.adminbox{text-align:left}
+.adminbox label{display:block; font-size:12px; color:var(--muted); margin:10px 0 4px}
+.adminbox input,.adminbox select,.adminbox textarea{width:100%; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:7px 9px; font:13px system-ui}
+.adminbox .warn{background:color-mix(in srgb,var(--warn) 12%,var(--panel)); border:1px solid rgba(245,158,11,.5); border-radius:8px; padding:8px 10px; font-size:12.5px; margin:8px 0}
+.pid{font:700 18px var(--mono); letter-spacing:1px; color:var(--c7)}
 #boostBar{display:none; flex-wrap:wrap; gap:6px; margin:-6px 0 16px}
 #boostBar.show{display:flex}
 .bchip{font-size:12px; padding:5px 10px; border-radius:20px; border:1px solid color-mix(in srgb,var(--tc) 55%,transparent); background:color-mix(in srgb,var(--tc) 10%,var(--panel))}
@@ -256,6 +262,8 @@ textarea.code{width:100%; height:110px; background:#0d121c; color:var(--text); b
     </div>
     <div class="hbtns">
       <button class="ghost" data-act="mute" id="muteBtn" title="Geluid">🔊</button>
+      <button class="ghost" data-act="adminPanel" id="adminBtn" title="Admin panel" hidden>🛠️</button>
+      <button class="ghost" data-act="redeem" title="Code inwisselen">🎁</button>
       <button class="ghost" data-act="help" title="Hoe speel je?">?</button>
       <button class="ghost" data-act="saveMenu">Save</button>
       <button class="ghost" data-act="reset">Reset</button>
@@ -360,7 +368,10 @@ const TIERS = [
   { name: 'Legendary', oneIn: 1000,   income: 1000,   sw: 55,  rt: 2.75 },
   { name: 'Mythic',    oneIn: 10000,  income: 12000,  sw: 80,  rt: 3.75 },
   { name: 'Quantum',   oneIn: 100000, income: 200000, sw: 100, rt: 5    },
+  // Admin: kan NIET gerold worden, alleen via een admin-code. Waarde zit in het item zelf.
+  { name: 'Admin',     oneIn: Infinity, income: 1,      sw: 1,   rt: 2, hidden: true },
 ];
+const ADMIN_TIER = 7;
 
 const TYPES = {
   cpu:     { label: 'CPU',     short: 'CPU'  },
@@ -420,6 +431,10 @@ const UPGRADES = [
   { id: 'supplier', icon: '📦', name: 'Leverancierscontract', base: 5000, growth: 4, max: 6,
     desc: 'Meer plekken en zeldzamere boosts in de boost-shop.', eff: l => `${shopSlots(l)} plekken · zeldzaamheid ×${fmtNum(shopLuck(l))}` },
 ];
+
+/* Admin-codes: plak hier je PUBLIC key uit het admin panel (open de game met ?admin achter de link).
+   Je private key blijft alleen in jouw browser. Zonder die sleutel kan niemand geldige codes maken. */
+const ADMIN_PUBLIC_KEY = '';
 
 /* Rack-skins (puur cosmetisch). tier bepaalt de kleur in de shop. */
 const SKINS = [
@@ -570,18 +585,19 @@ for (const type in ITEMS) {
 }
 
 class Item {
-  constructor(ref, id = null, oc = false) { this.ref = ref; this.id = id; this.oc = oc; }
-  get d() { return DEFS[this.ref]; }
+  constructor(ref, id = null, oc = false, custom = null) { this.ref = ref; this.id = id; this.oc = oc; if (custom) this.custom = custom; }
+  get d() { return this.custom || DEFS[this.ref]; }
   get type() { return this.d.type; }
   get tier() { return this.d.tier; }
   get name() { return this.d.name; }
   get spec() { return this.d.spec; }
   get q() { return this.d.q; }
-  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined }; }
+  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined, custom: this.custom }; }
 }
 // Laadt een item uit een save. Werkt ook voor v1-saves en hernoemde items.
 function hyd(o) {
   if (!o) return null;
+  if (o.custom) return new Item(null, o.id ?? null, !!o.oc, o.custom); // admin-item
   let ref = o.ref;
   if (!DEFS[ref]) {
     const type = o.t || o.type, tier = o.r ?? o.tier;
@@ -596,6 +612,15 @@ function hyd(o) {
 /* =====================================================================
    STATE
    ===================================================================== */
+const newPlayerId = () => {
+  const b = new Uint8Array(4); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(b) : b.forEach((_, i) => b[i] = Math.random() * 256);
+  const h = [...b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+  return `RK-${h.slice(0, 4)}-${h.slice(4)}`;
+};
+const isAdminItem = it => it && it.tier === ADMIN_TIER;
+/* BELANGRIJK voor een toekomstige prestige/rebirth: deze items moeten altijd bewaard blijven.
+   Een rebirth reset het rack en de opslag, en zet daarna permanentItems() terug in de opslag. */
+const permanentItems = () => [...state.inv, state.router, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(isAdminItem);
 const emptyU = () => ({ cpu: null, ram: null, storage: null });
 function newState() {
   return { v: SAVE_VERSION, money: CFG.startMoney, rack: [emptyU()], router: null, switches: [null], inv: [],
@@ -603,7 +628,7 @@ function newState() {
            lastSave: Date.now(), muted: false, up: {}, pity: 0, autoRoll: false, rollFilter: null,
            autoStopTier: 2, autoStopOC: true,
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
-           skins: ['default'], skin: 'default', seenHelp: false,
+           skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
            shop: null, boosts: {} };
 }
 function fromJSON(raw) {
@@ -695,7 +720,7 @@ function statShort(it) {
   if (it.type === 'router') return `${TIERS[it.tier].name} · ×${fmtNum(rtMult(it))}`;
   return `${TIERS[it.tier].name} · ${fmt(income(it))}/s`;
 }
-const nameHtml = it => (it.oc ? '<span class="oc">OC</span>' : '') + esc(it.name);
+const nameHtml = it => (isAdminItem(it) ? '🛠️ ' : '') + (it.oc ? '<span class="oc">OC</span>' : '') + esc(it.name);
 
 /* Kansen (met huidige luck) */
 const tierChance = (i, L) => Math.min(1, L / TIERS[i].oneIn);
@@ -745,7 +770,8 @@ const emptyM = { mult: 1, label: 'Onvolledig', cls: '' };
 function matchInfo(u) {
   const its = COMP.map(k => u[k]);
   if (its.some(x => !x)) return emptyM;
-  const ts = its.map(x => x.tier);
+  const ts = its.filter(x => !isAdminItem(x)).map(x => x.tier);  // admin-items matchen met alles
+  if (!ts.length) return { mult: CFG.match[0], label: `✨ Perfect ×${fmtNum(CFG.match[0])}`, cls: 'b-perfect', perfect: true };
   const spread = Math.max(...ts) - Math.min(...ts);
   const m = CFG.match[Math.min(spread, 3)];
   if (spread === 0) return { mult: m, label: `✨ Perfect ×${fmtNum(m)}`, cls: 'b-perfect', perfect: true };
@@ -1038,6 +1064,7 @@ function clickSlot(loc) {
 
 function sellSel() {
   const it = selItem(); if (!it) return;
+  if (isAdminItem(it)) return toast('Admin-items kun je niet verkopen');
   const before = perfectSet();
   if (sel.src === 'inv') state.inv = state.inv.filter(x => x.id !== it.id);
   else setAt(sel.loc, null);
@@ -1423,6 +1450,127 @@ function renderBoostBar() {
 }
 
 /* =====================================================================
+   ADMIN-CODES (ECDSA P-256 handtekeningen via WebCrypto)
+   Code = RACK.<payload>.<handtekening>. Alleen wie de private key heeft kan geldige codes maken.
+   ===================================================================== */
+const PRIV_STORE = 'rackrng-admin-priv', PUB_STORE = 'rackrng-admin-pub';
+const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const unb64u = str => { let t = str.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; return Uint8Array.from(atob(t), c => c.charCodeAt(0)); };
+const ECDSA = { name: 'ECDSA', namedCurve: 'P-256' }, SIGN = { name: 'ECDSA', hash: 'SHA-256' };
+const pubFromStr = p => { const [x, y] = p.split('.'); return { kty: 'EC', crv: 'P-256', x, y, ext: true }; };
+const VALUE_LABEL = { cpu: 'Inkomen per seconde (€/s) · ter info: Quantum ≈ 200K', ram: 'Inkomen per seconde (€/s) · ter info: Quantum ≈ 200K',
+  storage: 'Inkomen per seconde (€/s) · ter info: Quantum ≈ 200K', switch: 'Bonus in % op alles · ter info: Quantum = 100', router: 'Multiplier (×) op alles · ter info: Quantum = 5' };
+
+async function admGenerateKeys() {
+  const kp = await crypto.subtle.generateKey(ECDSA, true, ['sign', 'verify']);
+  const priv = await crypto.subtle.exportKey('jwk', kp.privateKey);
+  localStorage.setItem(PRIV_STORE, JSON.stringify(priv));
+  localStorage.setItem(PUB_STORE, `${priv.x}.${priv.y}`);
+  toast('🔑 Sleutelpaar gemaakt');
+  showAdmin();
+}
+function admImportKey() {
+  try {
+    const priv = JSON.parse($('admImport').value.trim());
+    if (priv.kty !== 'EC' || !priv.d || !priv.x || !priv.y) throw 0;
+    localStorage.setItem(PRIV_STORE, JSON.stringify(priv));
+    localStorage.setItem(PUB_STORE, `${priv.x}.${priv.y}`);
+    toast('🔑 Private key geïmporteerd'); showAdmin();
+  } catch (e) { toast('Ongeldige private key'); }
+}
+function showAdmin() {
+  const priv = localStorage.getItem(PRIV_STORE), pub = localStorage.getItem(PUB_STORE);
+  if (!priv) {
+    return showModal(`<div class="adminbox"><div style="font-weight:700;font-size:18px">🛠️ Admin panel</div>
+      <div class="sub" style="margin:6px 0 12px">Eerste keer? Maak een sleutelpaar. Je private key blijft alleen in deze browser.</div>
+      <button class="btn full" data-act="admGen">Genereer sleutelpaar</button>
+      <label>…of importeer je bestaande private key (back-up)</label><textarea id="admImport" rows="3"></textarea>
+      <button class="btn sec full" style="margin-top:8px" data-act="admImport">Importeer</button>
+      <button class="ghost" style="margin-top:12px" data-act="closeModal">Sluiten</button></div>`);
+  }
+  const linked = pub === ADMIN_PUBLIC_KEY;
+  showModal(`<div class="adminbox"><div style="font-weight:700;font-size:18px">🛠️ Admin panel</div>
+    ${linked ? '<div class="sub" style="margin-top:4px">✅ Gekoppeld: codes werken voor alle spelers.</div>'
+      : `<div class="warn"><b>Nog niet gekoppeld.</b> Plak deze public key in <code>index.html</code> bij <code>ADMIN_PUBLIC_KEY = ''</code> en upload hem opnieuw naar GitHub. Tot dan werken je codes niet.</div>
+         <textarea rows="2" readonly id="admPub">${esc(pub)}</textarea><button class="btn sm sec" style="margin-top:6px" data-act="copyEl" data-el="admPub">Kopieer public key</button>`}
+    <label>Speler-ID van de ontvanger</label>
+    <div class="row2"><input id="admPid" placeholder="RK-XXXX-XXXX" style="flex:1"><button class="btn sm sec" data-act="admMe">Mijn ID</button></div>
+    <label>Wat geef je?</label>
+    <select id="admKind"><option value="item">🛠️ Custom admin-item</option><option value="money">💶 Geld</option></select>
+    <div id="admItemF">
+      <label>Type</label><select id="admType">${Object.keys(TYPES).map(k => `<option value="${k}">${TYPES[k].label}</option>`).join('')}</select>
+      <label>Naam</label><input id="admName" maxlength="40" placeholder="bv. Gouden RJ45">
+      <label>Beschrijving</label><input id="admDesc" maxlength="60" placeholder="bv. Alleen voor echte netwerkers">
+      <label id="admValLbl">${VALUE_LABEL.cpu}</label><input id="admVal" type="number" min="0" step="any" placeholder="bv. 500000">
+    </div>
+    <div id="admMoneyF" style="display:none"><label>Bedrag (€)</label><input id="admAmt" type="number" min="1" placeholder="bv. 1000000"></div>
+    <button class="btn full" style="margin-top:14px" data-act="admMake">Genereer code</button>
+    <textarea id="admCode" rows="3" readonly placeholder="Hier verschijnt de code" style="margin-top:10px"></textarea>
+    <button class="btn sm sec" style="margin-top:6px" data-act="copyEl" data-el="admCode">Kopieer code</button>
+    <div class="sub" style="margin-top:14px">Back-up: bewaar je private key ergens veilig, anders kun je na het wissen van je browser geen codes meer maken.</div>
+    <div class="row2" style="margin-top:6px"><button class="btn sm sec" data-act="admBackup">Kopieer private key</button><button class="ghost" data-act="closeModal">Sluiten</button></div>
+  </div>`);
+}
+async function admMake() {
+  try {
+    const pid = $('admPid').value.trim().toUpperCase();
+    if (!/^RK-[0-9A-F]{4}-[0-9A-F]{4}$/.test(pid)) return toast('Ongeldig speler-ID (formaat RK-XXXX-XXXX)');
+    const payload = { p: pid, n: b64u(crypto.getRandomValues(new Uint8Array(6))) };
+    if ($('admKind').value === 'money') {
+      const a = Math.floor(+$('admAmt').value);
+      if (!(a > 0)) return toast('Vul een bedrag in');
+      payload.k = 'm'; payload.a = a;
+    } else {
+      const name = $('admName').value.trim(), v = +$('admVal').value;
+      if (!name) return toast('Geef het item een naam');
+      if (!(v > 0)) return toast('Vul een waarde in');
+      if ($('admType').value === 'router' && v <= 1) return toast('Een router-multiplier moet groter zijn dan 1');
+      payload.k = 'i'; payload.i = { t: $('admType').value, nm: name, ds: $('admDesc').value.trim(), v };
+    }
+    const key = await crypto.subtle.importKey('jwk', JSON.parse(localStorage.getItem(PRIV_STORE)), ECDSA, false, ['sign']);
+    const data = new TextEncoder().encode(JSON.stringify(payload));
+    const sig = await crypto.subtle.sign(SIGN, key, data);
+    $('admCode').value = `RACK.${b64u(data)}.${b64u(sig)}`;
+    toast('✅ Code gemaakt');
+  } catch (e) { toast('Kon geen code maken: ' + e.message); }
+}
+
+function showRedeem() {
+  showModal(`<div class="adminbox"><div style="font-weight:700;font-size:18px">🎁 Code inwisselen</div>
+    <div class="sub" style="margin-top:6px">Jouw speler-ID (geef dit aan de admin):</div>
+    <div class="row2" style="align-items:center;margin:4px 0 10px"><span class="pid" id="myPid">${state.playerId}</span><button class="btn sm sec" data-act="copyEl" data-el="myPid">Kopieer</button></div>
+    <label>Code</label><textarea id="redeemCode" rows="3" placeholder="RACK.…"></textarea>
+    <div class="row2" style="margin-top:10px"><button class="btn" data-act="redeemGo">Inwisselen</button><button class="ghost" data-act="closeModal">Sluiten</button></div></div>`);
+}
+async function redeem() {
+  const code = $('redeemCode').value.trim().replace(/\s+/g, '');
+  if (!ADMIN_PUBLIC_KEY) return toast('Codes zijn nog niet actief in deze versie');
+  try {
+    const [pre, p64, s64] = code.split('.');
+    if (pre !== 'RACK' || !p64 || !s64) throw new Error('format');
+    const data = unb64u(p64);
+    const key = await crypto.subtle.importKey('jwk', pubFromStr(ADMIN_PUBLIC_KEY), ECDSA, false, ['verify']);
+    if (!await crypto.subtle.verify(SIGN, key, unb64u(s64), data)) throw new Error('sig');
+    const pl = JSON.parse(new TextDecoder().decode(data));
+    if (pl.p !== state.playerId) return toast('Deze code is voor een andere speler');
+    if (state.redeemed.includes(pl.n)) return toast('Deze code is al gebruikt');
+    state.redeemed.push(pl.n);
+    if (pl.k === 'm') {
+      state.money += pl.a;
+      toast(`🎁 +${fmt(pl.a)} ontvangen!`);
+    } else if (pl.k === 'i' && TYPES[pl.i.t]) {
+      const v = +pl.i.v;
+      const custom = { ref: null, type: pl.i.t, tier: ADMIN_TIER, name: String(pl.i.nm).slice(0, 40), spec: String(pl.i.ds || 'Admin-item').slice(0, 60),
+                       q: pl.i.t === 'router' ? v - 1 : v };
+      state.inv.push(new Item(null, state.nextId++, false, custom));
+      toast(`🛠️ Admin-item ontvangen: ${custom.name}! Staat in je opslag.`);
+    } else throw new Error('type');
+    flash(ADMIN_TIER); SFX.perfect();
+    closeModal(); save(); renderAll();
+  } catch (e) { toast('Ongeldige code'); }
+}
+
+/* =====================================================================
    HELP & TABBLAD-BESCHERMING
    ===================================================================== */
 function showHelp() {
@@ -1511,7 +1659,7 @@ function slotHtml(loc, it, label) {
   const attrs = `data-act="slot" data-kind="${loc.kind}"` +
     (loc.u != null ? ` data-u="${loc.u}"` : '') + (loc.slot ? ` data-slot="${loc.slot}"` : '') + (loc.i != null ? ` data-i="${loc.i}"` : '');
   if (!it) return `<button class="slot empty ${isTarget ? 'target' : ''}" ${attrs}>+ ${label}</button>`;
-  return `<button class="slot filled ${isTarget ? 'target' : ''} ${isSel ? 'selected' : ''} ${it.tier === 6 ? 'qtm' : ''}" style="--tc:var(--c${it.tier})" ${attrs} title="${esc(it.name)} · ${esc(it.spec)}">
+  return `<button class="slot filled ${isTarget ? 'target' : ''} ${isSel ? 'selected' : ''} ${it.tier === 6 ? 'qtm' : ''} ${isAdminItem(it) ? 'adm' : ''}" style="--tc:var(--c${it.tier})" ${attrs} title="${esc(it.name)} · ${esc(it.spec)}">
     <span class="n">${nameHtml(it)}</span><span class="s">${statShort(it)}</span></button>`;
 }
 
@@ -1664,7 +1812,7 @@ function renderInv() {
   const list = state.inv.filter(x => filter === 'all' || x.type === filter)
     .sort((a, b) => b.tier - a.tier || basePrice(b) - basePrice(a));
   $('inv').innerHTML = list.length ? list.map(it => `
-    <button class="it ${sel && sel.src === 'inv' && sel.id === it.id ? 'selected' : ''}" style="--tc:var(--c${it.tier})" data-act="inv" data-id="${it.id}">
+    <button class="it ${sel && sel.src === 'inv' && sel.id === it.id ? 'selected' : ''} ${isAdminItem(it) ? 'adm' : ''}" style="--tc:var(--c${it.tier})" data-act="inv" data-id="${it.id}">
       <div class="top"><span class="ty">${TYPES[it.type].label}</span><span class="tr">${TIERS[it.tier].name}</span></div>
       <div class="n">${nameHtml(it)}</div><div class="s">${esc(it.spec)}</div><div class="v">${statText(it)}</div>
     </button>`).join('') : `<div class="sub" style="grid-column:1/-1">Niks hier. Gekochte items die niet meer in je rack passen komen hier terecht.</div>`;
@@ -1680,13 +1828,13 @@ function renderSel() {
   bar.innerHTML = `
     <div class="info"><div style="font-weight:600">${nameHtml(it)} <span class="sub">· ${TIERS[it.tier].name} ${TYPES[it.type].label} · ${statText(it)}</span></div><div class="hint">${hint}</div></div>
     ${sel.src === 'slot' ? '<button class="btn sec" data-act="toInv">Naar opslag</button>' : ''}
-    <button class="btn sec" data-act="sell">Verkoop ${fmt(sellPrice(it))}</button>
+    ${isAdminItem(it) ? '<span class="sub">🛠️ Admin-item: blijft altijd bewaard</span>' : `<button class="btn sec" data-act="sell">Verkoop ${fmt(sellPrice(it))}</button>`}
     <button class="ghost" data-act="desel">✕</button>`;
 }
 
 function renderOdds() {
   const o = oddsFor(luck());
-  $('odds').innerHTML = TIERS.map((t, i) => `<span><b style="color:var(--c${i})">${t.name}</b> ${oddsText(o[i])}</span>`).join('');
+  $('odds').innerHTML = TIERS.map((t, i) => t.hidden ? '' : `<span><b style="color:var(--c${i})">${t.name}</b> ${oddsText(o[i])}</span>`).join('');
 }
 
 function updateAfford() {
@@ -1789,6 +1937,15 @@ document.addEventListener('click', e => {
     case 'mute': state.muted = !state.muted; save(); renderHeader(); break;
     case 'saveMenu': showSaveMenu(); break;
     case 'help': showHelp(); break;
+    case 'redeem': showRedeem(); break;
+    case 'redeemGo': redeem(); break;
+    case 'adminPanel': showAdmin(); break;
+    case 'admGen': admGenerateKeys(); break;
+    case 'admImport': admImportKey(); break;
+    case 'admMe': $('admPid').value = state.playerId; break;
+    case 'admMake': admMake(); break;
+    case 'admBackup': navigator.clipboard?.writeText(localStorage.getItem(PRIV_STORE)).then(() => toast('Private key gekopieerd. Bewaar hem veilig!')); break;
+    case 'copyEl': { const t = $(el.dataset.el); const v = t.value ?? t.textContent; navigator.clipboard?.writeText(v || t.textContent).then(() => toast('Gekopieerd!')); break; }
     case 'takeover': window.takeover && window.takeover(); break;
     case 'copySave':
       navigator.clipboard?.writeText($('saveCode').value).then(() => toast('Gekopieerd!'), () => { $('saveCode').select(); });
@@ -1811,6 +1968,8 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('change', e => {
   if (e.target.id === 'stopTier') { state.autoStopTier = +e.target.value; save(); }
+  if (e.target.id === 'admKind') { const m = e.target.value === 'money'; $('admItemF').style.display = m ? 'none' : ''; $('admMoneyF').style.display = m ? '' : 'none'; }
+  if (e.target.id === 'admType') $('admValLbl').textContent = VALUE_LABEL[e.target.value];
 });
 document.addEventListener('keydown', e => {
   if (blocked) return;
@@ -1824,7 +1983,7 @@ window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() =
 /* =====================================================================
    START
    ===================================================================== */
-$('bulkTier').innerHTML = TIERS.map((t, i) => `<option value="${i}">${t.name}</option>`).join('');
+$('bulkTier').innerHTML = TIERS.map((t, i) => t.hidden ? '' : `<option value="${i}">${t.name}</option>`).join('');
 if (state.event && Date.now() >= state.event.until) { state.event = null; state.nextEventAt = 0; }
 if (state.casinoPending > 0) { // pagina gesloten tijdens een casino-spel: inzet terug
   const refund = state.casinoPending;
@@ -1833,6 +1992,7 @@ if (state.casinoPending > 0) { // pagina gesloten tijdens een casino-spel: inzet
   setTimeout(() => toast(`🎰 Onafgewerkte inzet terugbetaald: ${fmt(refund)}`), 300);
 }
 ensureShop();
+if (new URLSearchParams(location.search).has('admin')) { $('adminBtn').hidden = false; setTimeout(showAdmin, 50); }
 incomeCache = totalIncome();
 {
   const elapsedMs = Date.now() - state.lastSave;
