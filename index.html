@@ -352,7 +352,7 @@ textarea.code{width:100%; height:110px; background:#0d121c; color:var(--text); b
 
   <section class="card mt">
     <h2><span>Opslag <span class="sub" id="invCount"></span></span>
-      <span class="invtools"><span class="sub">Verkoop alles t/m</span><select id="bulkTier"></select><button class="btn sm sec" data-act="bulkSell">Verkoop</button></span>
+      <span class="invtools"><span class="sub" title="Verkoopt automatisch wat Hot-Swap naar je opslag stuurt. Mutaties en admin-items worden nooit automatisch verkocht.">Auto-verkoop</span><select id="autoSell"><option value="-1">uit</option><option value="0">Common</option><option value="1">t/m Uncommon</option><option value="2">t/m Rare</option><option value="3">t/m Epic</option></select><span class="sub" style="margin-left:8px">Verkoop alles t/m</span><select id="bulkTier"></select><button class="btn sm sec" data-act="bulkSell">Verkoop</button></span>
     </h2>
     <div class="sub">Klik een item en daarna een gemarkeerd slot in je rack om het te plaatsen of te wisselen.</div>
     <div class="filters" id="filters"></div>
@@ -453,8 +453,9 @@ const UPGRADES = [
     desc: 'Langer offline inkomen.',                             eff: l => `Offline max ${CFG.offlineMaxHours + l * 2}u` },
   { id: 'permit',   icon: '🏗️', name: 'Bouwvergunning',   base: 1000,  growth: 3,   max: 5,
     desc: 'Nieuwe U\'s in je rack worden goedkoper.',            eff: l => `U-prijs −${l * 5}%` },
-  { id: 'autoroll', icon: '⏱️', name: 'Cronjob',          base: 5000,  growth: 1,   max: 1,
-    desc: 'Rolt automatisch, stopt bij een goede vondst.',       eff: l => l ? 'Ontgrendeld' : 'Vergrendeld' },
+  { id: 'autoroll', icon: '⏱️', name: 'Cronjob',          base: 1e5,   growth: 1e5, max: 2,
+    desc: 'Niveau 1: rolt automatisch. Niveau 2: 🔥 Hot-Swap koopt alles wat gerold wordt en zet upgrades meteen op de beste plek.',
+    eff: l => ['Vergrendeld', 'Auto-roll', 'Auto-roll + 🔥 Hot-Swap'][l] },
   { id: 'filter',   icon: '🔑', name: 'Labo-sleutel',     base: 12000, growth: 1,   max: 1,
     desc: 'Kies zelf welk type onderdeel je rolt.',              eff: l => l ? 'Ontgrendeld' : 'Vergrendeld' },
   { id: 'firmware', icon: '📈', name: 'Firmware-update',  base: 20000, growth: 2.6, max: 10,
@@ -463,16 +464,13 @@ const UPGRADES = [
     desc: 'Meer kans op mutaties (Goud, Gekoeld, Bit-flip, …).', eff: l => `${Math.round(mutChanceAt(l) * 100)}% mutatiekans` },
   { id: 'glitch',   icon: '👾', name: 'Glitch in de Matrix', base: 50000, growth: 2.8, max: 10,
     desc: 'Kans dat een gekocht item dubbel geleverd wordt.',    eff: l => `${fmtNum(l * 0.1, 1)}% kans op een gratis kopie` },
-  { id: 'orderbot', icon: '🛒', name: 'Bestel-bot',       base: 10e9,  growth: 10,  max: 2,
-    desc: 'Niveau 1: koopt automatisch de rarities die jij kiest. Niveau 2: zet upgrades ook meteen in je rack.',
-    eff: l => ['Vergrendeld', 'Auto-kopen (naar opslag)', 'Auto-kopen & equippen'][l] },
   { id: 'supplier', icon: '📦', name: 'Leverancierscontract', base: 5000, growth: 4, max: 6,
     desc: 'Meer plekken en zeldzamere boosts in de boost-shop.', eff: l => `${shopSlots(l)} plekken · zeldzaamheid ×${fmtNum(shopLuck(l))}` },
 ];
 
 /* Admin-codes: plak hier je PUBLIC key uit het admin panel (open de game met ?admin achter de link).
    Je private key blijft alleen in jouw browser. Zonder die sleutel kan niemand geldige codes maken. */
-const ADMIN_PUBLIC_KEY = '';
+const ADMIN_PUBLIC_KEY = 'jn5v0Ds8SAYnW69Scg-uuwGXhDKE0QxBTBOoV2aracE.nmywFxVFe_2vIlMiRvwN2ym4j3vJJQQuX94P4BvO6Mc';
 
 /* Mutaties: zeldzame extra eigenschap bovenop een item (los van OC, ze kunnen samen voorkomen).
    w = hoe vaak (gewicht), mult = waarde-vermenigvuldiger */
@@ -682,8 +680,7 @@ function newState() {
   return { v: SAVE_VERSION, money: CFG.startMoney, rack: [emptyU()], router: null, switches: [null], inv: [],
            current: null, currentBought: false, conn: 0, rollReadyAt: 0, rolls: 0, nextId: 1,
            lastSave: Date.now(), muted: false, up: {}, pity: 0, autoRoll: false, rollFilter: null,
-           autoBuy: false, autoBuyTiers: [false, true, true, true, true, true, true], autoBuyPct: 0.25, autoSellTier: -1,
-           autoStopTier: 3, autoStopMut: false, autoBuyMode: 'place', autoCfgV: 1,
+           hotSwap: false, hotTiers: [false, true, true, true, true, true, true], autoSellTier: -1,
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
            skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
            shop: null, boosts: {} };
@@ -698,13 +695,12 @@ function fromJSON(raw) {
   s.current = hyd(raw.current);
   if (raw.current && raw.current.bought) s.currentBought = true; // v1
   s.up = raw.up || {};
-  if (!Array.isArray(s.autoBuyTiers) || s.autoBuyTiers.length !== 7) s.autoBuyTiers = newState().autoBuyTiers;
-  if (!raw.autoCfgV) { // oude automatisering-instellingen omzetten naar de nieuwe opzet
-    s.autoBuyMode = raw.autoBuyOnlyUp === false ? 'all' : raw.autoBuyEquip === false ? 'collect' : 'place';
-    if (raw.autoStopTier === 2 || raw.autoStopTier == null) s.autoStopTier = 3;
-    s.autoCfgV = 1;
-  }
-  delete s.autoBuyOnlyUp; delete s.autoBuyEquip; delete s.autoStopOC; delete s.autoBuyMin;
+  // Bestel-bot is vervangen door Hot-Swap (Cronjob niveau 2): geld terug
+  if (Array.isArray(raw.autoBuyTiers) && raw.autoBuyTiers.length === 7 && !raw.hotTiers) s.hotTiers = raw.autoBuyTiers.slice();
+  if (!Array.isArray(s.hotTiers) || s.hotTiers.length !== 7) s.hotTiers = newState().hotTiers;
+  if (s.up.orderbot) { s.money += 10e9 + (s.up.orderbot >= 2 ? 100e9 : 0); delete s.up.orderbot; }
+  for (const k of ['autoBuy', 'autoBuyTiers', 'autoBuyPct', 'autoBuyMode', 'autoBuyOnlyUp', 'autoBuyEquip', 'autoBuyMin',
+                   'autoStopTier', 'autoStopMut', 'autoStopOC', 'autoCfgV']) delete s[k];
   if (!Array.isArray(s.skins) || !s.skins.includes('default')) s.skins = ['default', ...(Array.isArray(s.skins) ? s.skins : [])];
   if (s.up.autobuy) { s.money += 20000; delete s.up.autobuy; } // Bestel-bot verwijderd: geld terug
   for (const u of UPGRADES) if ((s.up[u.id] || 0) > u.max) s.up[u.id] = u.max;
@@ -1042,28 +1038,24 @@ function roll() {
     if (pityHit) toast('📜 Garantiecontract: gegarandeerde Rare+!');
     if (fwHit) toast('📈 Firmware-update: deze roll is een tier hoger uitgevallen!');
     reveal(item);
-    // Eerst de Bestel-bot: koopt hij het item, dan hoeft auto-roll niet te stoppen
-    botTryBuy(item);
-    // Auto-roll stopt alleen bij een goede vondst die NIET automatisch gekocht is, zodat jij kunt beslissen
-    if (state.autoRoll && !state.currentBought && (item.tier >= state.autoStopTier || (state.autoStopMut && item.mut))) {
-      state.autoRoll = false;
-      toast(`⏱️ Auto-roll gestopt: ${item.mut ? mutLabel(item) + ' ' : ''}${TIERS[item.tier].name} gevonden`);
-    }
+    hotSwapTry(item);
     renderResult(); renderRollMeta(); save();
   });
 }
-/* Bestel-bot. Modi:
-   place   = koopt alleen wat je rack beter maakt en zet je hele rack daarna optimaal (niveau 2)
-   collect = koopt alleen wat je rack beter zou maken, legt het in je opslag
-   all     = koopt alles van de gekozen rarities, legt het in je opslag */
-const botMode = () => state.autoBuyMode === 'place' && lvl('orderbot') < 2 ? 'collect' : state.autoBuyMode;
-function botTryBuy(item) {
-  if (!state.autoBuy || !lvl('orderbot') || !state.autoBuyTiers[item.tier]) return;
-  if (price(item) > state.money * state.autoBuyPct) return;
-  const mode = botMode();
-  if (mode === 'all') return buyCurrent('store', true);
-  if (!compareInfo(item).up) return;
-  buyCurrent(mode === 'place' ? 'place' : 'store', true);
+/* 🔥 Hot-Swap (Cronjob niveau 2): koopt alles wat gerold wordt van de rarities die jij aanzet.
+   Beter voor je rack → meteen op de beste plek (en het hele rack opnieuw optimaal). Anders → opslag.
+   Een item dat de auto-verkoop toch meteen zou verkopen, koopt hij niet (anders verlies je geld). */
+const HOT_CAP = 2000;   // max items in de opslag via Hot-Swap, zodat je save niet ontploft
+const shouldAutoSell = it => state.autoSellTier >= 0 && it.tier <= state.autoSellTier && !isAdminItem(it) && !it.mut;
+function toStorage(it, auto) {
+  if (auto && (shouldAutoSell(it) || state.inv.length >= HOT_CAP)) { state.money += sellPrice(it); return false; }
+  state.inv.push(it); return true;
+}
+function hotSwapTry(item) {
+  if (!state.hotSwap || lvl('autoroll') < 2 || !state.hotTiers[item.tier] || state.money < price(item)) return;
+  const up = compareInfo(item).up;
+  if (!up && shouldAutoSell(item)) return;
+  buyCurrent(up ? 'place' : 'store', true);
 }
 function tryAutoRoll() {
   if (state.autoRoll && lvl('autoroll') && !rolling && Date.now() >= state.rollReadyAt && !$('modal').innerHTML) roll();
@@ -1089,14 +1081,13 @@ function buyCurrent(mode, auto = false) {
     const b = bestPlacement(it);
     const old = getAt(b.loc);
     let note = '';
-    if (old && auto && old.tier <= state.autoSellTier && !isAdminItem(old)) { state.money += sellPrice(old); note = ` · ${old.name} verkocht`; }
-    else if (old) { state.inv.push(old); note = ` · ${old.name} → opslag`; }
+    if (old) note = toStorage(old, auto) ? ` · ${old.name} → opslag` : ` · ${old.name} verkocht`;
     setAt(b.loc, it);
     if (auto) optimizeRack(); // ook items uit je opslag op de beste plek
-    toast((auto ? '🛒 Bestel-bot: ' : '') + `${it.name} geplaatst` + note);
+    toast((auto ? '🔥 Hot-Swap: ' : '') + `${it.name} geplaatst` + note);
   } else {
-    state.inv.push(it);
-    toast((auto ? '🛒 Bestel-bot: ' : '') + 'gekocht, staat in je opslag');
+    toStorage(it, auto);
+    if (!auto) toast('Gekocht, staat in je opslag'); // Hot-Swap meldt opslag-aankopen niet (geen spam)
   }
   // Glitch in de Matrix: gratis kopie
   if (Math.random() < 0.001 * lvl('glitch')) {   // 0,1% per niveau → max 1%
@@ -1911,59 +1902,13 @@ function renderRollMeta() {
 
   let t = '';
   if (lvl('autoroll')) t += `<button class="chip tog ${state.autoRoll ? 'on' : ''}" data-act="togAuto">⏱️ Auto-roll ${state.autoRoll ? 'aan' : 'uit'}</button>`;
-  if (lvl('orderbot')) t += `<button class="chip tog ${state.autoBuy ? 'on' : ''}" data-act="togBuy">🛒 Bestel-bot ${state.autoBuy ? 'aan' : 'uit'}</button>`;
-  if (lvl('autoroll') || lvl('orderbot')) t += `<button class="chip" data-act="autoSettings">⚙️ Instellingen</button><span class="autosum">${autoSummary()}</span>`;
-  if ((lvl('autoroll') || lvl('orderbot')) && lvl('filter')) t += '<span style="flex-basis:100%"></span>';
+  if (lvl('autoroll') >= 2) t += `<button class="chip tog ${state.hotSwap ? 'on' : ''}" data-act="togHot" title="Koopt alles wat gerold wordt; upgrades gaan meteen op de beste plek">🔥 Hot-Swap ${state.hotSwap ? 'aan' : 'uit'}</button>`
+    + TIERS.filter(x => !x.hidden).map((x, i) => `<button class="chip rar ${state.hotTiers[i] ? 'on' : ''}" style="--tc:var(--c${i})" data-act="hotTier" data-i="${i}" title="Hot-Swap koopt ${x.name}">${x.name}</button>`).join('');
+  if (lvl('autoroll') && lvl('filter')) t += '<span style="flex-basis:100%"></span>';
   if (lvl('filter')) t += `<span class="sub" style="margin-left:4px">🔑 Rol:</span>` +
     [null, ...Object.keys(TYPES)].map(k => `<button class="chip ${state.rollFilter === k ? 'on' : ''}" data-act="rollFilter" data-f="${k || ''}">${k ? TYPES[k].label : 'Alles'}</button>`).join('');
   setHTML($('tools'), t);
   $('tools').style.display = t ? '' : 'none';
-}
-
-const STOP_OPTS = [[2, 'Rare of beter'], [3, 'Epic of beter'], [4, 'Legendary of beter'], [5, 'Mythic of beter'], [6, 'Quantum'], [99, 'Nooit stoppen']];
-const BOT_MODES = {
-  place:   { icon: '📥', name: 'Upgrades plaatsen',    need: 2, desc: 'Koopt alleen wat je rack beter maakt en zet je hele rack daarna optimaal neer, ook met items uit je opslag.' },
-  collect: { icon: '📦', name: 'Upgrades verzamelen',  need: 1, desc: 'Koopt alleen wat je rack beter zou maken en legt het in je opslag. Jij plaatst zelf.' },
-  all:     { icon: '🗃️', name: 'Alles verzamelen',     need: 1, desc: 'Koopt alles van de gekozen rarities en legt het in je opslag.' },
-};
-function autoSummary() {
-  const p = [];
-  if (lvl('autoroll')) p.push(state.autoStopTier >= 99 ? 'rolt door tot jij stopt' : `stopt bij ${TIERS[state.autoStopTier].name}+`);
-  if (lvl('orderbot')) {
-    const on = state.autoBuyTiers.map((v, i) => v ? TIERS[i].name : null).filter(Boolean);
-    p.push(`bot: ${BOT_MODES[botMode()].name.toLowerCase()}${on.length ? '' : ' (geen rarities gekozen!)'}`);
-  }
-  return p.join(' · ');
-}
-function showAutoSettings() {
-  const tiers = TIERS.filter(x => !x.hidden);
-  let h = '<div class="adminbox"><div style="font-weight:700;font-size:18px">⚙️ Automatisering</div>';
-  if (lvl('autoroll')) h += `
-    <div class="setsec"><div class="sett">⏱️ Auto-roll</div>
-      <label>Stop automatisch als je iets vindt van:</label>
-      <select id="setStop">${STOP_OPTS.map(([v, n]) => `<option value="${v}" ${state.autoStopTier === v ? 'selected' : ''}>${n}</option>`).join('')}</select>
-      <label class="chk"><input type="checkbox" id="setStopMut" ${state.autoStopMut ? 'checked' : ''}> Ook stoppen bij een mutatie (Goud, RGB, …)</label>
-      ${lvl('orderbot') ? '<div class="sub">Items die de Bestel-bot koopt, laten auto-roll nooit stoppen.</div>' : ''}
-    </div>`;
-  if (lvl('orderbot')) {
-    const lv = lvl('orderbot');
-    h += `<div class="setsec"><div class="sett">🛒 Bestel-bot</div>
-      <label>Welke rarities mag de bot kopen?</label>
-      <div class="filters" style="margin:0">${tiers.map((x, i) => `<button class="chip rar ${state.autoBuyTiers[i] ? 'on' : ''}" style="--tc:var(--c${i})" data-act="abTier" data-i="${i}">${x.name}</button>`).join('')}</div>
-      <label>Wat moet de bot doen?</label>
-      ${Object.entries(BOT_MODES).map(([k, m]) => { const locked = lv < m.need;
-        return `<button class="modeopt ${botMode() === k ? 'on' : ''}" data-act="abMode" data-m="${k}" ${locked ? 'disabled' : ''}>
-          <b>${m.icon} ${m.name}</b>${locked ? ' <span class="sub">· Bestel-bot niveau 2 (100B)</span>' : ''}<span>${m.desc}</span></button>`; }).join('')}
-      <label>Budget per aankoop</label>
-      <select id="setPct">${[[0.1, 'Zuinig: max 10% van je saldo'], [0.25, 'Normaal: max 25% van je saldo'], [0.5, 'Ruim: max 50% van je saldo'], [1, 'Alles: tot 100% van je saldo']]
-        .map(([v, n]) => `<option value="${v}" ${state.autoBuyPct === v ? 'selected' : ''}>${n}</option>`).join('')}</select>
-      <div class="sub">De bot geeft per item nooit meer uit dan dit deel van wat je hebt.</div>
-      ${botMode() === 'place' ? `<label>Onderdelen die eruit gaan</label>
-      <select id="setSell"><option value="-1" ${state.autoSellTier < 0 ? 'selected' : ''}>Naar je opslag</option>${tiers.slice(0, 4).map((x, i) => `<option value="${i}" ${state.autoSellTier === i ? 'selected' : ''}>Verkopen als het ${i ? 't/m ' : ''}${x.name} is${i ? '' : ''}</option>`).join('')}</select>` : ''}
-    </div>`;
-  }
-  h += '<button class="btn full" style="margin-top:14px" data-act="closeModal">Klaar</button></div>';
-  showModal(h);
 }
 
 function renderConn() {
@@ -2036,6 +1981,7 @@ function renderInv() {
       <div class="n">${nameHtml(it)}</div><div class="s">${esc(it.spec)}</div><div class="v">${statText(it)}</div>
     </button>`).join('') : `<div class="sub" style="grid-column:1/-1">Niks hier. Gekochte items die niet meer in je rack passen komen hier terecht.</div>`);
   $('invCount').textContent = `· ${state.inv.length} items`;
+  $('autoSell').value = String(state.autoSellTier);
 }
 
 function renderSel() {
@@ -2139,10 +2085,8 @@ document.addEventListener('click', e => {
     case 'buySkin': buySkin(el.dataset.id); break;
     case 'useSkin': useSkin(el.dataset.id); break;
     case 'buyBoost': buyBoost(+el.dataset.i); break;
-    case 'togBuy': state.autoBuy = !state.autoBuy; save(); renderRollMeta(); break;
-    case 'abTier': state.autoBuyTiers[+el.dataset.i] = !state.autoBuyTiers[+el.dataset.i]; save(); renderRollMeta(); showAutoSettings(); break;
-    case 'autoSettings': showAutoSettings(); break;
-    case 'abMode': state.autoBuyMode = el.dataset.m; save(); renderRollMeta(); showAutoSettings(); break;
+    case 'togHot': state.hotSwap = !state.hotSwap; save(); renderRollMeta(); break;
+    case 'hotTier': state.hotTiers[+el.dataset.i] = !state.hotTiers[+el.dataset.i]; save(); renderRollMeta(); break;
     case 'slot': clickSlot(locFromEl(el)); break;
     case 'inv': {
       const id = +el.dataset.id;
@@ -2189,10 +2133,7 @@ document.addEventListener('input', e => {
   if (e.target.id === 'crAuto') crAuto = e.target.value;
 });
 document.addEventListener('change', e => {
-  if (e.target.id === 'setStop') { state.autoStopTier = +e.target.value; save(); renderRollMeta(); }
-  if (e.target.id === 'setStopMut') { state.autoStopMut = e.target.checked; save(); }
-  if (e.target.id === 'setPct') { state.autoBuyPct = +e.target.value; save(); }
-  if (e.target.id === 'setSell') { state.autoSellTier = +e.target.value; save(); }
+  if (e.target.id === 'autoSell') { state.autoSellTier = +e.target.value; save(); toast(state.autoSellTier < 0 ? 'Auto-verkoop uit' : `Auto-verkoop: ${$('autoSell').selectedOptions[0].text}`); }
   if (e.target.id === 'admKind') { const m = e.target.value === 'money'; $('admItemF').style.display = m ? 'none' : ''; $('admMoneyF').style.display = m ? '' : 'none'; }
   if (e.target.id === 'admType') $('admValLbl').textContent = VALUE_LABEL[e.target.value];
 });
