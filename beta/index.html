@@ -1,0 +1,2403 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RackRNG BETA</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="description" content="RackRNG: een gratis RNG-browsergame over serverhardware. Roll CPU's, RAM, storage en netwerkgear, bouw je serverrack uit en word rijk.">
+<meta name="theme-color" content="#0c1420">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="RackRNG">
+<meta property="og:description" content="Roll serverhardware, bouw je rack en verdien geld. Gratis in je browser.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%233b82f6'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Crect x='14' y='14' width='36' height='9' rx='2' fill='%23fff'/%3E%3Crect x='14' y='28' width='36' height='9' rx='2' fill='%23fff' opacity='.8'/%3E%3Crect x='14' y='42' width='36' height='9' rx='2' fill='%23fff' opacity='.6'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0b0f17; --panel:#121826; --panel2:#182031; --line:#26324a; --text:#e7ecf4; --muted:#8b97ab;
+  --accent:#3b82f6; --accent2:#2563eb; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+  --c0:#a3acb9; --c1:#4ade80; --c2:#60a5fa; --c3:#c084fc; --c4:#fb923c; --c5:#f43f5e; --c6:#22d3ee; --c7:#fde047;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--text); font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; padding-bottom:100px}
+button{font:inherit; color:inherit; cursor:pointer}
+button:disabled{cursor:not-allowed; opacity:.45}
+select{background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:5px 8px; font:inherit; font-size:12px}
+.wrap{max-width:1200px; margin:0 auto; padding:16px}
+
+header{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:16px}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:18px}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--c6)); display:grid; place-items:center; font-family:var(--mono); font-size:11px; color:#fff}
+.brand small{color:var(--muted); font-weight:500; font-size:12px; display:block}
+.money{display:flex; gap:24px; align-items:flex-end}
+.money .big{font-family:var(--mono); font-size:26px; font-weight:700}
+.money .rate{font-family:var(--mono); color:var(--good); font-size:16px}
+.hbtns{display:flex; gap:6px}
+.ghost{background:transparent; border:1px solid var(--line); border-radius:8px; padding:6px 10px; color:var(--muted)}
+.ghost:hover{color:var(--text); border-color:var(--muted)}
+
+.grid{display:grid; grid-template-columns:1.15fr 1fr; gap:16px; align-items:start}
+@media (max-width:880px){ .grid{grid-template-columns:1fr} }
+.col{display:flex; flex-direction:column; gap:16px}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px}
+.card h2{margin:0 0 4px; font-size:15px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap}
+.sub{color:var(--muted); font-size:12px}
+.mt{margin-top:16px}
+
+.btn{background:var(--accent); border:0; border-radius:10px; padding:10px 14px; font-weight:600; color:#fff}
+.btn:hover:not(:disabled){background:var(--accent2)}
+.btn.full{width:100%}
+.btn.sec{background:var(--panel2); border:1px solid var(--line); color:var(--text)}
+.btn.sec:hover:not(:disabled){border-color:var(--muted); background:var(--panel2)}
+.btn.sm{padding:6px 10px; font-size:12.5px; border-radius:8px}
+
+/* Rack */
+.rack{margin:12px 0; background:var(--rk-bg,#0d121c); border:1px solid var(--rk-border,var(--line)); border-radius:10px; padding:10px 24px; position:relative; transition:background .4s}
+.rack::before,.rack::after{content:""; position:absolute; top:10px; bottom:10px; width:7px; background:repeating-linear-gradient(to bottom,var(--rk-rail,#2b3650) 0 3px,transparent 3px 12px)}
+/* Rack-skins */
+.skin-beige{--rk-bg:linear-gradient(#ddd4bb,#c9bfa3); --rk-rail:#8f866d; --rk-u:#2b2820; --rk-uborder:#5c5544; --rk-border:#b5aa8c}
+.skin-wood{--rk-bg:repeating-linear-gradient(90deg,#6b4423 0 14px,#77492a 14px 28px); --rk-rail:#3d2614; --rk-u:#24180e; --rk-uborder:#5a3a20; --rk-border:#4a2f18}
+.skin-white{--rk-bg:linear-gradient(#eef1f6,#d9dee7); --rk-rail:#9aa5b5; --rk-u:#1b2230; --rk-uborder:#9aa5b5; --rk-border:#c3cbd8}
+.skin-carbon{--rk-bg:repeating-linear-gradient(45deg,#101010 0 4px,#1d1d1d 4px 8px); --rk-rail:#4a4a4a; --rk-u:#151515; --rk-uborder:#333; --rk-border:#3a3a3a}
+.skin-matrix{--rk-bg:radial-gradient(ellipse at top,#063d12,#010801 70%); --rk-rail:#16a34a; --rk-u:#031203; --rk-uborder:#0f5f1f; --rk-border:#16a34a; box-shadow:0 0 22px rgba(22,163,74,.35)}
+.skin-rgb{--rk-rail:#e879f9; --rk-u:#0d0d16; --rk-uborder:#2a2a40; border:2px solid transparent !important;
+  background:linear-gradient(#0b0b12,#0b0b12) padding-box, linear-gradient(90deg,#f00,#f80,#ff0,#0f0,#0ff,#00f,#f0f,#f00) border-box !important;
+  background-size:100% 100%,300% 100% !important; animation:rgbmove 4s linear infinite}
+@keyframes rgbmove{to{background-position:0 0,300% 0}}
+.skin-gold{--rk-bg:linear-gradient(135deg,#7a5a12,#d4a62a 50%,#7a5a12); --rk-rail:#fde68a; --rk-u:#1f1708; --rk-uborder:#a07a1e; --rk-border:#fbbf24; box-shadow:0 0 24px rgba(251,191,36,.3)}
+.skin-quantum{--rk-bg:linear-gradient(120deg,#0e7490,#6d28d9,#0e7490); --rk-rail:#67e8f9; --rk-u:#0a0f1f; --rk-uborder:#3b82f6; --rk-border:#22d3ee;
+  background-size:300% 300% !important; animation:qmove 6s ease infinite; box-shadow:0 0 28px rgba(34,211,238,.35)}
+@keyframes qmove{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.rack.mini{width:58px; height:54px; flex:0 0 58px; padding:6px 11px; margin:0; border-radius:6px}
+.rack.mini::before,.rack.mini::after{width:3px; top:5px; bottom:5px}
+.rack.mini::before{left:4px} .rack.mini::after{right:4px}
+.rack.mini .u{display:block; height:9px; min-height:0; padding:0; margin:0 0 4px; border-radius:2px}
+.rack::before{left:8px} .rack::after{right:8px}
+.lbl{font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.8px; margin:0 0 4px 2px}
+.netrow{display:grid; grid-template-columns:1fr 2fr; gap:8px; padding-bottom:10px; margin-bottom:10px; border-bottom:1px dashed var(--line)}
+.sws{display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:6px}
+.u{display:grid; grid-template-columns:34px repeat(3,1fr) 104px; gap:6px; padding:6px; background:var(--rk-u,var(--panel2)); border:1px solid var(--rk-uborder,var(--line)); border-radius:8px; margin-bottom:6px; transition:box-shadow .3s,border-color .3s}
+.u.perfect{border-color:rgba(250,204,21,.55); box-shadow:inset 0 0 18px rgba(250,204,21,.10)}
+.u.celebrate{animation:cel 1.1s ease}
+@keyframes cel{0%{transform:scale(1)}25%{transform:scale(1.025); box-shadow:0 0 34px rgba(250,204,21,.65)}100%{transform:scale(1)}}
+.unum{font-family:var(--mono); color:var(--muted); font-size:12px; display:grid; place-items:center}
+.slot{min-height:48px; border-radius:6px; border:1px dashed #33405a; background:transparent; text-align:left; padding:5px 7px; font-size:11.5px; overflow:hidden; display:flex; flex-direction:column; justify-content:center; min-width:0}
+.slot.empty{color:#56627a; align-items:center; text-align:center}
+.slot.filled{border:1px solid var(--line); border-left:3px solid var(--tc); background:color-mix(in srgb,var(--tc) 8%,#0f1522)}
+.slot .n{font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.slot .s{color:var(--muted); font-size:10.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.slot.target{border:1px dashed var(--accent); background:rgba(59,130,246,.12); box-shadow:0 0 0 1px rgba(59,130,246,.45)}
+.slot.selected{outline:2px solid #fff; outline-offset:1px}
+.umeta{display:flex; flex-direction:column; justify-content:center; align-items:flex-end; font-size:11px; gap:3px}
+.badge{font-size:10.5px; padding:1px 7px; border-radius:20px; border:1px solid var(--line); color:var(--muted); white-space:nowrap}
+.b-perfect{color:#facc15; border-color:rgba(250,204,21,.5)}
+.b-good{color:var(--good); border-color:rgba(34,197,94,.4)}
+.b-bad{color:var(--bad); border-color:rgba(239,68,68,.4)}
+.uinc{font-family:var(--mono); color:var(--good)}
+.oc{font-family:var(--mono); font-size:9.5px; font-weight:700; color:#fde047; border:1px solid rgba(253,224,71,.55); border-radius:4px; padding:0 3px; margin-right:4px; vertical-align:1px}
+
+/* Reel */
+.reel{position:relative; height:118px; overflow:hidden; border-radius:12px; background:#0d121c; border:1px solid var(--line); margin:12px 0}
+.reel::after{content:""; position:absolute; inset:0; background:linear-gradient(90deg,#0d121c 0,transparent 20%,transparent 80%,#0d121c 100%); pointer-events:none; z-index:1}
+.strip{position:absolute; top:9px; left:0; display:flex; gap:8px; will-change:transform}
+.rc{flex:0 0 100px; height:100px; border-radius:10px; border:1px solid color-mix(in srgb,var(--tc) 55%,transparent); background:color-mix(in srgb,var(--tc) 12%,#121826); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:6px; text-align:center}
+.rc .t{font-family:var(--mono); font-size:11px; color:var(--tc); font-weight:700}
+.rc .n{font-size:10.5px; line-height:1.2; max-height:3.6em; overflow:hidden}
+.marker{position:absolute; left:50%; top:0; bottom:0; width:2px; margin-left:-1px; background:#fff; z-index:2; box-shadow:0 0 10px #fff}
+.reels{display:flex; flex-direction:column; gap:6px; margin:12px 0}
+.reels .reel{margin:0}
+.reels.multi .reel{height:72px}
+.reels.multi .strip{top:7px}
+.reels.multi .rc{height:56px; gap:2px}
+.reels.multi .rc .n{font-size:10px; max-height:2.4em}
+.reel.lose{opacity:.35; transition:opacity .3s}
+.reel.win{border-color:var(--wc,#fff); box-shadow:0 0 14px color-mix(in srgb,var(--wc,#fff) 45%,transparent)}
+.rbtns{display:flex; gap:8px; margin-top:10px}
+.rbtns .btn:first-child{flex:1}
+.rackbtns{display:grid; grid-template-columns:1fr auto; gap:8px}
+.tools select{font-size:12px; padding:3px 6px}
+/* Events */
+#eventBar{display:none; align-items:center; gap:12px; border-radius:12px; padding:10px 14px; margin-bottom:16px; border:1px solid var(--line); background:var(--panel); flex-wrap:wrap}
+#eventBar.show{display:flex; animation:tin .3s ease}
+#eventBar.good{border-color:rgba(34,197,94,.55); background:color-mix(in srgb,var(--good) 9%,var(--panel))}
+#eventBar.bad{border-color:rgba(239,68,68,.55); background:color-mix(in srgb,var(--bad) 9%,var(--panel))}
+#eventBar.mixed{border-color:rgba(245,158,11,.55); background:color-mix(in srgb,var(--warn) 9%,var(--panel))}
+#eventBar .eic{font-size:26px}
+#eventBar .ebody{flex:1; min-width:200px}
+#eventBar .ename{font-weight:700}
+#eventBar .etime{font-family:var(--mono); color:var(--muted); font-weight:400; margin-left:6px}
+
+/* Casino */
+.ctop{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin:10px 0}
+.betrow{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+.betrow input, .cin{width:130px; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:6px 8px; font:13px var(--mono)}
+.felt{background:radial-gradient(ellipse at top,#0f3d2e,#0a2219); border:1px solid #1b4d3a; border-radius:12px; padding:14px; min-height:230px}
+.hand{display:flex; gap:6px; flex-wrap:wrap; margin:6px 0 12px; min-height:74px}
+.pc{width:52px; height:74px; border-radius:7px; background:#f8fafc; color:#111; border:0; display:flex; flex-direction:column; justify-content:space-between; padding:4px 6px; font-weight:700; font-size:16px; box-shadow:0 2px 6px rgba(0,0,0,.45); animation:deal .25s ease; transition:transform .15s}
+.pc.red{color:#dc2626}
+.pc .bs{align-self:flex-end; font-size:20px; line-height:1}
+.pc.back{background:repeating-linear-gradient(45deg,#1e3a8a 0 6px,#1e40af 6px 12px)}
+.pc.held{outline:3px solid #facc15; transform:translateY(-6px)}
+button.pc{cursor:pointer}
+@keyframes deal{from{transform:translateY(-12px); opacity:0}}
+.hlabel{font-size:12px; color:#a7c4b5}
+.hlabel b{color:#e7ecf4; font-family:var(--mono)}
+.cres{font-weight:700; margin:6px 0; min-height:22px}
+.cres.win{color:#4ade80} .cres.lose{color:#f87171} .cres.push{color:#facc15}
+.cactions{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; align-items:center}
+.crash-m{font:700 54px var(--mono); text-align:center; margin:14px 0 8px; transition:color .2s}
+.crash-m.boom{color:#f87171} .crash-m.cashed{color:#4ade80}
+.crash-bar{height:10px; border-radius:6px; background:#0a1a14; overflow:hidden}
+.crash-bar>div{height:100%; width:0; background:linear-gradient(90deg,#22c55e,#f59e0b,#ef4444)}
+.crhist{display:flex; gap:6px; flex-wrap:wrap; margin-top:12px}
+.crhist span{font:11px var(--mono); padding:2px 7px; border-radius:20px; border:1px solid var(--line)}
+.foot{text-align:center; color:var(--muted); font-size:12px; margin:24px 0 8px}
+.linkbtn{background:none; border:0; color:var(--accent); padding:0; font-size:12px; text-decoration:underline}
+.help{text-align:left; font-size:13.5px; line-height:1.5; max-height:60vh; overflow:auto; margin:10px 0 14px}
+.help p{margin:0 0 8px}
+.qtm{animation:hue 3s linear infinite}
+.betatag{font:700 11px var(--mono); color:#1a1000; background:var(--vfd); border-radius:4px; padding:1px 6px; vertical-align:3px}
+body{box-shadow:inset 0 4px 0 var(--vfd)}
+.rc{width:100px; min-width:0; overflow:hidden}
+.rc .n{width:100%; overflow-wrap:anywhere}
+.rc .mut{white-space:normal; display:inline-block; margin:0 0 2px}
+.autosum{font-size:11.5px; color:var(--muted); margin-left:4px}
+.setsec{border-top:1px solid var(--line); margin-top:14px; padding-top:10px}
+.sett{font-weight:700; font-size:14px}
+.adminbox .chk{display:flex; gap:8px; align-items:center; color:var(--text); font-size:13px; margin-top:10px}
+.adminbox .chk input{width:auto}
+.modeopt{display:block; width:100%; text-align:left; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:9px 11px; margin-top:6px; color:var(--text)}
+.modeopt span{display:block; color:var(--muted); font-size:12px; margin-top:2px}
+.modeopt.on{border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; background:color-mix(in srgb,var(--accent) 10%,var(--panel2))}
+.modeopt:disabled{opacity:.5}
+.mut{font:700 9.5px var(--mono); color:var(--mc); border:1px solid color-mix(in srgb,var(--mc) 70%,transparent); border-radius:4px; padding:0 3px; margin-right:4px; vertical-align:1px; white-space:nowrap}
+.chip.rar{border-color:color-mix(in srgb,var(--tc) 45%,transparent); color:color-mix(in srgb,var(--tc) 60%,var(--muted))}
+.chip.rar.on{background:color-mix(in srgb,var(--tc) 18%,transparent); color:var(--tc); border-color:var(--tc)}
+/* Glitch-effect */
+#glitch{position:fixed; inset:0; pointer-events:none; z-index:60; display:none; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.35) 0 2px,transparent 2px 4px)}
+#glitch.on{display:flex; animation:gflash 1.5s steps(14) forwards}
+#glitch .gt{position:relative; font:800 clamp(30px,7vw,72px) var(--mono); color:#fff; letter-spacing:6px; text-transform:uppercase}
+#glitch .gt::before,#glitch .gt::after{content:attr(data-t); position:absolute; inset:0}
+#glitch .gt::before{color:#0ff; animation:gl1 .28s steps(2) infinite}
+#glitch .gt::after{color:#f0f; animation:gl2 .22s steps(2) infinite}
+#glitch .gs{font:600 13px var(--mono); color:#a7f3d0; background:rgba(0,0,0,.6); padding:4px 10px; border-radius:4px}
+#glitch .bar{position:absolute; left:0; right:0; height:14px; background:rgba(255,0,255,.25); animation:gbar .6s steps(5) infinite}
+@keyframes gl1{0%{transform:translate(-5px,-2px); clip-path:inset(0 0 62% 0)}50%{transform:translate(5px,1px); clip-path:inset(30% 0 35% 0)}100%{transform:translate(-3px,2px); clip-path:inset(70% 0 5% 0)}}
+@keyframes gl2{0%{transform:translate(5px,2px); clip-path:inset(55% 0 10% 0)}50%{transform:translate(-4px,-1px); clip-path:inset(10% 0 65% 0)}100%{transform:translate(3px,0); clip-path:inset(35% 0 40% 0)}}
+@keyframes gbar{0%{top:12%}25%{top:58%}50%{top:31%}75%{top:84%}100%{top:4%}}
+@keyframes gflash{0%{background-color:rgba(255,0,255,.16)}15%{background-color:rgba(0,255,255,.14)}30%{background-color:rgba(255,0,255,.08)}85%{opacity:1}100%{opacity:0}}
+body.glitching .wrap{animation:gshake .1s steps(2) infinite; filter:hue-rotate(80deg) saturate(1.8) contrast(1.2)}
+@keyframes gshake{0%{transform:translate(3px,-1px) skewX(2deg)}50%{transform:translate(-4px,2px) skewX(-3deg)}100%{transform:translate(1px,0)}}
+.adm{box-shadow:0 0 0 1px rgba(253,224,71,.5),0 0 14px rgba(253,224,71,.35)}
+.adminbox{text-align:left}
+.adminbox label{display:block; font-size:12px; color:var(--muted); margin:10px 0 4px}
+.adminbox input,.adminbox select,.adminbox textarea{width:100%; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:7px 9px; font:13px system-ui}
+.adminbox .warn{background:color-mix(in srgb,var(--warn) 12%,var(--panel)); border:1px solid rgba(245,158,11,.5); border-radius:8px; padding:8px 10px; font-size:12.5px; margin:8px 0}
+.pid{font:700 18px var(--mono); letter-spacing:1px; color:var(--c7)}
+#boostBar{display:none; flex-wrap:wrap; gap:6px; margin:-6px 0 16px}
+#boostBar.show{display:flex}
+.bchip{font-size:12px; padding:5px 10px; border-radius:20px; border:1px solid color-mix(in srgb,var(--tc) 55%,transparent); background:color-mix(in srgb,var(--tc) 10%,var(--panel))}
+.bchip b{font-family:var(--mono); font-weight:600}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+
+.rollbtn{position:relative; width:100%; height:52px; border-radius:12px; border:1px solid var(--line); background:var(--panel2); overflow:hidden; font-weight:700; font-size:15px}
+.rollbtn .fill{position:absolute; inset:0 auto 0 0; width:0; background:linear-gradient(90deg,rgba(59,130,246,.35),rgba(34,211,238,.35))}
+.rollbtn .rl{position:relative; z-index:1}
+.rollbtn.ready{background:linear-gradient(90deg,var(--accent),#06b6d4); border-color:transparent; color:#fff; letter-spacing:2px}
+.rollbtn.ready.golden{background:linear-gradient(90deg,#ca8a04,#facc15); color:#1a1300}
+.rollbtn.golden:not(.ready){border-color:rgba(250,204,21,.6)}
+.rollbtn.ready:hover{filter:brightness(1.1)}
+.rollbtn:disabled{opacity:1}
+.rstat{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:11.5px; color:var(--muted); margin-top:8px}
+.tools{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; align-items:center}
+
+.result{margin-top:12px; border-radius:12px; border:1px solid var(--line); padding:14px; min-height:188px; background:var(--panel2); transition:box-shadow .3s}
+.result.has{border-color:color-mix(in srgb,var(--tc) 60%,transparent); box-shadow:0 0 26px color-mix(in srgb,var(--tc) 18%,transparent)}
+.result .tier{font-family:var(--mono); color:var(--tc); font-weight:700; font-size:12px; letter-spacing:1px; text-transform:uppercase}
+.result .name{font-size:19px; font-weight:700; margin:2px 0}
+.result .row{display:flex; justify-content:space-between; gap:8px; color:var(--muted); font-size:12px; flex-wrap:wrap}
+.result .stat{font-family:var(--mono); color:var(--good); font-size:15px; margin:8px 0 4px}
+.cmp{font-size:12.5px; margin-bottom:8px; font-weight:600}
+.cmp.up{color:var(--good)} .cmp.down{color:var(--bad)}
+.empty-msg{color:var(--muted); text-align:center; padding-top:60px}
+.odds{display:flex; flex-wrap:wrap; gap:4px 12px; font-size:11px; color:var(--muted); margin-top:10px}
+.odds b{font-weight:600}
+
+.conn{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:8px}
+
+/* Upgrades */
+.ups{display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:8px; margin-top:10px}
+.up{display:flex; gap:10px; align-items:center; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:10px}
+.up .ic{font-size:22px; width:32px; text-align:center; flex:0 0 32px}
+.up .ub{flex:1; min-width:0}
+.up .un{font-weight:600; display:flex; gap:4px 6px; align-items:baseline; flex-wrap:wrap}
+.up .ud{color:var(--muted); font-size:11.5px}
+.up .ue{font-family:var(--mono); font-size:11.5px; color:var(--good); margin-top:2px}
+.up .btn{white-space:nowrap}
+.up.maxed{opacity:.7}
+.up.tiered{border-left:3px solid var(--tc)}
+.tbadge{font:600 10px var(--mono); color:var(--tc); border:1px solid color-mix(in srgb,var(--tc) 50%,transparent); border-radius:4px; padding:0 5px; text-transform:uppercase; letter-spacing:.5px}
+
+/* Inventory */
+.filters{display:flex; gap:6px; flex-wrap:wrap; margin:10px 0}
+.chip{padding:4px 10px; border-radius:20px; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:12px}
+.chip.on{background:var(--panel2); color:var(--text); border-color:var(--muted)}
+.chip.tog.on{border-color:var(--good); color:var(--good)}
+.invtools{display:flex; gap:6px; align-items:center; flex-wrap:wrap; font-weight:400}
+.inv{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:8px}
+.it{text-align:left; border:1px solid var(--line); border-left:3px solid var(--tc); border-radius:8px; background:var(--panel2); padding:8px 10px; min-width:0}
+.it:hover{border-color:var(--muted); border-left-color:var(--tc)}
+.it.selected{outline:2px solid #fff}
+.it .top{display:flex; justify-content:space-between; font-size:10.5px; font-family:var(--mono)}
+.it .ty{color:var(--muted)} .it .tr{color:var(--tc)}
+.it .n{font-weight:600; font-size:12.5px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.it .s{color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.it .v{font-family:var(--mono); color:var(--good); font-size:12px; margin-top:4px}
+
+.selbar{position:fixed; left:50%; bottom:14px; transform:translateX(-50%); width:min(700px,calc(100% - 24px)); background:#141c2c; border:1px solid var(--line); border-left:4px solid var(--tc); border-radius:12px; padding:10px 12px; display:flex; gap:8px; align-items:center; box-shadow:0 10px 30px rgba(0,0,0,.55); z-index:20; flex-wrap:wrap}
+.selbar[hidden]{display:none}
+.selbar .info{flex:1; min-width:180px}
+.selbar .hint{color:var(--muted); font-size:11.5px}
+
+#toasts{position:fixed; top:14px; right:14px; display:flex; flex-direction:column; gap:6px; z-index:30; pointer-events:none}
+.toast{background:#141c2c; border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:13px; max-width:320px; box-shadow:0 6px 20px rgba(0,0,0,.4); animation:tin .25s ease; transition:opacity .3s}
+@keyframes tin{from{transform:translateY(-6px); opacity:0}}
+#flash{position:fixed; inset:0; pointer-events:none; opacity:0; z-index:25; background:radial-gradient(circle at 50% 40%,var(--fc,#fff),transparent 65%)}
+#flash.on{animation:fl .9s ease-out}
+@keyframes fl{0%{opacity:.6}100%{opacity:0}}
+body.shake .wrap{animation:sh .5s}
+@keyframes sh{20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-2px)}60%{transform:translate(-3px,1px)}80%{transform:translate(3px,0)}}
+.modal{position:fixed; inset:0; background:rgba(0,0,0,.6); display:grid; place-items:center; z-index:40}
+.modal .box{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:22px; width:min(420px,92vw); text-align:center; max-height:90vh; overflow:auto}
+.modal .amt{font-family:var(--mono); font-size:28px; color:var(--good); font-weight:700; margin:10px 0 16px}
+textarea.code{width:100%; height:110px; background:#0d121c; color:var(--text); border:1px solid var(--line); border-radius:8px; font:11px var(--mono); padding:8px; margin:12px 0; resize:vertical}
+.row2{display:flex; gap:8px}
+.row2 .btn{flex:1}
+
+@media (max-width:540px){
+  .u{grid-template-columns:26px repeat(3,1fr)}
+  .umeta{grid-column:2 / -1; flex-direction:row; justify-content:space-between}
+  .netrow{grid-template-columns:1fr}
+  .rack{padding:8px 18px}
+  .money{order:3; width:100%; justify-content:space-between}
+  .wrap{padding:12px}
+}
+/* =====================================================================
+   THEMA "Serverruimte": koud blauw staal, LED-status, IBM Plex.
+   Het rack is het pronkstuk; de rest blijft rustig.
+   ===================================================================== */
+:root{
+  --bg:#0c1420; --panel:#152031; --panel2:#1b283b; --line:#283850; --text:#e3eaf4; --muted:#8494ab;
+  --accent:#4ea1ff; --accent2:#2f86ee; --good:#3ddc97; --warn:#f5b841; --bad:#ff5d6c;
+  --vfd:#ffb547; --vfd-bg:#160f05;
+  --mono:'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  --cond:'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
+}
+body{font-family:'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background:radial-gradient(ellipse 120% 60% at 50% -10%, #182a45 0%, var(--bg) 60%) fixed, var(--bg)}
+.card h2, .brand, .lbl, .unum, .chip, .btn, .rollbtn, .tbadge, .result .tier{font-family:var(--cond)}
+.card h2{font-size:16px; font-weight:600; letter-spacing:.2px}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+/* Kaarten als chassis-panelen */
+.card{background:linear-gradient(180deg,#192639 0%,#141e2e 100%); border:1px solid var(--line); border-radius:10px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 10px 30px -12px rgba(0,0,0,.6)}
+
+/* Header als 1U-statusbalk met VFD-display */
+header{background:linear-gradient(180deg,#1c2b43,#132033); border:1px solid var(--line); border-radius:12px; padding:10px 14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06), 0 10px 30px -14px rgba(0,0,0,.7)}
+.brand{font-size:20px; font-weight:700; letter-spacing:.3px}
+.logo{width:36px; height:36px; border-radius:7px; font-size:0; position:relative;
+  background:linear-gradient(180deg,#3b4c66,#1e2a3d); border:1px solid #4a5d7a; box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.logo::before{content:""; position:absolute; left:7px; right:7px; top:8px; height:20px;
+  background:repeating-linear-gradient(to bottom,#0c1420 0 4px,transparent 4px 8px)}
+.logo::after{content:""; position:absolute; right:9px; top:9px; width:4px; height:4px; border-radius:50%; background:var(--good);
+  box-shadow:0 8px 0 var(--good), 0 16px 0 var(--warn), 0 0 6px var(--good)}
+.money .big{font-family:var(--mono); font-weight:600; color:var(--vfd); background:var(--vfd-bg); padding:3px 12px; border-radius:6px;
+  border:1px solid #3a2a10; box-shadow:inset 0 0 14px rgba(255,181,71,.12); text-shadow:0 0 10px rgba(255,181,71,.45); letter-spacing:1px}
+.money .rate{font-family:var(--mono); color:var(--good); text-shadow:0 0 8px rgba(61,220,151,.35)}
+.ghost{border-radius:7px; background:linear-gradient(180deg,#1f2d43,#17233a); color:var(--muted)}
+
+/* Knoppen */
+.btn{border-radius:7px; background:linear-gradient(180deg,#5aaeff,#2f86ee); box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 4px 14px -6px rgba(78,161,255,.6)}
+.btn:hover:not(:disabled){background:linear-gradient(180deg,#6cb8ff,#3a90f3)}
+.btn.sec{background:linear-gradient(180deg,#24344d,#1a2739); border:1px solid #33465f; box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.btn.sec:hover:not(:disabled){background:linear-gradient(180deg,#2b3d58,#1e2d42); border-color:#4a6080}
+.chip{border-radius:6px; font-size:12.5px; background:#141f30}
+.chip.on{background:#22324a; border-color:#5b7394}
+
+/* ===== Het rack ===== */
+.rack:not(.mini){padding:14px 38px 10px; border-radius:6px; border:2px solid var(--rk-border,#2e3e57);
+  background:var(--rk-bg, linear-gradient(90deg,#090f18 0%,#0f1826 50%,#090f18 100%));
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.6), inset 0 18px 40px -10px rgba(0,0,0,.65)}
+.rack:not(.mini)::before,.rack:not(.mini)::after{width:22px; top:6px; bottom:6px; border-radius:2px;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 6px, rgba(0,0,0,.9) 6px 11px, transparent 11px 16px) 50% 0/7px 100% no-repeat,
+    linear-gradient(90deg, color-mix(in srgb,var(--rk-rail,#56698a) 55%,#000), var(--rk-rail,#56698a) 45%, color-mix(in srgb,var(--rk-rail,#56698a) 70%,#000))}
+.rack:not(.mini)::before{left:6px} .rack:not(.mini)::after{right:6px}
+.lbl{font-size:12px; letter-spacing:.3px; color:#9aa9bf}
+.netrow{border-bottom:1px solid rgba(255,255,255,.06)}
+
+/* 1U-frontplaat met schroeven */
+.rack:not(.mini) .u{position:relative; padding:7px 8px 7px 6px; border-radius:4px; margin-bottom:5px;
+  border:1px solid var(--rk-uborder,#2f405a);
+  background:
+    radial-gradient(circle at 7px 8px, #a9b6c9 0 1.6px, #4b596e 2px 3px, transparent 3.4px),
+    radial-gradient(circle at 7px calc(100% - 8px), #a9b6c9 0 1.6px, #4b596e 2px 3px, transparent 3.4px),
+    linear-gradient(180deg, color-mix(in srgb,var(--rk-u,#1b2739) 88%,#fff) 0%, var(--rk-u,#1b2739) 35%, color-mix(in srgb,var(--rk-u,#1b2739) 78%,#000) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07), 0 2px 0 rgba(0,0,0,.35)}
+.unum{font-size:11.5px; font-weight:600; color:#7f90a8; padding-left:6px}
+.rack .u.perfect{border-color:rgba(255,210,87,.7); box-shadow:inset 0 1px 0 rgba(255,255,255,.07), 0 0 0 1px rgba(255,210,87,.25), 0 0 18px -4px rgba(255,210,87,.45)}
+
+/* Drive-bays */
+.slot{border-radius:3px}
+.slot.filled{background:repeating-linear-gradient(90deg,rgba(255,255,255,.022) 0 1px,transparent 1px 4px), linear-gradient(180deg,#101a28,#0a121d);
+  border:1px solid #27374e; border-left:3px solid var(--tc); box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.slot.empty{border:1px dashed #33465f; background:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 5px,transparent 5px 10px); color:#5e6f87}
+.slot.target{border:1px dashed var(--accent); background:rgba(78,161,255,.12)}
+.slot .n{font-size:12px}
+
+/* Status-LED's */
+.leds{display:inline-flex; gap:4px; margin-bottom:2px}
+.leds i{width:6px; height:6px; border-radius:50%; background:#1a2b24; box-shadow:inset 0 0 0 1px rgba(0,0,0,.5)}
+.u.live .leds i{background:var(--good); box-shadow:0 0 6px var(--good); animation:led var(--blink,1s) steps(1) infinite}
+.u.live .leds i:nth-child(2){animation-duration:calc(var(--blink,1s) * 1.37); animation-delay:-.2s}
+.u.live .leds i:nth-child(3){background:var(--warn); box-shadow:0 0 6px var(--warn); animation-duration:calc(var(--blink,1s) * 2.1)}
+.u.perfect .leds i{background:#ffd257 !important; box-shadow:0 0 7px #ffd257 !important}
+@keyframes led{50%{opacity:.25}}
+.uinc{font-family:var(--mono); font-size:11.5px}
+.badge{border-radius:4px; font-family:var(--cond); font-size:11px}
+
+/* Roll: power-knop + kijkvenster */
+.reel{background:#060c14; border:1px solid #2a3a52; border-radius:8px; box-shadow:inset 0 0 24px rgba(0,0,0,.7)}
+.reel::after{background:linear-gradient(90deg,#060c14 0,transparent 20%,transparent 80%,#060c14 100%)}
+.marker{background:var(--vfd); box-shadow:0 0 10px var(--vfd)}
+.rc{border-radius:6px}
+.rollbtn{border-radius:9px; font-family:var(--cond); font-size:16px; background:linear-gradient(180deg,#1b283b,#121c2b); border:1px solid #2f405a}
+.rollbtn.ready{background:linear-gradient(180deg,#5aaeff,#2f86ee); letter-spacing:4px; box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 8px 24px -8px rgba(78,161,255,.7)}
+.rollbtn .fill{background:linear-gradient(90deg,rgba(78,161,255,.25),rgba(61,220,151,.3))}
+.result{border-radius:8px; background:linear-gradient(180deg,#18253a,#121c2c)}
+.result.has{border-top:3px solid var(--tc)}
+.result .name{font-family:var(--cond); font-size:21px; font-weight:700}
+
+/* Shop, opslag, toasts */
+.up, .it{border-radius:8px; background:linear-gradient(180deg,#1a273a,#141f30)}
+.it{border-left:3px solid var(--tc)}
+.toast{border-radius:8px; background:linear-gradient(180deg,#1d2c42,#16223a); border-left:3px solid var(--accent); font-size:13px}
+.selbar{border-radius:10px; background:linear-gradient(180deg,#1d2c42,#16223a)}
+#eventBar{border-radius:10px}
+.modal .box{border-radius:12px; background:linear-gradient(180deg,#1a283c,#141f30)}
+.foot{color:#5f7089}
+
+@media (prefers-reduced-motion: reduce){
+  .u.live .leds i, .qtm, .skin-rgb, .skin-quantum, #glitch.on, body.glitching .wrap, .u.celebrate{animation:none !important}
+}
+@media (max-width:540px){
+  .rack:not(.mini){padding:10px 19px 6px; border-width:1px}
+  .rack:not(.mini)::before,.rack:not(.mini)::after{width:11px}
+  .rack:not(.mini)::before{left:4px} .rack:not(.mini)::after{right:4px}
+  .rack:not(.mini) .u{grid-template-columns:18px repeat(3,1fr); gap:4px; padding:6px 5px}
+  .unum{padding-left:0; font-size:10px; writing-mode:vertical-rl; transform:rotate(180deg)}
+  .slot{padding:4px 5px; min-height:44px}
+  .slot .n{font-size:11px} .slot .s{font-size:10px}
+  header{padding:10px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><div class="logo">42U</div><div>RackRNG <span class="betatag">BETA</span><small>testversie · aparte save</small></div></div>
+    <div class="money">
+      <div><div class="sub">Saldo</div><div class="big" id="money">€0</div></div>
+      <div><div class="sub">Inkomen</div><div class="rate" id="rate">€0/s</div></div>
+    </div>
+    <div class="hbtns">
+      <button class="ghost" data-act="mute" id="muteBtn" title="Geluid">🔊</button>
+      <button class="ghost" data-act="adminPanel" id="adminBtn" title="Admin panel" hidden>🛠️</button>
+      <button class="ghost" data-act="redeem" title="Code inwisselen">🎁</button>
+      <button class="ghost" data-act="help" title="Hoe speel je?">?</button>
+      <button class="ghost" data-act="betaPanel" title="Test-tools">🧪</button>
+      <button class="ghost" data-act="saveMenu">Save</button>
+      <button class="ghost" data-act="reset">Reset</button>
+    </div>
+  </header>
+
+  <div id="eventBar"></div>
+  <div id="boostBar"></div>
+
+  <div class="grid">
+    <section class="card">
+      <h2><span>Server rack</span><span class="sub" id="rackCount"></span></h2>
+      <div class="sub" id="rackBreakdown"></div>
+      <div class="rack" id="rack"></div>
+      <div class="rackbtns">
+        <button class="btn sec" data-act="buyU" id="buyU"></button>
+        <button class="btn sec" data-act="equipBest" title="Zet je beste items uit rack + opslag automatisch op de beste plek">⚡ Beste uitrusting</button>
+      </div>
+    </section>
+
+    <div class="col">
+      <section class="card">
+        <h2><span>Roll</span><span class="sub" id="rollCount"></span></h2>
+        <div class="reels" id="reels"></div>
+        <button class="rollbtn" data-act="roll" id="rollBtn"><div class="fill" id="rollFill"></div><span class="rl" id="rollLbl">ROLL</span></button>
+        <div class="rstat" id="rstat"></div>
+        <div class="tools" id="tools"></div>
+        <div class="result" id="result"></div>
+        <div class="odds" id="odds"></div>
+      </section>
+      <section class="card">
+        <h2><span>Verbinding</span><span class="sub">sneller = kortere cooldown</span></h2>
+        <div class="conn" id="conn"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="card mt">
+    <h2><span>🎰 Casino Corner <span class="sub">· nepgeld, geen echt geld</span></span><span class="sub" id="casinoNet"></span></h2>
+    <div class="ctop">
+      <div class="filters" id="ctabs" style="margin:0"></div>
+      <div class="betrow">
+        <span class="sub">Inzet</span><input id="betIn" type="number" min="1" inputmode="numeric">
+        <button class="chip" data-act="betQ" data-q="0.25">¼</button>
+        <button class="chip" data-act="betQ" data-q="0.5">½</button>
+        <button class="chip" data-act="betQ" data-q="1">Max</button>
+      </div>
+    </div>
+    <div class="filters" id="ctables" style="margin:0 0 10px"></div>
+    <div id="cgame"></div>
+  </section>
+
+  <section class="card mt">
+    <h2><span>🛒 Shop</span><span class="sub" id="upCount"></span></h2>
+    <div class="filters" id="shopTabs"></div>
+    <div class="ups" id="ups"></div>
+  </section>
+
+  <section class="card mt">
+    <h2><span>Opslag <span class="sub" id="invCount"></span></span>
+      <span class="invtools"><span class="sub" title="Verkoopt automatisch wat Hot-Swap naar je opslag stuurt. Mutaties en admin-items worden nooit automatisch verkocht.">Auto-verkoop</span><select id="autoSell"><option value="-1">uit</option><option value="0">Common</option><option value="1">t/m Uncommon</option><option value="2">t/m Rare</option><option value="3">t/m Epic</option></select><span class="sub" style="margin-left:8px">Verkoop alles t/m</span><select id="bulkTier"></select><button class="btn sm sec" data-act="bulkSell">Verkoop</button></span>
+    </h2>
+    <div class="sub">Klik een item en daarna een gemarkeerd slot in je rack om het te plaatsen of te wisselen.</div>
+    <div class="filters" id="filters"></div>
+    <div class="inv" id="inv"></div>
+  </section>
+
+<footer class="foot">RackRNG BETA · aparte save, je echte voortgang blijft veilig · <a class="linkbtn" href="../">Naar de echte game</a> · RackRNG v1.0 · Electronics-ICT edition · je voortgang wordt lokaal in je browser bewaard · <button class="linkbtn" data-act="help">Hoe speel je?</button></footer>
+</div>
+
+<div class="selbar" id="selbar" hidden></div>
+<div id="toasts"></div>
+<div id="flash"></div>
+<div id="glitch"><div class="bar"></div><div class="gt" id="glitchT" data-t="DUPLICATE">DUPLICATE</div><div class="gs" id="glitchS"></div></div>
+<div id="modal"></div>
+
+<script>
+/* =====================================================================
+   CONFIG: pas hier alles aan om te balancen
+   ===================================================================== */
+const CFG = {
+  startMoney: 50,
+  priceSeconds: 40,          // koopprijs = X seconden van het inkomen van het item
+  switchPriceMult: 1.5,
+  routerPriceMult: 2.5,
+  sellRate: 0.5,
+  maxUnits: 42,
+  unitBaseCost: 250,
+  unitCostGrowth: 4,
+  switchEveryU: 6,           // 1 switch-slot per X U
+  offlineMaxHours: 10,
+  ocMult: 1.5,               // overclocked items zijn zoveel meer waard
+  goldenEvery: 10,           // elke Xe roll is een gouden roll
+  typeWeights: { cpu: 28, ram: 28, storage: 28, switch: 11, router: 5 },
+  match: [2, 1.5, 1.2, 1],   // match-bonus op tierverschil binnen 1 U (0, 1, 2, 3+). Nooit < 1: een slot vullen helpt altijd.
+};
+
+const TIERS = [
+  { name: 'Common',    oneIn: 1,      income: 1,      sw: 5,   rt: 1.1  },
+  { name: 'Uncommon',  oneIn: 5,      income: 4,      sw: 10,  rt: 1.25 },
+  { name: 'Rare',      oneIn: 25,     income: 20,     sw: 20,  rt: 1.5  },
+  { name: 'Epic',      oneIn: 150,    income: 120,    sw: 35,  rt: 2    },
+  { name: 'Legendary', oneIn: 1000,   income: 1000,   sw: 55,  rt: 2.75 },
+  { name: 'Mythic',    oneIn: 10000,  income: 12000,  sw: 80,  rt: 3.75 },
+  { name: 'Quantum',   oneIn: 100000, income: 200000, sw: 100, rt: 5    },
+  // Admin: kan NIET gerold worden, alleen via een admin-code. Waarde zit in het item zelf.
+  { name: 'Admin',     oneIn: Infinity, income: 1,      sw: 1,   rt: 2, hidden: true },
+];
+const ADMIN_TIER = 7;
+
+const TYPES = {
+  cpu:     { label: 'CPU',     short: 'CPU'  },
+  ram:     { label: 'RAM',     short: 'RAM'  },
+  storage: { label: 'Storage', short: 'DISK' },
+  switch:  { label: 'Switch',  short: 'SW'   },
+  router:  { label: 'Router',  short: 'RTR'  },
+};
+const COMP = ['cpu', 'ram', 'storage'];
+
+const CONN = [
+  { name: '56k inbelmodem',    cd: 10,   cost: 0 },
+  { name: 'GPRS (2G)',         cd: 8,    cost: 60 },
+  { name: 'EDGE (2,5G)',       cd: 6.5,  cost: 200 },
+  { name: '3G',                cd: 5,    cost: 600 },
+  { name: '4G LTE',            cd: 4,    cost: 2000 },
+  { name: '5G',                cd: 3.2,  cost: 6000 },
+  { name: 'Wifi 4',            cd: 2.5,  cost: 20000 },
+  { name: 'Wifi 5',            cd: 2,    cost: 70000 },
+  { name: 'Wifi 6',            cd: 1.6,  cost: 250000 },
+  { name: 'Wifi 7',            cd: 1.25, cost: 900000 },
+  { name: 'Ethernet 100 Mbit', cd: 1,    cost: 3.5e6 },
+  { name: 'Ethernet 1 Gbit',   cd: 0.8,  cost: 1.5e7 },
+  { name: 'Ethernet 10 Gbit',  cd: 0.6,  cost: 7e7 },
+  { name: 'Glasvezel',         cd: 0.5,  cost: 3.5e8 },
+];
+
+/* Upgrades: kost = base × growth^niveau */
+const PITY = [0, 100, 80, 60, 45, 30];
+const UPGRADES = [
+  { id: 'luck',     icon: '☕', name: 'Koffie',           base: 100,   growth: 1.6, max: 25,
+    desc: 'Meer luck: betere tiers komen vaker voor.',          eff: l => `Luck ×${fmtNum(1 + 0.1 * l)}` },
+  { id: 'multi',    icon: '🧵', name: 'Multithreading',   base: 2500,  growth: 8,   max: 4,
+    desc: 'Rolt meerdere items tegelijk, je krijgt de beste.',   eff: l => `${l + 1} item${l ? 's' : ''} per roll` },
+  { id: 'golden',   icon: '🪙', name: 'Gouden kabel',     base: 800,   growth: 3,   max: 9,
+    desc: `Elke ${CFG.goldenEvery}e roll is een gouden roll met extra luck.`, eff: l => l ? `Gouden roll: luck ×${1 + l}` : 'Uit' },
+  { id: 'pity',     icon: '📜', name: 'Garantiecontract', base: 1500,  growth: 3.5, max: 5,
+    desc: 'Gegarandeerd Rare+ als je te lang pech hebt.',         eff: l => l ? `Rare+ binnen ${PITY[l]} rolls` : 'Uit' },
+  { id: 'oc',       icon: '⚡', name: 'Overklokken',      base: 3000,  growth: 2.2, max: 10,
+    desc: `Kans dat een item overclocked is (×${fmtNum(CFG.ocMult)} waarde).`, eff: l => `${l * 2}% kans` },
+  { id: 'cache',    icon: '💾', name: 'SSD-cache',        base: 400,   growth: 2.5, max: 8,
+    desc: '5% kortere roll-cooldown per niveau.',                eff: l => `Cooldown −${Math.round((1 - 0.95 ** l) * 100)}%` },
+  { id: 'income',   icon: '💼', name: 'Overuren',         base: 300,   growth: 1.9, max: 30,
+    desc: '+10% inkomen op alles.',                              eff: l => `Inkomen +${l * 10}%` },
+  { id: 'discount', icon: '🎓', name: 'Studentenkorting', base: 500,   growth: 2.2, max: 10,
+    desc: 'Goedkopere items bij het kopen.',                     eff: l => `Prijzen −${l * 4}%` },
+  { id: 'resale',   icon: '♻️', name: 'Tweedehandsmarkt', base: 400,   growth: 2,   max: 8,
+    desc: 'Meer geld bij het verkopen van items.',               eff: l => `Verkoop ${50 + l * 5}%` },
+  { id: 'ups',      icon: '🔋', name: 'UPS-batterij',     base: 2000,  growth: 2.5, max: 7,
+    desc: 'Langer offline inkomen.',                             eff: l => `Offline max ${CFG.offlineMaxHours + l * 2}u` },
+  { id: 'permit',   icon: '🏗️', name: 'Bouwvergunning',   base: 1000,  growth: 3,   max: 5,
+    desc: 'Nieuwe U\'s in je rack worden goedkoper.',            eff: l => `U-prijs −${l * 5}%` },
+  { id: 'autoroll', icon: '⏱️', name: 'Cronjob',          base: 1e5,   growth: 1e5, max: 2,
+    desc: 'Niveau 1: rolt automatisch. Niveau 2: 🔥 Hot-Swap koopt alles wat gerold wordt en zet upgrades meteen op de beste plek.',
+    eff: l => ['Vergrendeld', 'Auto-roll', 'Auto-roll + 🔥 Hot-Swap'][l] },
+  { id: 'filter',   icon: '🔑', name: 'Labo-sleutel',     base: 12000, growth: 1,   max: 1,
+    desc: 'Kies zelf welk type onderdeel je rolt.',              eff: l => l ? 'Ontgrendeld' : 'Vergrendeld' },
+  { id: 'firmware', icon: '📈', name: 'Firmware-update',  base: 20000, growth: 2.6, max: 10,
+    desc: 'Kans dat een roll een tier hoger uitvalt.',           eff: l => `${fmtNum(l * 1.5, 1)}% kans op +1 tier` },
+  { id: 'mutlab',   icon: '🧪', name: 'Stralingslab',     base: 15000, growth: 2.5, max: 10,
+    desc: 'Meer kans op mutaties (Goud, Gekoeld, Bit-flip, …).', eff: l => `${Math.round(mutChanceAt(l) * 100)}% mutatiekans` },
+  { id: 'glitch',   icon: '👾', name: 'Glitch in de Matrix', base: 50000, growth: 2.8, max: 10,
+    desc: 'Kans dat een gekocht item dubbel geleverd wordt.',    eff: l => `${fmtNum(l * 0.1, 1)}% kans op een gratis kopie` },
+  { id: 'supplier', icon: '📦', name: 'Leverancierscontract', base: 5000, growth: 4, max: 6,
+    desc: 'Meer plekken en zeldzamere boosts in de boost-shop.', eff: l => `${shopSlots(l)} plekken · zeldzaamheid ×${fmtNum(shopLuck(l))}` },
+];
+
+/* Admin-codes: plak hier je PUBLIC key uit het admin panel (open de game met ?admin achter de link).
+   Je private key blijft alleen in jouw browser. Zonder die sleutel kan niemand geldige codes maken. */
+const ADMIN_PUBLIC_KEY = 'jn5v0Ds8SAYnW69Scg-uuwGXhDKE0QxBTBOoV2aracE.nmywFxVFe_2vIlMiRvwN2ym4j3vJJQQuX94P4BvO6Mc, HRUMvEHHRO7T_QKNiKv4YyTQ94m_rlMu_Zh-khYdnH0.zyDMkRIjbeATuPOJ6s4JOX5MgwbplB5yik9BtO05KvM';
+
+/* Mutaties: zeldzame extra eigenschap bovenop een item (los van OC, ze kunnen samen voorkomen).
+   w = hoe vaak (gewicht), mult = waarde-vermenigvuldiger */
+const MUTATIONS = {
+  gold:    { icon: '🟡', name: 'Goud',        color: '#facc15', w: 20, mult: 3,   desc: '×3 waarde' },
+  cold:    { icon: '❄️', name: 'Gekoeld',     color: '#7dd3fc', w: 25, mult: 1.5, desc: '×1,5 en telt als 1 tier hoger voor de match-bonus' },
+  bitflip: { icon: '💾', name: 'Bit-flip',    color: '#a78bfa', w: 25,            desc: 'willekeurig ×0,5 tot ×6 (vast bij het rollen)' },
+  rad:     { icon: '☢️', name: 'Radioactief', color: '#a3e635', w: 15, mult: 2,   desc: '×2 en +10% luck zolang hij in je rack zit' },
+  rgb:     { icon: '🌈', name: 'RGB',         color: '#f472b6', w: 15, mult: 1.5, desc: '×1,5 en de hele U krijgt +25%' },
+};
+const mutChanceAt = l => 0.03 + 0.02 * l;   // 3% basis, +2% per Stralingslab-niveau
+
+/* Rack-skins (puur cosmetisch). tier bepaalt de kleur in de shop. */
+const SKINS = [
+  { id: 'default', name: 'Standaard',      tier: 0, price: 0,     desc: 'Zwart staal, gewoon degelijk.' },
+  { id: 'beige',   name: 'Retro beige',    tier: 1, price: 2000,  desc: 'Die ene pc-kast uit 1998.' },
+  { id: 'wood',    name: 'Labo-kast',      tier: 1, price: 8000,  desc: 'Houten kast uit het labo. Ruikt naar soldeer.' },
+  { id: 'white',   name: 'Datacenter wit', tier: 2, price: 80e3,  desc: 'Strak, wit en steriel.' },
+  { id: 'carbon',  name: 'Carbon',         tier: 2, price: 400e3, desc: 'Licht, sterk en duur ogend.' },
+  { id: 'matrix',  name: 'Matrix',         tier: 3, price: 5e6,   desc: 'Groene gloed. Er is geen lepel.' },
+  { id: 'rgb',     name: 'RGB Gamer',      tier: 4, price: 2e8,   desc: 'Meer RGB = meer FPS. Toch?' },
+  { id: 'gold',    name: 'Goud',           tier: 5, price: 2e10,  desc: 'Voor wie wil laten zien dat het kan.' },
+  { id: 'quantum', name: 'Quantum',        tier: 6, price: 5e12,  desc: 'Bestaat tegelijk wel en niet.' },
+];
+
+/* Boost-shop: elk vol uur nieuwe voorraad. Elke soort heeft per tier (Common → Quantum) een naam, kracht en duur.
+   prijs = X minuten van je inkomen (of minstens 'floor') */
+const BOOST_MIN    = [3, 5, 5, 8, 10, 15, 30];                   // duur in minuten per tier
+const BOOST_PRICE  = [1.5, 3, 6, 12, 25, 50, 100];               // prijs in minuten inkomen per tier
+const BOOST_FLOOR  = [50, 200, 800, 3000, 15e3, 80e3, 500e3];    // minimumprijs per tier
+const BOOSTS = {
+  luck:   { icon: '☕', label: 'Luck',     mult: [1.5, 2, 2.5, 3, 4, 6, 10],
+            names: ['Lauwe koffie', 'Energiedrank', 'Red Bull', 'Dubbele espresso', 'Club-Mate', 'Overclock-serum', 'Quantum-koffie'] },
+  speed:  { icon: '🔌', label: 'Cooldown', mult: [0.85, 0.75, 0.65, 0.55, 0.45, 0.35, 0.25],
+            names: ['Kabel opgeruimd', 'Nieuwe switch', 'Glasvezel-patch', 'Load balancer', 'CDN-contract', 'Edge-cache', 'Wormhole-verbinding'] },
+  income: { icon: '💶', label: 'Inkomen',  mult: [1.25, 1.5, 2, 2.5, 3, 4, 6],
+            names: ['Bijles geven', 'Freelance klusje', 'Bug bounty', 'Startup-subsidie', 'Server verhuren', 'Cloud-contract', 'Big Tech-overname'] },
+  oc:     { icon: '🧊', label: 'OC-kans',  add: [0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6],
+            names: ['Thermal paste', 'Betere koeler', 'Extra fans', 'Waterkoeling', 'Peltier-element', 'Vloeibare stikstof', 'Absolute nulpunt'] },
+};
+const shopSlots = l => 3 + Math.floor((l + 1) / 2);   // 3 → 6 plekken
+const shopLuck  = l => 2 * (1 + 0.6 * l);             // luck voor de rarity van shop-boosts
+
+/* Random events. kind: good / bad / mixed. w = hoe vaak (gewicht). dur = seconden.
+   fx: luck, cd (cooldown), income, price, sell = vermenigvuldigers · ocAdd = extra OC-kans */
+const EVENT_GAP = [180, 420];   // seconden tussen events (min, max)
+const EVENTS = [
+  { id: 'patch',   icon: '🩹', name: 'Patch Tuesday',     kind: 'good',  w: 10, dur: 120, desc: 'Luck ×3',                                   fx: { luck: 3 } },
+  { id: 'friday',  icon: '🏷️', name: 'Black Friday',      kind: 'good',  w: 8,  dur: 120, desc: 'Alle items −50%',                           fx: { price: 0.5 } },
+  { id: 'hack',    icon: '💻', name: 'Hackathon',         kind: 'good',  w: 8,  dur: 90,  desc: 'Roll-cooldown ×0,5',                        fx: { cd: 0.5 } },
+  { id: 'lan',     icon: '🎮', name: 'LAN-party',         kind: 'good',  w: 7,  dur: 120, desc: '+25% kans op overclocked items',            fx: { ocAdd: 0.25 } },
+  { id: 'viral',   icon: '📈', name: 'Viraal op Reddit',  kind: 'good',  w: 8,  dur: 120, desc: 'Inkomen ×2',                                fx: { income: 2 } },
+  { id: 'ziek',    icon: '🤒', name: 'Docent is ziek',    kind: 'good',  w: 6,  dur: 150, desc: 'Vrije namiddag: luck ×2 en cooldown ×0,75', fx: { luck: 2, cd: 0.75 } },
+  { id: 'subsidie',icon: '🎓', name: 'Subsidie van AP',   kind: 'good',  w: 6,  dur: 8,   desc: 'Je krijgt 5 minuten inkomen cadeau!',       instant: true },
+  { id: 'examen',  icon: '📚', name: 'Examenweek',        kind: 'mixed', w: 6,  dur: 120, desc: 'Inkomen ×0,5, maar luck ×2,5',              fx: { income: 0.5, luck: 2.5 } },
+  { id: 'crypto',  icon: '🪙', name: 'Crypto-hype',       kind: 'mixed', w: 5,  dur: 120, desc: 'Verkoopwaarde ×1,8, maar items +30% duurder', fx: { sell: 1.8, price: 1.3 } },
+  { id: 'stroom',  icon: '🔌', name: 'Stroomuitval',      kind: 'bad',   w: 5,  dur: 30,  desc: 'Geen inkomen. Een UPS-batterij maakt het korter.', fx: { income: 0 } },
+  { id: 'ddos',    icon: '🌊', name: 'DDoS-aanval',       kind: 'bad',   w: 5,  dur: 60,  desc: 'Roll-cooldown ×2',                          fx: { cd: 2 } },
+  { id: 'kabel',   icon: '✂️', name: 'Kabelbreuk',        kind: 'bad',   w: 5,  dur: 90,  desc: 'Inkomen ×0,5 tot je de kabel repareert',    fx: { income: 0.5 }, fixes: 5 },
+  { id: 'ransom',  icon: '🔒', name: 'Ransomware!',       kind: 'bad',   w: 4,  dur: 30,  desc: 'Je servers liggen plat. Betaal losgeld of zet een back-up terug.', fx: { income: 0 }, choice: true },
+  { id: 'backup',  icon: '💾', name: 'Back-up terugzetten', kind: 'bad', w: 0,  dur: 45,  desc: 'Even geduld, servers komen terug online.',  fx: { income: 0 } },
+];
+
+/* Casino-tafels: max inzet = X minuten van je inkomen (of minstens 'floor') */
+const TABLES = [
+  { name: 'Kleine tafel', minutes: 2,  floor: 100 },
+  { name: 'Grote tafel',  minutes: 15, floor: 500 },
+  { name: 'High roller',  minutes: 60, floor: 2500 },
+];
+const CRASH_EDGE = 0.03;      // huisvoordeel crash (3%)
+const CRASH_SPEED = 0.1;      // hoe snel de multiplier stijgt (×2 na ~7s)
+const CRASH_MAX = 25;         // de server haalt nooit meer dan ×25: daar cash je automatisch uit
+
+/* Items per type, per tier: [naam, specs, kwaliteit]
+   kwaliteit (~0.7–1.25) schaalt de waarde binnen een tier.
+   Saves bewaren alleen een ID, dus waardes aanpassen werkt ook voor bestaande spelers. */
+const ITEMS = {
+  cpu: [
+    [['Celeron uit de labokast','1C · 1,6 GHz · stoffig',0.75],['Intel Pentium 4','1C/2T · 3,0 GHz',0.8],['AMD Athlon II X2','2C/2T · 3,0 GHz',0.95],['Intel Core 2 Duo E8400','2C/2T · 3,0 GHz',1.0]],
+    [['Intel Core i3-4130','2C/4T · 3,4 GHz',0.9],['AMD FX-6300','6C/6T · 3,5 GHz',1.0],['Intel Core i5-3470','4C/4T · 3,6 GHz',1.1]],
+    [['Intel Core i7-8700','6C/12T · 4,6 GHz',0.95],['AMD Ryzen 5 5600X','6C/12T · 4,6 GHz',1.0],['Intel Xeon E5-2680 v4','14C/28T · 3,3 GHz',1.15]],
+    [['Intel Core i9-14900K','24C/32T · 6,0 GHz',0.95],['AMD Ryzen 9 7950X','16C/32T · 5,7 GHz',1.0],['Intel Xeon Gold 6338','32C/64T · 3,2 GHz',1.15]],
+    [['Intel Xeon Platinum 8490H','60C/120T',0.95],['AMD EPYC 9654','96C/192T',1.05],['AMD Threadripper PRO 7995WX','96C/192T · 5,1 GHz',1.15]],
+    [['AMD EPYC 9965','192C/384T',1.0],['Experimentele ARM-serverchip','256C · prototype',1.15]],
+    [['Quantum Processing Unit','1024 qubits',1.0],['Het brein van je docent','∞ kernen',1.25]],
+  ],
+  ram: [
+    [['DDR2 1 GB','667 MHz',0.8],['DDR3 2 GB','1066 MHz',0.9],['DDR3 4 GB','1333 MHz',1.0]],
+    [['DDR3 8 GB','1600 MHz',0.9],['DDR4 8 GB','2400 MHz',1.0],['DDR4 16 GB','2666 MHz',1.15]],
+    [['DDR4 16 GB','3200 MHz',0.95],['DDR4 32 GB','3200 MHz',1.05],['DDR4 ECC 64 GB','3200 MHz',1.15]],
+    [['DDR5 32 GB','6000 MHz',0.95],['DDR5 64 GB','6400 MHz',1.05],['DDR5 ECC 128 GB','4800 MHz',1.15]],
+    [['DDR5 RDIMM 256 GB','5600 MHz',1.0],['DDR5 RDIMM 512 GB','6400 MHz',1.15]],
+    [['HBM3 1 TB','819 GB/s',1.0],['CXL-geheugenpool 4 TB','PCIe 6.0',1.15]],
+    [['downloadmoreram.com','Onbeperkt RAM',1.0],['Quantumgeheugen','Superpositie-opslag',1.25]],
+  ],
+  storage: [
+    [['USB-stick van een docent','16 GB · USB 2.0',0.7],['HDD 250 GB','5400 rpm',0.85],['HDD 500 GB','7200 rpm',1.0]],
+    [['HDD 1 TB','7200 rpm',0.9],['SATA SSD 250 GB','550 MB/s',1.0],['SATA SSD 500 GB','550 MB/s',1.15]],
+    [['SATA SSD 1 TB','560 MB/s',0.95],['NVMe SSD 1 TB','Gen3 · 3500 MB/s',1.05],['NVMe SSD 2 TB','Gen3 · 3500 MB/s',1.15]],
+    [['NVMe SSD 2 TB','Gen4 · 7000 MB/s',0.95],['NVMe SSD 4 TB','Gen4 · 7400 MB/s',1.1]],
+    [['NVMe SSD 8 TB','Gen5 · 14 GB/s',1.0],['Enterprise U.2 15 TB','Gen4 · datacenter',1.15]],
+    [['Enterprise E3.S 61 TB','Gen5 · datacenter',1.0],['All-flash array 500 TB','Rack-mounted',1.15]],
+    [['Glazen archiefopslag','1 PB · 10.000 jaar',1.0],['De hele cloud','Ja, alles',1.25]],
+  ],
+  switch: [
+    [['Hub uit 1998','10 Mbit · 4 poorten',0.8],['Dumb switch','5 poorten · 100 Mbit',1.0]],
+    [['Unmanaged Gigabit switch','8 poorten',0.9],['Managed switch','16 poorten · Gigabit',1.1]],
+    [['Cisco Catalyst 2960','24 poorten · VLANs',1.0],['HP ProCurve 2920','48 poorten · PoE',1.1]],
+    [['Cisco Catalyst 9300','48 poorten · 10G uplinks',1.0],['10G aggregatie-switch','16× SFP+',1.1]],
+    [['Arista 7050X','32× 40G',1.0],['Spine-switch','64× 100G',1.1]],
+    [['Cisco Nexus 9000','36× 400G',1.0],['Datacenter-core','800G-poorten',1.1]],
+    [['Quantumverstrengelde switch','Latency: 0 ms',1.0]],
+  ],
+  router: [
+    [['Proximus b-box uit de kast','Wifi 4 · 1 WAN',0.9],['Oude Telenet-modem','Knipperende lampjes',1.0]],
+    [['TP-Link Archer','Gigabit · Wifi 5',0.95],['Router met OpenWrt','Custom firmware',1.1]],
+    [['MikroTik hEX','5× Gigabit · RouterOS',0.95],['Ubiquiti EdgeRouter','3× Gigabit',1.05]],
+    [['Cisco ISR 4331','Enterprise branch-router',1.0],['pfSense-box','Firewall + VPN',1.1]],
+    [['Juniper MX204','4× 100G',1.0]],
+    [['Cisco ASR 9000','Carrier-grade',1.0]],
+    [['Router van het internet zelf','Alle routes',1.0]],
+  ],
+};
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+const SAVE_KEY = 'rackrng-save-beta';   // BETA: eigen save, raakt de echte game niet
+const IS_BETA = true;
+const SAVE_VERSION = 2;
+const $ = id => document.getElementById(id);
+// Alleen vervangen als de inhoud echt verandert: zo gaan klikken niet verloren als er tijdens een animatie opnieuw getekend wordt
+const setHTML = (el, h) => { if (el._h !== h) { el.innerHTML = h; el._h = h; } };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SUF = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'];
+
+function fmtNum(n, d = 2) { return n.toLocaleString('nl-BE', { maximumFractionDigits: d }); }
+function floorTo(n, d) { const p = 10 ** d; return Math.floor(n * p + 1e-9) / p; }
+function fmt(n) {
+  if (!isFinite(n)) return '€∞';
+  if (n < 0) return '-' + fmt(-n);
+  if (n < 1000) { const d = n < 10 ? 2 : n < 100 ? 1 : 0; return '€' + fmtNum(floorTo(n, d), d); }
+  const e = Math.min(Math.floor(Math.log10(n) / 3), SUF.length - 1);
+  const v = n / 10 ** (3 * e);
+  const d = v < 10 ? 2 : v < 100 ? 1 : 0;
+  return '€' + fmtNum(floorTo(v, d), d) + SUF[e];
+}
+function fmtDur(s) {
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60);
+  return h ? `${h}u ${m}m` : m ? `${m} min` : `${Math.floor(s)} sec`;
+}
+const slug = s => s.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+/* Item-definities met stabiele ID's */
+const DEFS = {}, DEFS_BY = {};
+for (const type in ITEMS) {
+  DEFS_BY[type] = ITEMS[type].map((list, tier) => list.map(([name, spec, q]) => {
+    const ref = `${type}-${tier}-${slug(name)}`;
+    DEFS[ref] = { ref, type, tier, name, spec, q };
+    return ref;
+  }));
+}
+
+class Item {
+  constructor(ref, id = null, oc = false, custom = null) { this.ref = ref; this.id = id; this.oc = oc; if (custom) this.custom = custom; }
+  get d() { return this.custom || DEFS[this.ref]; }
+  get type() { return this.d.type; }
+  get tier() { return this.d.tier; }
+  get name() { return this.d.name; }
+  get spec() { return this.d.spec; }
+  get q() { return this.d.q; }
+  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined, custom: this.custom, mut: this.mut, mv: this.mv }; }
+}
+// Laadt een item uit een save. Werkt ook voor v1-saves en hernoemde items.
+function hyd(o) {
+  const it = hyd0(o);
+  if (it && o.mut && MUTATIONS[o.mut]) { it.mut = o.mut; if (o.mv) it.mv = o.mv; }
+  return it;
+}
+function hyd0(o) {
+  if (!o) return null;
+  if (o.custom) return new Item(null, o.id ?? null, !!o.oc, o.custom); // admin-item
+  let ref = o.ref;
+  if (!DEFS[ref]) {
+    const type = o.t || o.type, tier = o.r ?? o.tier;
+    const cand = Object.values(DEFS).filter(d => d.type === type && d.tier === tier);
+    const m = cand.find(d => d.name === o.name) || cand[0];
+    if (!m) return null;
+    ref = m.ref;
+  }
+  return new Item(ref, o.id ?? null, !!o.oc);
+}
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+const newPlayerId = () => {
+  const b = new Uint8Array(4); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(b) : b.forEach((_, i) => b[i] = Math.random() * 256);
+  const h = [...b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
+  return `RK-${h.slice(0, 4)}-${h.slice(4)}`;
+};
+const isAdminItem = it => it && it.tier === ADMIN_TIER;
+/* BELANGRIJK voor een toekomstige prestige/rebirth: deze items moeten altijd bewaard blijven.
+   Een rebirth reset het rack en de opslag, en zet daarna permanentItems() terug in de opslag. */
+const permanentItems = () => [...state.inv, state.router, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(isAdminItem);
+const emptyU = () => ({ cpu: null, ram: null, storage: null });
+function newState() {
+  return { v: SAVE_VERSION, money: CFG.startMoney, rack: [emptyU()], router: null, switches: [null], inv: [],
+           current: null, currentBought: false, conn: 0, rollReadyAt: 0, rolls: 0, nextId: 1,
+           lastSave: Date.now(), muted: false, up: {}, pity: 0, autoRoll: false, rollFilter: null,
+           hotSwap: false, rollTiers: [false, false, false, true, true, true, true], autoSellTier: -1,
+           event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
+           skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
+           shop: null, boosts: {} };
+}
+function fromJSON(raw) {
+  const s = Object.assign(newState(), raw);
+  s.rack = (Array.isArray(raw.rack) && raw.rack.length ? raw.rack : [emptyU()])
+    .map(u => ({ cpu: hyd(u.cpu), ram: hyd(u.ram), storage: hyd(u.storage) }));
+  s.router = hyd(raw.router);
+  s.switches = (Array.isArray(raw.switches) ? raw.switches : [null]).map(hyd);
+  s.inv = (Array.isArray(raw.inv) ? raw.inv : []).map(hyd).filter(Boolean);
+  s.current = hyd(raw.current);
+  if (raw.current && raw.current.bought) s.currentBought = true; // v1
+  s.up = raw.up || {};
+  // Bestel-bot is vervangen door Hot-Swap (Cronjob niveau 2): geld terug
+  // één rarity-selectie: zonder Hot-Swap = waar auto-roll stopt, met Hot-Swap = wat gekocht wordt
+  if (!Array.isArray(raw.rollTiers)) {
+    const old = Array.isArray(raw.hotTiers) ? raw.hotTiers : Array.isArray(raw.autoBuyTiers) ? raw.autoBuyTiers : null;
+    s.rollTiers = (s.up.autoroll || 0) >= 2 && old && old.length === 7 ? old.slice() : [false, false, false, true, true, true, true];
+  }
+  if (!Array.isArray(s.rollTiers) || s.rollTiers.length !== 7) s.rollTiers = newState().rollTiers;
+  delete s.hotTiers;
+  if (s.up.orderbot) { s.money += 10e9 + (s.up.orderbot >= 2 ? 100e9 : 0); delete s.up.orderbot; }
+  for (const k of ['autoBuy', 'autoBuyTiers', 'autoBuyPct', 'autoBuyMode', 'autoBuyOnlyUp', 'autoBuyEquip', 'autoBuyMin',
+                   'autoStopTier', 'autoStopMut', 'autoStopOC', 'autoCfgV']) delete s[k];
+  if (!Array.isArray(s.skins) || !s.skins.includes('default')) s.skins = ['default', ...(Array.isArray(s.skins) ? s.skins : [])];
+  if (s.up.autobuy) { s.money += 20000; delete s.up.autobuy; } // Bestel-bot verwijderd: geld terug
+  for (const u of UPGRADES) if ((s.up[u.id] || 0) > u.max) s.up[u.id] = u.max;
+  s.v = SAVE_VERSION;
+  // zorg dat nieuwe ID's nooit botsen
+  const ids = [...s.inv, s.router, s.current, ...s.switches, ...s.rack.flatMap(u => COMP.map(k => u[k]))]
+    .filter(Boolean).map(x => x.id || 0);
+  s.nextId = Math.max(s.nextId || 1, ...ids, 0) + 1;
+  return s;
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    return raw ? fromJSON(JSON.parse(raw)) : newState();
+  } catch (e) { return newState(); }
+}
+let blocked = false; // true als de game al in een ander tabblad open staat
+function save() {
+  if (blocked) return;
+  state.lastSave = Date.now();
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+let state = load();
+let sel = null;          // {src:'inv', id} | {src:'slot', loc}
+let filter = 'all';
+let rolling = false;
+let lastSpin = null;     // {cands, win} van de laatste roll, voor de reels
+let incomeCache = 0;
+const celebrate = new Set();
+
+/* =====================================================================
+   UPGRADES & AFGELEIDE WAARDES
+   ===================================================================== */
+const lvl = id => state.up[id] || 0;
+const upDef = id => UPGRADES.find(u => u.id === id);
+const upCost = u => Math.round(u.base * u.growth ** lvl(u.id));
+
+const EV = Object.fromEntries(EVENTS.map(e => [e.id, e]));
+const activeBoost = k => { const b = state.boosts && state.boosts[k]; return b && Date.now() < b.until ? b : null; };
+const boostMod = k => { const b = activeBoost(k); return b ? b.val : (k === 'oc' ? 0 : 1); };
+const activeEv = () => state.event && Date.now() < state.event.until ? EV[state.event.id] : null;
+const evMod = k => { const e = activeEv(); return e && e.fx && e.fx[k] != null ? e.fx[k] : (k === 'ocAdd' ? 0 : 1); };
+
+const luck       = () => (1 + 0.1 * lvl('luck')) * evMod('luck') * boostMod('luck') * radLuck();
+const goldenMult = () => 1 + lvl('golden');
+const nextGolden = () => lvl('golden') > 0 && (state.rolls + 1) % CFG.goldenEvery === 0;
+const ocChance   = () => Math.min(1, 0.02 * lvl('oc') + evMod('ocAdd') + boostMod('oc'));
+const priceMult  = () => (1 - 0.04 * lvl('discount')) * evMod('price');
+const sellRate   = () => Math.min(1, (CFG.sellRate + 0.05 * lvl('resale')) * evMod('sell'));
+const incomeMult = () => 1 + 0.1 * lvl('income');
+const offlineMax = () => CFG.offlineMaxHours + 2 * lvl('ups');
+const cooldown   = () => CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed');
+const unitCost   = () => Math.round(CFG.unitBaseCost * CFG.unitCostGrowth ** (state.rack.length - 1) * (1 - 0.05 * lvl('permit')));
+
+/* Item-waardes */
+const ocM      = it => (it.oc ? CFG.ocMult : 1) * mutM(it);
+const mutM     = it => !it.mut ? 1 : it.mut === 'bitflip' ? (it.mv || 1) : MUTATIONS[it.mut].mult;
+const matchTier = it => it.mut === 'cold' ? Math.min(6, it.tier + 1) : it.tier;
+const placedItems = () => [state.router, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(Boolean);
+const radLuck  = () => 1 + 0.1 * placedItems().filter(x => x.mut === 'rad').length;
+const income   = it => TIERS[it.tier].income * it.q * ocM(it);
+const swBonus  = it => Math.round(TIERS[it.tier].sw * it.q * ocM(it));
+const rtMult   = it => Math.round((1 + (TIERS[it.tier].rt - 1) * it.q * ocM(it)) * 100) / 100;
+function basePrice(it) {
+  const b = TIERS[it.tier].income * CFG.priceSeconds * it.q * ocM(it);
+  if (it.type === 'switch') return b * CFG.switchPriceMult;
+  if (it.type === 'router') return b * CFG.routerPriceMult;
+  return b;
+}
+const price     = it => Math.round(basePrice(it) * priceMult());
+const sellPrice = it => Math.floor(price(it) * sellRate());
+function statText(it) {
+  if (it.type === 'switch') return `+${swBonus(it)}% op alles`;
+  if (it.type === 'router') return `×${fmtNum(rtMult(it))} op alles`;
+  return `+${fmt(income(it))}/s`;
+}
+function statShort(it) {
+  if (it.type === 'switch') return `${TIERS[it.tier].name} · +${swBonus(it)}%`;
+  if (it.type === 'router') return `${TIERS[it.tier].name} · ×${fmtNum(rtMult(it))}`;
+  return `${TIERS[it.tier].name} · ${fmt(income(it))}/s`;
+}
+const mutLabel = it => it.mut ? `${MUTATIONS[it.mut].name}${it.mut === 'bitflip' ? ' ×' + fmtNum(it.mv) : ''}` : '';
+const mutHtml  = it => it.mut ? `<span class="mut" style="--mc:${MUTATIONS[it.mut].color}">${MUTATIONS[it.mut].icon} ${mutLabel(it)}</span>` : '';
+const nameHtml = it => (isAdminItem(it) ? '🛠️ ' : '') + mutHtml(it) + (it.oc ? '<span class="oc">OC</span>' : '') + esc(it.name);
+
+/* Kansen (met huidige luck) */
+const tierChance = (i, L) => Math.min(1, L / TIERS[i].oneIn);
+function oddsFor(L) {
+  return TIERS.map((t, i) => {
+    let p = i === 0 ? 1 : tierChance(i, L);
+    for (let j = i + 1; j < TIERS.length; j++) p *= 1 - tierChance(j, L);
+    return p;
+  });
+}
+function oddsText(p) { return p > 0.2 ? Math.round(p * 100) + '%' : '1 op ' + fmtNum(Math.round(1 / p), 0); }
+
+/* RNG */
+function pickWeighted(obj) {
+  let tot = 0; for (const k in obj) tot += obj[k];
+  let r = Math.random() * tot;
+  for (const k in obj) { r -= obj[k]; if (r < 0) return k; }
+  return Object.keys(obj)[0];
+}
+function rollTier(L) {
+  for (let i = TIERS.length - 1; i >= 1; i--) if (Math.random() < tierChance(i, L)) return i;
+  return 0;
+}
+function rollOne(L, minTier = 0, useFilter = true) {
+  const type = useFilter && lvl('filter') && state.rollFilter ? state.rollFilter : pickWeighted(CFG.typeWeights);
+  const tier = Math.max(rollTier(L), minTier);
+  const refs = DEFS_BY[type][tier];
+  const it = new Item(refs[Math.floor(Math.random() * refs.length)], null, Math.random() < ocChance());
+  if (Math.random() < mutChanceAt(lvl('mutlab'))) {
+    it.mut = pickWeighted(Object.fromEntries(Object.entries(MUTATIONS).map(([k, m]) => [k, m.w])));
+    if (it.mut === 'bitflip') it.mv = Math.round((0.5 + Math.random() ** 2 * 5.5) * 100) / 100; // meestal laag, soms hoog
+  }
+  return it;
+}
+function generateRoll() {
+  const golden = nextGolden();
+  const L = luck() * (golden ? goldenMult() : 1);
+  const cands = [];
+  for (let k = 0; k <= lvl('multi'); k++) cands.push(rollOne(L));
+  let win = 0;
+  cands.forEach((c, i) => { if (price(c) > price(cands[win])) win = i; });
+  let best = cands[win], pityHit = false;
+  if (lvl('pity') && best.tier < 2 && state.pity + 1 >= PITY[lvl('pity')]) { best = rollOne(L, 2); cands[win] = best; pityHit = true; }
+  let fwHit = false;
+  if (best.tier < 6 && Math.random() < 0.015 * lvl('firmware')) {
+    const refs = DEFS_BY[best.type][best.tier + 1];
+    const up = new Item(refs[Math.floor(Math.random() * refs.length)], null, best.oc);
+    if (best.mut) { up.mut = best.mut; up.mv = best.mv; }
+    best = up;
+    cands[win] = best; fwHit = true;
+  }
+  best.id = state.nextId++;
+  return { item: best, cands, win, golden, pityHit, fwHit };
+}
+
+/* =====================================================================
+   ECONOMIE
+   ===================================================================== */
+const emptyM = { mult: 1, label: 'Onvolledig', cls: '' };
+function matchInfo(u) {
+  const its = COMP.map(k => u[k]);
+  if (its.some(x => !x)) return emptyM;
+  const ts = its.filter(x => !isAdminItem(x)).map(matchTier);  // admin-items matchen met alles
+  if (!ts.length) return { mult: CFG.match[0], label: `✨ Perfect ×${fmtNum(CFG.match[0])}`, cls: 'b-perfect', perfect: true };
+  const spread = Math.max(...ts) - Math.min(...ts);
+  const m = CFG.match[Math.min(spread, 3)];
+  if (spread === 0) return { mult: m, label: `✨ Perfect ×${fmtNum(m)}`, cls: 'b-perfect', perfect: true };
+  if (spread === 1) return { mult: m, label: `Goed ×${fmtNum(m)}`, cls: 'b-good' };
+  if (spread === 2) return { mult: m, label: `Oké ×${fmtNum(m)}`, cls: '' };
+  return { mult: m, label: `Geen match ×${fmtNum(m)}`, cls: '' };
+}
+// Snelle versie (zonder tekstlabels) voor de optimizer
+function matchMult(u) {
+  const a = u.cpu, b = u.ram, c = u.storage;
+  if (!a || !b || !c) return 1;
+  let lo = 99, hi = -1;
+  for (const x of [a, b, c]) { if (x.tier === ADMIN_TIER) continue; const t = matchTier(x); if (t < lo) lo = t; if (t > hi) hi = t; }
+  return hi < 0 ? CFG.match[0] : CFG.match[Math.min(hi - lo, 3)];
+}
+const uFast = u => {
+  let sum = 0, rgb = 1;
+  for (const k of COMP) { const x = u[k]; if (x) { sum += income(x); if (x.mut === 'rgb') rgb *= 1.25; } }
+  return sum * matchMult(u) * rgb;
+};
+const uBase    = u => COMP.reduce((a, k) => a + (u[k] ? income(u[k]) : 0), 0) * matchInfo(u).mult * 1.25 ** COMP.filter(k => u[k] && u[k].mut === 'rgb').length;
+const routerM  = () => state.router ? rtMult(state.router) : 1;
+const switchB  = () => state.switches.reduce((a, s) => a + (s ? swBonus(s) : 0), 0);
+const steadyMult = () => routerM() * (1 + switchB() / 100) * incomeMult();   // zonder events
+const netMult  = () => steadyMult() * evMod('income') * boostMod('income');
+const steadyIncome = () => baseIncome() * steadyMult();
+const baseIncome = () => state.rack.reduce((a, u) => a + uBase(u), 0);
+const totalIncome = () => baseIncome() * netMult();
+
+function ensureSwitchSlots() {
+  const n = Math.ceil(state.rack.length / CFG.switchEveryU);
+  while (state.switches.length < n) state.switches.push(null);
+}
+ensureSwitchSlots();
+
+/* Slot-locaties */
+function getAt(l) { return l.kind === 'u' ? state.rack[l.u][l.slot] : l.kind === 'router' ? state.router : state.switches[l.i]; }
+function setAt(l, it) {
+  if (l.kind === 'u') state.rack[l.u][l.slot] = it;
+  else if (l.kind === 'router') state.router = it;
+  else state.switches[l.i] = it;
+}
+const locType = l => l.kind === 'u' ? l.slot : l.kind;
+const sameLoc = (a, b) => a.kind === b.kind && a.u === b.u && a.slot === b.slot && a.i === b.i;
+function locFromEl(el) {
+  const d = el.dataset;
+  return { kind: d.kind, u: d.u != null ? +d.u : undefined, slot: d.slot, i: d.i != null ? +d.i : undefined };
+}
+const locName = l => l.kind === 'u' ? `U${l.u + 1}` : l.kind === 'router' ? 'het router-slot' : `switch-slot ${l.i + 1}`;
+
+/* Probeert elk passend slot en geeft de plek waar je totale inkomen het meest stijgt (incl. match-bonus) */
+function bestPlacement(it) {
+  const cur = totalIncome();
+  let best = null;
+  const tryLoc = loc => {
+    const old = getAt(loc);
+    setAt(loc, it);
+    const g = totalIncome() - cur;
+    setAt(loc, old);
+    if (!best || g > best.gain + 1e-9 || (Math.abs(g - best.gain) < 1e-9 && !old && !best.empty)) best = { loc, gain: g, empty: !old };
+  };
+  if (COMP.includes(it.type)) state.rack.forEach((u, i) => tryLoc({ kind: 'u', u: i, slot: it.type }));
+  else if (it.type === 'router') tryLoc({ kind: 'router' });
+  else state.switches.forEach((s, i) => tryLoc({ kind: 'switch', i }));
+  return best;
+}
+function compareInfo(it) {
+  const b = bestPlacement(it);
+  if (b.gain > 1e-9) return { up: true, b, text: `↑ +${fmt(b.gain)}/s in ${locName(b.loc)}${b.empty ? ' (leeg slot)' : ''}` };
+  if (b.empty) return { up: true, b, text: `↑ Vult een leeg slot (${locName(b.loc)})` };
+  return { up: false, b, text: '↓ Geen verbetering voor je rack' };
+}
+
+function selItem() {
+  if (!sel) return null;
+  if (sel.src === 'inv') return state.inv.find(x => x.id === sel.id) || null;
+  return getAt(sel.loc);
+}
+
+/* =====================================================================
+   GELUID & EFFECTEN
+   ===================================================================== */
+let actx;
+function beep(freqs, dur = 0.08, type = 'sine') {
+  if (state.muted) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const t = actx.currentTime;
+    freqs.forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = type; o.frequency.value = f;
+      const s = t + i * dur;
+      g.gain.setValueAtTime(0.0001, s);
+      g.gain.exponentialRampToValueAtTime(0.12, s + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, s + dur * 1.8);
+      o.connect(g).connect(actx.destination);
+      o.start(s); o.stop(s + dur * 2);
+    });
+  } catch (e) {}
+}
+const SFX = {
+  roll: () => beep([330], 0.05, 'triangle'),
+  place: () => beep([520, 780], 0.06),
+  buy: () => beep([660, 880], 0.07),
+  sell: () => beep([500, 350], 0.07),
+  upgrade: () => beep([400, 600, 800], 0.07),
+  perfect: () => beep([523, 659, 784, 1047], 0.09),
+  tier: t => t >= 4 ? beep([523, 659, 784, 1047, 1319, 1568], 0.1)
+           : t === 3 ? beep([600, 800, 1000, 1200], 0.08)
+           : t === 2 ? beep([700, 900, 1100], 0.07)
+           : t === 1 ? beep([700, 900], 0.06) : null,
+};
+function toast(msg) {
+  const box = $('toasts');
+  while (box.children.length > 3) box.firstChild.remove();
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  box.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2600);
+}
+function flash(tier) {
+  const f = $('flash');
+  const c = getComputedStyle(document.documentElement).getPropertyValue('--c' + tier).trim();
+  f.style.setProperty('--fc', c + '99');
+  f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
+}
+function glitchFx(it) {
+  const g = $('glitch');
+  $('glitchS').textContent = `ERR 0x0D0B · ${it.name} gedupliceerd → opslag`;
+  g.classList.remove('on'); void g.offsetWidth; g.classList.add('on');
+  document.body.classList.add('glitching');
+  setTimeout(() => document.body.classList.remove('glitching'), 650);
+  setTimeout(() => g.classList.remove('on'), 1500);
+  toast(`👾 Glitch in de Matrix! Gratis kopie van ${it.name}`);
+  if (!state.muted) try { // ruis + kapotte piepjes
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const n = actx.sampleRate * 0.45, buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (i % 900 < 450 ? 0.25 : 0.05);
+    const src = actx.createBufferSource(), gn = actx.createGain();
+    src.buffer = buf; gn.gain.value = 0.35; src.connect(gn).connect(actx.destination); src.start();
+  } catch (e) {}
+  beep([1800, 200, 1400, 90, 2200], 0.05, 'square');
+}
+function flashColor(c) {
+  const f = $('flash'); f.style.setProperty('--fc', c + '99');
+  f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
+}
+function shake() {
+  document.body.classList.remove('shake'); void document.body.offsetWidth;
+  document.body.classList.add('shake');
+  setTimeout(() => document.body.classList.remove('shake'), 600);
+}
+function showModal(html, closable = true) { $('modal').innerHTML = `<div class="modal" ${closable ? 'data-act="closeModal"' : ''}><div class="box">${html}</div></div>`; }
+const closeModal = () => { $('modal').innerHTML = ''; };
+
+/* =====================================================================
+   ACTIES
+   ===================================================================== */
+const perfectSet = () => new Set(state.rack.map((u, i) => matchInfo(u).perfect ? i : -1).filter(i => i >= 0));
+function afterChange(before) {
+  for (const i of perfectSet()) if (!before.has(i)) {
+    celebrate.add(i);
+    toast(`✨ Perfect match op U${i + 1}! Inkomen ×${fmtNum(CFG.match[0])}`);
+    SFX.perfect();
+  }
+  save(); renderAll();
+}
+
+function roll() {
+  const now = Date.now();
+  if (rolling || now < state.rollReadyAt) return;
+  const { item, cands, win, golden, pityHit, fwHit } = generateRoll();
+  lastSpin = { cands, win };
+  state.current = item;
+  state.currentBought = false;
+  state.rolls++;
+  state.pity = item.tier >= 2 ? 0 : state.pity + 1;
+  state.rollReadyAt = now + cooldown() * 1000;
+  rolling = true;
+  SFX.roll();
+  const dur = Math.max(0.45, Math.min(1.8, cooldown() * 0.6));
+  renderResult(); renderRollMeta();
+  spinReels(cands, win, dur, () => {
+    rolling = false;
+    if (golden) toast(`🪙 Gouden roll! (luck ×${fmtNum(luck() * goldenMult())})`);
+    if (pityHit) toast('📜 Garantiecontract: gegarandeerde Rare+!');
+    if (fwHit) toast('📈 Firmware-update: deze roll is een tier hoger uitgevallen!');
+    reveal(item);
+    autoAfterRoll(item);
+    renderResult(); renderRollMeta(); save();
+  });
+}
+/* 🔥 Hot-Swap (Cronjob niveau 2): koopt alles wat gerold wordt van de rarities die jij aanzet.
+   Beter voor je rack → meteen op de beste plek (en het hele rack opnieuw optimaal). Anders → opslag.
+   Een item dat de auto-verkoop toch meteen zou verkopen, koopt hij niet (anders verlies je geld). */
+const HOT_CAP = 2000;   // max items in de opslag via Hot-Swap, zodat je save niet ontploft
+const shouldAutoSell = it => state.autoSellTier >= 0 && it.tier <= state.autoSellTier && !isAdminItem(it) && !it.mut;
+function toStorage(it, auto) {
+  if (auto && (shouldAutoSell(it) || state.inv.length >= HOT_CAP)) { state.money += sellPrice(it); return false; }
+  state.inv.push(it); return true;
+}
+const hotActive = () => state.hotSwap && lvl('autoroll') >= 2;
+/* Na elke roll: aangeduide rarity gerold?
+   - Hot-Swap aan → kopen; kun je het niet betalen, dan stopt auto-roll
+   - anders → auto-roll stopt, jij beslist */
+function autoAfterRoll(item) {
+  if (!state.rollTiers[item.tier]) return;
+  if (hotActive()) {
+    if (state.money >= price(item)) return hotSwapTry(item);
+    if (state.autoRoll) { state.autoRoll = false; toast(`⏱️ Auto-roll gestopt: niet genoeg geld voor ${TIERS[item.tier].name} ${item.name} (${fmt(price(item))})`); }
+    return;
+  }
+  if (state.autoRoll) { state.autoRoll = false; toast(`⏱️ Auto-roll gestopt: ${TIERS[item.tier].name} gevonden!`); }
+}
+function hotSwapTry(item) {
+  if (!hotActive() || !state.rollTiers[item.tier] || state.money < price(item)) return;
+  const up = compareInfo(item).up;
+  if (!up && shouldAutoSell(item)) return;
+  buyCurrent(up ? 'place' : 'store', true);
+}
+function tryAutoRoll() {
+  if (state.autoRoll && lvl('autoroll') && !rolling && Date.now() >= state.rollReadyAt && !$('modal').innerHTML) roll();
+}
+function reveal(it) {
+  SFX.tier(it.tier);
+  if (it.tier >= 3) { flash(it.tier); toast(`🎉 ${TIERS[it.tier].name}! ${it.oc ? '⚡OC ' : ''}${it.name}`); }
+  else if (it.oc) toast(`⚡ Overclocked ${it.name}!`);
+  if (it.mut) { const m = MUTATIONS[it.mut]; toast(`${m.icon} Mutatie: ${mutLabel(it)}! ${m.desc}`); flashColor(m.color); }
+  if (it.tier >= 5) shake();
+}
+
+// mode 'place': op de beste plek zetten (oude item → opslag) · mode 'store': naar opslag
+function buyCurrent(mode, auto = false) {
+  const it = state.current;
+  if (!it || state.currentBought || rolling) return;
+  const p = price(it);
+  if (state.money < p) return;
+  state.money -= p;
+  state.currentBought = true;
+  const before = perfectSet();
+  if (mode === 'place') {
+    const b = bestPlacement(it);
+    const old = getAt(b.loc);
+    let note = '';
+    if (old) note = toStorage(old, auto) ? ` · ${old.name} → opslag` : ` · ${old.name} verkocht`;
+    setAt(b.loc, it);
+    if (auto) optimizeRack(); // ook items uit je opslag op de beste plek
+    toast((auto ? '🔥 Hot-Swap: ' : '') + `${it.name} geplaatst` + note);
+  } else {
+    toStorage(it, auto);
+    if (!auto) toast('Gekocht, staat in je opslag'); // Hot-Swap meldt opslag-aankopen niet (geen spam)
+  }
+  // Glitch in de Matrix: gratis kopie
+  if (Math.random() < 0.001 * lvl('glitch')) {   // 0,1% per niveau → max 1%
+    const copy = new Item(it.ref, state.nextId++, it.oc);
+    if (it.mut) { copy.mut = it.mut; copy.mv = it.mv; }
+    state.inv.push(copy);
+    glitchFx(it);
+  }
+  SFX.buy();
+  afterChange(before);
+}
+
+/* =====================================================================
+   RACK-OPTIMIZER: zoekt de opstelling met het hoogste inkomen, met items uit rack én opslag.
+   Router en switches zijn onafhankelijk (beste router, beste switches). Voor de U's:
+   start bij de beste van (huidig, gesorteerd per tier) en verbeter met wissels tot niks meer helpt.
+   ===================================================================== */
+function optimizeRack() {
+  const cur = totalIncome();
+  const all = [...state.inv, ...placedItems()];
+  const placed = new Set();
+  // netwerk
+  const routers = all.filter(x => x.type === 'router').sort((a, b) => rtMult(b) - rtMult(a));
+  state.router = routers[0] || null;
+  if (state.router) placed.add(state.router);
+  const sws = all.filter(x => x.type === 'switch').sort((a, b) => swBonus(b) - swBonus(a));
+  state.switches = state.switches.map((_, i) => sws[i] || null);
+  state.switches.forEach(x => x && placed.add(x));
+  // U's
+  const n = state.rack.length;
+  const pool = {};
+  COMP.forEach(k => pool[k] = all.filter(x => x.type === k).sort((a, b) => income(b) - income(a)));
+  const sorted = state.rack.map((_, i) => ({ cpu: pool.cpu[i] || null, ram: pool.ram[i] || null, storage: pool.storage[i] || null }));
+  const current = state.rack.map(u => ({ ...u }));
+  const sumL = L => L.reduce((a, u) => a + uFast(u), 0);
+  const L = sumL(sorted) >= sumL(current) ? sorted : current;
+  const spare = {};
+  COMP.forEach(k => { const used = new Set(L.map(u => u[k])); spare[k] = pool[k].filter(x => !used.has(x)).slice(0, n + 6); });
+  for (let pass = 0, better = true; better && pass < 40; pass++) {
+    better = false;
+    for (const k of COMP) {
+      for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {        // twee U's wisselen
+        const before = uFast(L[i]) + uFast(L[j]);
+        [L[i][k], L[j][k]] = [L[j][k], L[i][k]];
+        if (uFast(L[i]) + uFast(L[j]) > before + 1e-9) better = true;
+        else [L[i][k], L[j][k]] = [L[j][k], L[i][k]];
+      }
+      for (let i = 0; i < n; i++) for (let s = 0; s < spare[k].length; s++) { // ruilen met de opslag
+        const before = uFast(L[i]), old = L[i][k];
+        L[i][k] = spare[k][s];
+        if (uFast(L[i]) > before + 1e-9) { better = true; if (old) spare[k][s] = old; else spare[k].splice(s--, 1); }
+        else L[i][k] = old;
+      }
+    }
+  }
+  state.rack = L;
+  L.forEach(u => COMP.forEach(k => u[k] && placed.add(u[k])));
+  state.inv = all.filter(x => !placed.has(x));
+  return totalIncome() - cur;
+}
+function equipBest() {
+  const before = perfectSet();
+  sel = null;
+  const d = optimizeRack();
+  toast(d > 1e-9 ? `⚡ Beste uitrusting: +${fmt(d)}/s` : 'Je rack staat al optimaal');
+  if (d > 1e-9) SFX.place();
+  afterChange(before);
+}
+
+function buyUnit() {
+  if (state.rack.length >= CFG.maxUnits) return;
+  const cost = unitCost();
+  if (state.money < cost) return;
+  state.money -= cost;
+  const oldSw = state.switches.length;
+  state.rack.push(emptyU());
+  ensureSwitchSlots();
+  toast(`U${state.rack.length} toegevoegd aan je rack` + (state.switches.length > oldSw ? ' + nieuw switch-slot!' : ''));
+  SFX.upgrade();
+  save(); renderAll();
+}
+
+function upgradeConn() {
+  const nx = CONN[state.conn + 1];
+  if (!nx || state.money < nx.cost) return;
+  state.money -= nx.cost;
+  state.conn++;
+  state.rollReadyAt = Math.min(state.rollReadyAt, Date.now() + cooldown() * 1000);
+  toast(`📶 Verbinding geüpgraded naar ${nx.name}`);
+  SFX.upgrade();
+  save(); renderAll();
+}
+
+function buyUpgrade(id) {
+  const u = upDef(id);
+  if (!u || lvl(id) >= u.max) return;
+  const cost = upCost(u);
+  if (state.money < cost) return;
+  state.money -= cost;
+  state.up[id] = lvl(id) + 1;
+  if (id === 'autoroll' && lvl(id) === 2) { state.rollTiers = [false, true, true, true, true, true, true]; state.hotSwap = true; }
+  if (id === 'cache') state.rollReadyAt = Math.min(state.rollReadyAt, Date.now() + cooldown() * 1000);
+  toast(`${u.icon} ${u.name} → ${u.eff(lvl(id))}`);
+  SFX.upgrade();
+  save(); renderAll();
+}
+
+function clickSlot(loc) {
+  const before = perfectSet();
+  const target = getAt(loc), type = locType(loc);
+  if (sel && sel.src === 'inv') {
+    const it = selItem();
+    if (!it) { sel = null; return renderAll(); }
+    if (it.type !== type) { toast(`Dit slot is voor ${TYPES[type].label}, niet voor ${TYPES[it.type].label}`); return; }
+    state.inv = state.inv.filter(x => x.id !== it.id);
+    if (target) state.inv.push(target);
+    setAt(loc, it);
+    sel = null; SFX.place();
+    return afterChange(before);
+  }
+  if (sel && sel.src === 'slot') {
+    if (sameLoc(sel.loc, loc)) { sel = null; return renderAll(); }
+    const it = getAt(sel.loc);
+    if (it && it.type === type) {
+      setAt(sel.loc, target); setAt(loc, it);
+      sel = null; SFX.place();
+      return afterChange(before);
+    }
+  }
+  if (target) sel = { src: 'slot', loc };
+  else {
+    sel = null;
+    toast(state.inv.some(x => x.type === type)
+      ? `Kies eerst een ${TYPES[type].label} uit je opslag`
+      : `Nog geen ${TYPES[type].label} in je opslag. Roll er een!`);
+  }
+  renderAll();
+}
+
+function sellSel() {
+  const it = selItem(); if (!it) return;
+  if (isAdminItem(it)) return toast('Admin-items kun je niet verkopen');
+  const before = perfectSet();
+  if (sel.src === 'inv') state.inv = state.inv.filter(x => x.id !== it.id);
+  else setAt(sel.loc, null);
+  state.money += sellPrice(it);
+  toast(`${it.name} verkocht voor ${fmt(sellPrice(it))}`);
+  sel = null; SFX.sell();
+  afterChange(before);
+}
+function toInvSel() {
+  const it = selItem(); if (!it || sel.src !== 'slot') return;
+  const before = perfectSet();
+  setAt(sel.loc, null); state.inv.push(it);
+  sel = null;
+  afterChange(before);
+}
+function bulkSell() {
+  const max = +$('bulkTier').value;
+  const list = state.inv.filter(x => x.tier <= max);
+  if (!list.length) return toast('Niks om te verkopen');
+  const total = list.reduce((a, x) => a + sellPrice(x), 0);
+  if (!confirm(`${list.length} items verkopen voor ${fmt(total)}?`)) return;
+  state.inv = state.inv.filter(x => x.tier > max);
+  state.money += total;
+  if (sel && sel.src === 'inv' && !selItem()) sel = null;
+  toast(`${list.length} items verkocht voor ${fmt(total)}`);
+  SFX.sell();
+  save(); renderAll();
+}
+
+function exportSave() { save(); return btoa(unescape(encodeURIComponent(JSON.stringify(state)))); }
+function showSaveMenu() {
+  showModal(`<div style="font-weight:700;font-size:17px">Save exporteren / importeren</div>
+    <div class="sub" style="margin-top:6px">Kopieer deze code als back-up, of plak een code om een save te laden.</div>
+    <textarea class="code" id="saveCode" spellcheck="false">${exportSave()}</textarea>
+    <div class="row2"><button class="btn sec" data-act="copySave">Kopieer</button><button class="btn" data-act="importSave">Importeer</button></div>
+    <button class="ghost" style="margin-top:10px" data-act="closeModal">Sluiten</button>`);
+}
+function importSave() {
+  try {
+    const raw = JSON.parse(decodeURIComponent(escape(atob($('saveCode').value.trim()))));
+    if (!raw || !Array.isArray(raw.rack)) throw 0;
+    if (!confirm('Je huidige voortgang wordt overschreven. Doorgaan?')) return;
+    state = fromJSON(raw); ensureSwitchSlots(); sel = null; rolling = false;
+    save(); closeModal(); renderAll(); renderStaticReels();
+    toast('Save geladen!');
+  } catch (e) { toast('Ongeldige save-code'); }
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+/* =====================================================================
+   RANDOM EVENTS
+   ===================================================================== */
+const randGap = () => (EVENT_GAP[0] + Math.random() * (EVENT_GAP[1] - EVENT_GAP[0])) * 1000;
+function startEvent(def) {
+  let dur = def.dur;
+  if (def.id === 'stroom') dur *= 1 - 0.12 * lvl('ups');
+  state.event = { id: def.id, until: Date.now() + dur * 1000, fixes: 0 };
+  if (def.instant) {
+    const gift = Math.max(100, steadyIncome() * 300);
+    state.money += gift;
+    toast(`${def.icon} ${def.name}: +${fmt(gift)}`);
+  } else toast(`${def.icon} ${def.name}: ${def.desc}`);
+  const col = { good: 1, mixed: 4, bad: 5 }[def.kind];
+  flash(col);
+  if (def.kind === 'bad') beep([400, 300, 220], 0.09, 'square'); else beep([523, 784, 1047], 0.08);
+  save(); renderAll();
+}
+function endEvent(msg) {
+  state.event = null;
+  state.nextEventAt = Date.now() + randGap();
+  if (msg) toast(msg);
+  save(); renderAll();
+}
+function tickEvents() {
+  const now = Date.now();
+  if (state.event) {
+    if (now >= state.event.until) {
+      if (state.event.id === 'ransom') return ransomChoice('backup');
+      return endEvent();
+    }
+    return;
+  }
+  if (!state.nextEventAt) state.nextEventAt = now + randGap();
+  if (now >= state.nextEventAt && !document.hidden) {
+    const pool = Object.fromEntries(EVENTS.filter(e => e.w > 0).map(e => [e.id, e.w]));
+    startEvent(EV[pickWeighted(pool)]);
+  }
+}
+function fixCable() {
+  if (!state.event || state.event.id !== 'kabel') return;
+  state.event.fixes++;
+  beep([300 + state.event.fixes * 80], 0.05, 'square');
+  if (state.event.fixes >= EV.kabel.fixes) endEvent('✂️ Kabel gerepareerd! Inkomen weer normaal.');
+  else renderEvent(true);
+}
+const ransomCost = () => Math.min(state.money, steadyIncome() * 120);
+function ransomChoice(c) {
+  if (!state.event || state.event.id !== 'ransom') return;
+  if (c === 'pay') {
+    const cost = ransomCost();
+    state.money -= cost;
+    endEvent(`🔒 Losgeld betaald (${fmt(cost)}). Servers zijn terug.`);
+  } else {
+    state.event = { id: 'backup', until: Date.now() + EV.backup.dur * 1000, fixes: 0 };
+    toast('💾 Back-up wordt teruggezet…');
+    save(); renderAll();
+  }
+}
+let evKey = '';
+function renderEvent(force) {
+  const bar = $('eventBar'), e = state.event, d = e && EV[e.id];
+  if (!d) { if (evKey) { bar.className = ''; setHTML(bar, ''); evKey = ''; } return; }
+  const key = e.id + e.until + e.fixes;
+  if (force || key !== evKey) {
+    evKey = key;
+    bar.className = `show ${d.kind}`;
+    let btns = '';
+    if (d.fixes) btns = `<button class="btn sm" data-act="evFix">🔧 Repareer (${e.fixes}/${d.fixes})</button>`;
+    if (d.choice) btns = `<button class="btn sm sec" data-act="evPay">Betaal ${fmt(ransomCost())}</button>
+                          <button class="btn sm" data-act="evBackup">Back-up terugzetten (45s)</button>`;
+    setHTML(bar, `<div class="eic">${d.icon}</div><div class="ebody"><div class="ename">${d.name}<span class="etime" id="evTime"></span></div><div class="sub">${d.desc}</div></div>${btns}`);
+  }
+  const t = $('evTime');
+  if (t) t.textContent = `${Math.max(0, Math.ceil((e.until - Date.now()) / 1000))}s`;
+}
+
+/* =====================================================================
+   CASINO CORNER
+   ===================================================================== */
+const SUITS = ['♠', '♥', '♦', '♣'];
+const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+function newDeck(n = 1) {
+  const d = [];
+  for (let k = 0; k < n; k++) for (const s of SUITS) for (const r of RANKS) d.push({ r, s });
+  for (let i = d.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [d[i], d[j]] = [d[j], d[i]]; }
+  return d;
+}
+let shoe = [];
+const drawShoe = () => { if (shoe.length < 60) shoe = newDeck(6); return shoe.pop(); };
+
+let ctab = 'bj', bj = null, cr = null, crAuto = '';
+const crHist = [];
+const casinoBusy = () => (bj && !bj.done) || (cr && !cr.over);
+const maxBet = (t = state.table) => Math.floor(Math.max(TABLES[t].floor, steadyIncome() * 60 * TABLES[t].minutes));
+
+function readBet() {
+  const v = Math.floor(Number($('betIn').value));
+  if (!(v >= 1)) { toast('Vul een inzet in'); return 0; }
+  if (v > maxBet()) { toast(`Max inzet aan de ${TABLES[state.table].name.toLowerCase()}: ${fmt(maxBet())}`); return 0; }
+  if (v > state.money) { toast('Niet genoeg geld'); return 0; }
+  return v;
+}
+function takeBet(v) { state.money -= v; state.casinoPending += v; }
+function payout(stake, ret) {
+  state.money += ret;
+  state.casinoPending = Math.max(0, state.casinoPending - stake);
+  state.casinoNet += ret - stake;
+  if (ret > stake) beep([660, 880, 1100], 0.07); else if (ret < stake) beep([300, 220], 0.09, 'triangle'); else beep([500], 0.06);
+  save(); renderHeader(); updateAfford(); renderCasinoControls();
+}
+
+/* Blackjack: dealer staat op 17, blackjack betaalt 3:2, double op je eerste 2 kaarten */
+function bjVal(h) {
+  let t = 0, a = 0;
+  for (const c of h) { if (c.r === 'A') { t += 11; a++; } else t += 'JQK'.includes(c.r) ? 10 : +c.r; }
+  while (t > 21 && a) { t -= 10; a--; }
+  return t;
+}
+function bjDeal() {
+  if (bj && !bj.done) return;
+  const v = readBet(); if (!v) return;
+  takeBet(v);
+  bj = { p: [drawShoe(), drawShoe()], d: [drawShoe(), drawShoe()], stake: v, done: false, res: null };
+  const pb = bjVal(bj.p) === 21, db = bjVal(bj.d) === 21;
+  if (pb || db) return bjSettle(pb && db ? 'push' : pb ? 'bj' : 'dealerbj');
+  renderGame();
+}
+function bjHit() {
+  if (!bj || bj.done) return;
+  bj.p.push(drawShoe());
+  const v = bjVal(bj.p);
+  if (v > 21) bjSettle('bust'); else if (v === 21) bjStand(); else renderGame();
+}
+function bjStand() {
+  if (!bj || bj.done) return;
+  while (bjVal(bj.d) < 17) bj.d.push(drawShoe());
+  const p = bjVal(bj.p), d = bjVal(bj.d);
+  bjSettle(d > 21 || p > d ? 'win' : p === d ? 'push' : 'lose');
+}
+function bjDouble() {
+  if (!bj || bj.done || bj.p.length !== 2) return;
+  if (state.money < bj.stake) return toast('Niet genoeg geld om te verdubbelen');
+  takeBet(bj.stake);
+  bj.stake *= 2; bj.doubled = true;
+  bj.p.push(drawShoe());
+  if (bjVal(bj.p) > 21) bjSettle('bust'); else bjStand();
+}
+function bjSettle(o) {
+  bj.done = true;
+  const s = bj.stake;
+  const ret = o === 'bj' ? s * 2.5 : o === 'win' ? s * 2 : o === 'push' ? s : 0;
+  bj.res = { o, ret, s };
+  payout(s, ret);
+  renderGame();
+}
+
+/* Crash: "serverbelasting" stijgt tot de server crasht. P(crash ≥ x) = (1−edge)/x */
+const crashPoint = () => Math.min(CRASH_MAX, Math.max(1, Math.floor((1 - CRASH_EDGE) * 100 / (1 - Math.random())) / 100));
+const crM = t => Math.exp(CRASH_SPEED * t);
+function crStart() {
+  if (cr && !cr.over) return;
+  const v = readBet(); if (!v) return;
+  const auto = parseFloat(String(crAuto).replace(',', '.'));
+  takeBet(v);
+  cr = { stake: v, start: Date.now(), at: crashPoint(), auto: auto >= 1.01 ? Math.min(auto, CRASH_MAX) : null, over: false, m: 1, res: null };
+  renderGame();
+  crTick();
+}
+function crTick() {
+  if (!cr || cr.over) return;
+  const m = crM((Date.now() - cr.start) / 1000);
+  if (cr.auto && cr.auto <= cr.at && m >= cr.auto) return crCash(cr.auto);
+  if (m >= cr.at && cr.at >= CRASH_MAX) { toast(`🏆 Server op max capaciteit! Automatisch uitbetaald bij ×${CRASH_MAX}`); return crCash(CRASH_MAX); }
+  if (m >= cr.at) {
+    cr.m = cr.at; cr.over = true; cr.res = { win: false };
+    crHist.unshift(cr.at); crHist.length = Math.min(crHist.length, 10);
+    payout(cr.stake, 0);
+    return renderGame();
+  }
+  cr.m = m;
+  const el = $('crM');
+  if (el) {
+    el.textContent = '×' + m.toFixed(2);
+    $('crBar').style.width = Math.min(100, Math.log(m) / Math.log(CRASH_MAX) * 100) + '%';
+    $('crCashBtn').textContent = `Cash out · ${fmt(cr.stake * m)}`;
+  }
+}
+function crCash(at) {
+  if (!cr || cr.over) return;
+  if (at == null) { crTick(); if (cr.over) return; at = cr.m; }
+  cr.over = true; cr.m = at;
+  cr.res = { win: true, ret: cr.stake * at };
+  crHist.unshift(cr.at); crHist.length = Math.min(crHist.length, 10);
+  payout(cr.stake, cr.res.ret);
+  renderGame();
+}
+
+/* Casino render */
+const cardHtml = (c, extra = '', tag = 'div', attrs = '') => c
+  ? `<${tag} class="pc ${'♥♦'.includes(c.s) ? 'red' : ''} ${extra}" ${attrs}><span>${c.r}</span><span class="bs">${c.s}</span></${tag}>`
+  : `<div class="pc back"></div>`;
+function renderCasinoControls() {
+  const tabs = [['bj', '🃏 Blackjack'], ['crash', '📈 Crash']];
+  setHTML($('ctabs'), tabs.map(([k, n]) => `<button class="chip ${ctab === k ? 'on' : ''}" data-act="ctab" data-t="${k}">${n}</button>`).join(''));
+  setHTML($('ctables'), TABLES.map((t, i) => `<button class="chip ${state.table === i ? 'on' : ''}" data-act="ctable" data-i="${i}">${t.name} · max ${fmt(maxBet(i))}</button>`).join(''));
+  const n = state.casinoNet;
+  $('casinoNet').innerHTML = `Totaal: <span style="color:${n >= 0 ? 'var(--good)' : 'var(--bad)'}">${n >= 0 ? '+' : ''}${fmt(n)}</span>`;
+}
+function resultHtml(win, push, text) { return `<div class="cres ${push ? 'push' : win ? 'win' : 'lose'}">${text}</div>`; }
+function renderGame() {
+  const g = $('cgame');
+  if (ctab === 'bj') {
+    let h = '<div class="felt">';
+    if (!bj) h += '<div class="hlabel" style="padding:40px 0;text-align:center">Kies een inzet en klik op <b>Delen</b>. Dealer staat op 17, blackjack betaalt 3:2.</div>';
+    else {
+      const showD = bj.done;
+      h += `<div class="hlabel">Dealer ${showD ? `<b>${bjVal(bj.d)}</b>` : ''}</div>
+        <div class="hand">${bj.d.map((c, i) => i === 1 && !showD ? cardHtml(null) : cardHtml(c)).join('')}</div>
+        <div class="hlabel">Jij <b>${bjVal(bj.p)}</b> · inzet ${fmt(bj.stake)}${bj.doubled ? ' (verdubbeld)' : ''}</div>
+        <div class="hand">${bj.p.map(c => cardHtml(c)).join('')}</div>`;
+      if (bj.res) {
+        const { o, ret, s } = bj.res;
+        const txt = { bj: `🃏 Blackjack! +${fmt(ret - s)}`, win: `Gewonnen! +${fmt(ret - s)}`, push: 'Gelijkspel, inzet terug',
+                      lose: `Verloren (−${fmt(s)})`, bust: `Bust! (−${fmt(s)})`, dealerbj: `Dealer heeft blackjack (−${fmt(s)})` }[o];
+        h += resultHtml(ret > s, ret === s, txt);
+      }
+    }
+    h += '<div class="cactions">';
+    if (bj && !bj.done) h += `<button class="btn" data-act="bjHit">Hit</button><button class="btn sec" data-act="bjStand">Stand</button>
+      ${bj.p.length === 2 ? `<button class="btn sec" data-act="bjDouble" ${state.money < bj.stake ? 'disabled' : ''}>Double (${fmt(bj.stake)})</button>` : ''}`;
+    else h += '<button class="btn" data-act="bjDeal">Delen</button>';
+    g.innerHTML = h + '</div></div>';
+  } else {
+    const live = cr && !cr.over;
+    let cls = '', label = '×1.00';
+    if (cr) { label = '×' + cr.m.toFixed(2); if (cr.over) cls = cr.res.win ? 'cashed' : 'boom'; }
+    let h = `<div class="felt"><div class="hlabel" style="text-align:center">Serverbelasting stijgt… cash out voor de server crasht! (max ×${CRASH_MAX})</div>
+      <div class="crash-m ${cls}" id="crM">${label}</div>
+      <div class="crash-bar"><div id="crBar" style="width:${cr ? Math.min(100, Math.log(cr.m) / Math.log(CRASH_MAX) * 100) : 0}%"></div></div>`;
+    if (cr && cr.over) h += cr.res.win ? resultHtml(true, false, `✅ Uitbetaald bij ×${cr.m.toFixed(2)}: +${fmt(cr.res.ret - cr.stake)} (${cr.at >= CRASH_MAX ? 'server op max capaciteit' : `server crashte bij ×${cr.at.toFixed(2)}`})`)
+                                       : resultHtml(false, false, `💥 SERVER CRASH bij ×${cr.at.toFixed(2)} (−${fmt(cr.stake)})`);
+    h += '<div class="cactions">';
+    if (live) h += `<button class="btn" data-act="crCash" id="crCashBtn">Cash out · ${fmt(cr.stake * cr.m)}</button>${cr.auto ? `<span class="sub">Auto bij ×${cr.auto}</span>` : ''}`;
+    else h += `<button class="btn" data-act="crStart">Start</button><span class="sub">Auto cash-out bij ×</span><input class="cin" id="crAuto" placeholder="bv. 2" value="${esc(crAuto)}" style="width:80px">`;
+    h += '</div>';
+    if (crHist.length) h += `<div class="crhist">${crHist.map(x => `<span style="color:${x >= 2 ? 'var(--good)' : 'var(--bad)'}">×${x.toFixed(2)}</span>`).join('')}</div>`;
+    g.innerHTML = h + '</div>';
+  }
+}
+
+/* =====================================================================
+   BOOST-SHOP
+   ===================================================================== */
+const HOUR = 3600e3;
+const curHour = () => Math.floor(Date.now() / HOUR);
+function makeOffer() {
+  const kinds = Object.keys(BOOSTS);
+  return { kind: kinds[Math.floor(Math.random() * kinds.length)], tier: rollTier(shopLuck(lvl('supplier'))), sold: false };
+}
+// Nieuwe voorraad bij elk vol uur; extra plekken (upgrade) worden meteen bijgevuld
+function ensureShop() {
+  const h = curHour(), n = shopSlots(lvl('supplier'));
+  let changed = false;
+  if (!state.shop || state.shop.hour !== h) {
+    const restock = !!state.shop;
+    state.shop = { hour: h, offers: Array.from({ length: n }, makeOffer) };
+    changed = true;
+    if (restock) toast('⚡ Boost-shop heeft nieuwe voorraad!');
+  }
+  while (state.shop.offers.length < n) { state.shop.offers.push(makeOffer()); changed = true; }
+  return changed;
+}
+const boostName = o => BOOSTS[o.kind].names[o.tier];
+const boostVal  = o => BOOSTS[o.kind].add ? BOOSTS[o.kind].add[o.tier] : BOOSTS[o.kind].mult[o.tier];
+function boostEffTxt(kind, val) {
+  const b = BOOSTS[kind];
+  return b.add ? `${b.label} +${Math.round(val * 100)}%` : `${b.label} ×${fmtNum(val)}`;
+}
+const boostPrice = o => Math.round(Math.max(BOOST_FLOOR[o.tier], steadyIncome() * 60 * BOOST_PRICE[o.tier]));
+const better = (kind, a, b) => kind === 'speed' ? a < b : a > b;   // bij cooldown is lager beter
+function buyBoost(i) {
+  const o = state.shop && state.shop.offers[i];
+  if (!o || o.sold) return;
+  const p = boostPrice(o);
+  if (state.money < p) return;
+  state.money -= p;
+  o.sold = true;
+  const val = boostVal(o), dur = BOOST_MIN[o.tier] * 60e3, now = Date.now();
+  const cur = activeBoost(o.kind);
+  // zelfde soort: sterkere boost vervangt de zwakkere (langste tijd blijft), even sterk of zwakker = tijd erbij
+  if (!cur) state.boosts[o.kind] = { val, until: now + dur, tier: o.tier, name: boostName(o) };
+  else if (better(o.kind, val, cur.val)) state.boosts[o.kind] = { val, until: Math.max(cur.until, now + dur), tier: o.tier, name: boostName(o) };
+  else cur.until += dur;
+  toast(`${BOOSTS[o.kind].icon} ${boostName(o)} actief: ${boostEffTxt(o.kind, val)}`);
+  if (o.tier >= 3) flash(o.tier);
+  SFX.upgrade();
+  save(); renderAll();
+}
+const mmss = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
+const shopTimerTxt = () => mmss((curHour() + 1) * HOUR - Date.now());
+function renderBoostShop() {
+  ensureShop();
+  setHTML($('ups'), state.shop.offers.map((o, i) => {
+    const b = BOOSTS[o.kind];
+    const btn = o.sold ? '<span class="badge">Uitverkocht</span>'
+      : `<button class="btn sm" data-act="buyBoost" data-i="${i}">${fmt(boostPrice(o))}</button>`;
+    return `<div class="up tiered ${o.sold ? 'maxed' : ''} ${o.tier === 6 ? 'qtm' : ''}" style="--tc:var(--c${o.tier})">
+      <div class="ic">${b.icon}</div>
+      <div class="ub"><div class="un">${boostName(o)} <span class="tbadge">${TIERS[o.tier].name}</span></div>
+        <div class="ue">${boostEffTxt(o.kind, boostVal(o))} · ${BOOST_MIN[o.tier]} min</div></div>
+      ${btn}</div>`;
+  }).join('') + `<div class="sub" style="grid-column:1/-1">Nieuwe voorraad elk vol uur. Dezelfde soort stapelt niet: een sterkere boost vervangt de zwakkere, anders komt de tijd erbij.</div>`);
+  $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
+}
+let boostKey = '';
+function renderBoostBar() {
+  const now = Date.now(), act = Object.keys(BOOSTS).filter(k => activeBoost(k));
+  // verlopen boosts opruimen
+  let expired = false;
+  for (const k in state.boosts) if (state.boosts[k].until <= now) { delete state.boosts[k]; expired = true; }
+  if (expired) { save(); return renderAll(); }
+  const bar = $('boostBar');
+  const key = act.map(k => k + state.boosts[k].until).join();
+  if (key !== boostKey) {
+    boostKey = key;
+    bar.className = act.length ? 'show' : '';
+    bar.innerHTML = act.map(k => { const b = state.boosts[k];
+      return `<span class="bchip" style="--tc:var(--c${b.tier})">${BOOSTS[k].icon} ${esc(b.name)} · ${boostEffTxt(k, b.val)} · <b data-bt="${k}"></b></span>`; }).join('');
+  }
+  bar.querySelectorAll('[data-bt]').forEach(el => { el.textContent = mmss(state.boosts[el.dataset.bt].until - now); });
+}
+
+/* =====================================================================
+   ADMIN-CODES (ECDSA P-256 handtekeningen via WebCrypto)
+   Code = RACK.<payload>.<handtekening>. Alleen wie de private key heeft kan geldige codes maken.
+   ===================================================================== */
+const PRIV_STORE = 'rackrng-admin-priv', PUB_STORE = 'rackrng-admin-pub';
+const b64u = buf => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const unb64u = str => { let t = str.replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; return Uint8Array.from(atob(t), c => c.charCodeAt(0)); };
+const ECDSA = { name: 'ECDSA', namedCurve: 'P-256' }, SIGN = { name: 'ECDSA', hash: 'SHA-256' };
+// Meerdere admin-keys (bv. één per toestel): scheiden met een komma in ADMIN_PUBLIC_KEY
+const adminKeys = () => ADMIN_PUBLIC_KEY.split(/[,\s]+/).map(k => k.trim()).filter(k => /^[\w-]+\.[\w-]+$/.test(k));
+const pubFromStr = p => { const [x, y] = p.split('.'); return { kty: 'EC', crv: 'P-256', x, y, ext: true }; };
+const VALUE_LABEL = { cpu: 'Inkomen per seconde (€/s) · ter info: Quantum ≈ 200K', ram: 'Inkomen per seconde (€/s) · ter info: Quantum ≈ 200K',
+  storage: 'Inkomen per seconde (€/s) · ter info: Quantum ≈ 200K', switch: 'Bonus in % op alles · ter info: Quantum = 100', router: 'Multiplier (×) op alles · ter info: Quantum = 5' };
+
+async function admGenerateKeys() {
+  const kp = await crypto.subtle.generateKey(ECDSA, true, ['sign', 'verify']);
+  const priv = await crypto.subtle.exportKey('jwk', kp.privateKey);
+  localStorage.setItem(PRIV_STORE, JSON.stringify(priv));
+  localStorage.setItem(PUB_STORE, `${priv.x}.${priv.y}`);
+  toast('🔑 Sleutelpaar gemaakt');
+  showAdmin();
+}
+function admImportKey() {
+  try {
+    const priv = JSON.parse($('admImport').value.trim());
+    if (priv.kty !== 'EC' || !priv.d || !priv.x || !priv.y) throw 0;
+    localStorage.setItem(PRIV_STORE, JSON.stringify(priv));
+    localStorage.setItem(PUB_STORE, `${priv.x}.${priv.y}`);
+    toast('🔑 Private key geïmporteerd'); showAdmin();
+  } catch (e) { toast('Ongeldige private key'); }
+}
+function showAdmin() {
+  const priv = localStorage.getItem(PRIV_STORE), pub = localStorage.getItem(PUB_STORE);
+  if (!priv) {
+    return showModal(`<div class="adminbox"><div style="font-weight:700;font-size:18px">🛠️ Admin panel</div>
+      <div class="sub" style="margin:6px 0 12px">Eerste keer? Maak een sleutelpaar. Je private key blijft alleen in deze browser.</div>
+      <button class="btn full" data-act="admGen">Genereer sleutelpaar</button>
+      <label>…of importeer je bestaande private key (back-up)</label><textarea id="admImport" rows="3"></textarea>
+      <button class="btn sec full" style="margin-top:8px" data-act="admImport">Importeer</button>
+      <button class="ghost" style="margin-top:12px" data-act="closeModal">Sluiten</button></div>`);
+  }
+  const linked = adminKeys().includes(pub);
+  showModal(`<div class="adminbox"><div style="font-weight:700;font-size:18px">🛠️ Admin panel</div>
+    ${linked ? '<div class="sub" style="margin-top:4px">✅ Gekoppeld: codes werken voor alle spelers.</div>'
+      : `<div class="warn"><b>Nog niet gekoppeld.</b> Plak deze public key in <code>index.html</code> bij <code>ADMIN_PUBLIC_KEY</code> (meerdere keys scheiden met een komma) en upload hem opnieuw naar GitHub. Tot dan werken je codes niet.</div>
+         <textarea rows="2" readonly id="admPub">${esc(pub)}</textarea><button class="btn sm sec" style="margin-top:6px" data-act="copyEl" data-el="admPub">Kopieer public key</button>`}
+    <label>Speler-ID van de ontvanger</label>
+    <div class="row2"><input id="admPid" placeholder="RK-XXXX-XXXX" style="flex:1"><button class="btn sm sec" data-act="admMe">Mijn ID</button></div>
+    <label>Wat geef je?</label>
+    <select id="admKind"><option value="item">🛠️ Custom admin-item</option><option value="money">💶 Geld</option></select>
+    <div id="admItemF">
+      <label>Type</label><select id="admType">${Object.keys(TYPES).map(k => `<option value="${k}">${TYPES[k].label}</option>`).join('')}</select>
+      <label>Naam</label><input id="admName" maxlength="40" placeholder="bv. Gouden RJ45">
+      <label>Beschrijving</label><input id="admDesc" maxlength="60" placeholder="bv. Alleen voor echte netwerkers">
+      <label id="admValLbl">${VALUE_LABEL.cpu}</label><input id="admVal" type="number" min="0" step="any" placeholder="bv. 500000">
+    </div>
+    <div id="admMoneyF" style="display:none"><label>Bedrag (€)</label><input id="admAmt" type="number" min="1" placeholder="bv. 1000000"></div>
+    <button class="btn full" style="margin-top:14px" data-act="admMake">Genereer code</button>
+    <textarea id="admCode" rows="3" readonly placeholder="Hier verschijnt de code" style="margin-top:10px"></textarea>
+    <button class="btn sm sec" style="margin-top:6px" data-act="copyEl" data-el="admCode">Kopieer code</button>
+    <div class="sub" style="margin-top:14px">Back-up: bewaar je private key ergens veilig, anders kun je na het wissen van je browser geen codes meer maken.</div>
+    <div class="row2" style="margin-top:6px"><button class="btn sm sec" data-act="admBackup">Kopieer private key</button><button class="ghost" data-act="closeModal">Sluiten</button></div>
+  </div>`);
+}
+async function admMake() {
+  try {
+    const pid = $('admPid').value.trim().toUpperCase();
+    if (!/^RK-[0-9A-F]{4}-[0-9A-F]{4}$/.test(pid)) return toast('Ongeldig speler-ID (formaat RK-XXXX-XXXX)');
+    const payload = { p: pid, n: b64u(crypto.getRandomValues(new Uint8Array(6))) };
+    if ($('admKind').value === 'money') {
+      const a = Math.floor(+$('admAmt').value);
+      if (!(a > 0)) return toast('Vul een bedrag in');
+      payload.k = 'm'; payload.a = a;
+    } else {
+      const name = $('admName').value.trim(), v = +$('admVal').value;
+      if (!name) return toast('Geef het item een naam');
+      if (!(v > 0)) return toast('Vul een waarde in');
+      if ($('admType').value === 'router' && v <= 1) return toast('Een router-multiplier moet groter zijn dan 1');
+      payload.k = 'i'; payload.i = { t: $('admType').value, nm: name, ds: $('admDesc').value.trim(), v };
+    }
+    const key = await crypto.subtle.importKey('jwk', JSON.parse(localStorage.getItem(PRIV_STORE)), ECDSA, false, ['sign']);
+    const data = new TextEncoder().encode(JSON.stringify(payload));
+    const sig = await crypto.subtle.sign(SIGN, key, data);
+    $('admCode').value = `RACK.${b64u(data)}.${b64u(sig)}`;
+    toast('✅ Code gemaakt');
+  } catch (e) { toast('Kon geen code maken: ' + e.message); }
+}
+
+function showRedeem() {
+  showModal(`<div class="adminbox"><div style="font-weight:700;font-size:18px">🎁 Code inwisselen</div>
+    <div class="sub" style="margin-top:6px">Jouw speler-ID (geef dit aan de admin):</div>
+    <div class="row2" style="align-items:center;margin:4px 0 10px"><span class="pid" id="myPid">${state.playerId}</span><button class="btn sm sec" data-act="copyEl" data-el="myPid">Kopieer</button></div>
+    <label>Code</label><textarea id="redeemCode" rows="3" placeholder="RACK.…"></textarea>
+    <div class="row2" style="margin-top:10px"><button class="btn" data-act="redeemGo">Inwisselen</button><button class="ghost" data-act="closeModal">Sluiten</button></div></div>`);
+}
+async function redeem() {
+  const code = $('redeemCode').value.trim().replace(/\s+/g, '');
+  if (!adminKeys().length) return toast('Codes zijn nog niet actief in deze versie');
+  try {
+    const [pre, p64, s64] = code.split('.');
+    if (pre !== 'RACK' || !p64 || !s64) throw new Error('format');
+    const data = unb64u(p64);
+    let valid = false;
+    for (const k of adminKeys()) {  // geldig als één van de admin-keys de handtekening bevestigt
+      try {
+        const key = await crypto.subtle.importKey('jwk', pubFromStr(k), ECDSA, false, ['verify']);
+        if (await crypto.subtle.verify(SIGN, key, unb64u(s64), data)) { valid = true; break; }
+      } catch (e) {}
+    }
+    if (!valid) throw new Error('sig');
+    const pl = JSON.parse(new TextDecoder().decode(data));
+    if (pl.p !== state.playerId) return toast('Deze code is voor een andere speler');
+    if (state.redeemed.includes(pl.n)) return toast('Deze code is al gebruikt');
+    state.redeemed.push(pl.n);
+    if (pl.k === 'm') {
+      state.money += pl.a;
+      toast(`🎁 +${fmt(pl.a)} ontvangen!`);
+    } else if (pl.k === 'i' && TYPES[pl.i.t]) {
+      const v = +pl.i.v;
+      const custom = { ref: null, type: pl.i.t, tier: ADMIN_TIER, name: String(pl.i.nm).slice(0, 40), spec: String(pl.i.ds || 'Admin-item').slice(0, 60),
+                       q: pl.i.t === 'router' ? v - 1 : v };
+      state.inv.push(new Item(null, state.nextId++, false, custom));
+      toast(`🛠️ Admin-item ontvangen: ${custom.name}! Staat in je opslag.`);
+    } else throw new Error('type');
+    flash(ADMIN_TIER); SFX.perfect();
+    closeModal(); save(); renderAll();
+  } catch (e) { toast('Ongeldige code'); }
+}
+
+/* =====================================================================
+   HELP & TABBLAD-BESCHERMING
+   ===================================================================== */
+function showBetaPanel() {
+  showModal(`<div class="adminbox"><div style="font-weight:700;font-size:18px">🧪 Test-tools</div>
+    <div class="sub" style="margin:6px 0 4px">Alleen in de beta. Alles hier raakt alleen je beta-save.</div>
+    <label>Geld</label>
+    <div class="row2"><button class="btn sm sec" data-act="betaMoney" data-v="1e6">+1M</button><button class="btn sm sec" data-act="betaMoney" data-v="1e9">+1B</button><button class="btn sm sec" data-act="betaMoney" data-v="1e12">+1T</button></div>
+    <label>Snel testen</label>
+    <div class="row2"><button class="btn sm sec" data-act="betaMaxUp">Alle upgrades max</button><button class="btn sm sec" data-act="betaFast">Glasvezel</button><button class="btn sm sec" data-act="betaEvent">Random event</button></div>
+    <label>Save</label>
+    <div class="row2"><button class="btn sm sec" data-act="betaCopyMain">Kopieer echte save</button><button class="btn sm sec" data-act="betaReset">Beta-save wissen</button></div>
+    <button class="ghost" style="margin-top:14px" data-act="closeModal">Sluiten</button></div>`);
+}
+function showHelp() {
+  showModal(`<div style="font-weight:700;font-size:18px">Welkom bij RackRNG 🖥️</div>
+    <div class="help">
+      <p>🎲 <b>Roll</b> (knop of spatie) voor een willekeurig serveronderdeel. Hoe zeldzamer, hoe meer het oplevert.</p>
+      <p>🛒 <b>Koop</b> wat je wilt. Het item blijft staan tot je opnieuw rolt. De pijl toont of het je rack beter maakt.</p>
+      <p>🗄️ Elke <b>U</b> in je rack heeft een CPU-, RAM- en storage-slot. Alle drie dezelfde tier = <b>Perfect match ×2</b>.</p>
+      <p>🌐 Een <b>router</b> (×) en <b>switches</b> (+%) versterken je hele rack.</p>
+      <p>📶 Upgrade je <b>verbinding</b> voor snellere rolls, en koop <b>upgrades</b> en <b>skins</b> in de shop.</p>
+      <p>🎰 In het <b>casino</b> speel je met je in-game geld. Hogere tafels = hogere inzet.</p>
+      <p>⚡ Af en toe gebeurt er een <b>event</b>, goed of slecht. Hou de balk bovenaan in de gaten.</p>
+      <p>💾 Je voortgang wordt in deze browser bewaard. Met <b>Save</b> maak je een back-up of speel je verder op een ander toestel.</p>
+    </div>
+    <button class="btn full" data-act="closeModal">Let's go!</button>`);
+}
+(function tabGuard() {
+  if (!('BroadcastChannel' in window)) return;
+  const bc = new BroadcastChannel('rackrng-beta');
+  bc.onmessage = e => {
+    if (e.data === 'hello' && !blocked) bc.postMessage('here');
+    else if (e.data === 'here' && !blocked) {
+      blocked = true;
+      showModal(`<div style="font-weight:700;font-size:17px">Al open in een ander tabblad</div>
+        <div class="sub" style="margin:8px 0 16px">RackRNG draait al ergens anders. Speel daar verder, anders overschrijven de tabbladen elkaars voortgang.</div>
+        <button class="btn full" data-act="takeover">Toch hier spelen</button>`, false);
+    } else if (e.data === 'takeover' && !blocked) {
+      save(); blocked = true;
+      showModal(`<div style="font-weight:700;font-size:17px">Verder gespeeld in een ander tabblad</div>
+        <div class="sub" style="margin:8px 0 0">Je voortgang is opgeslagen. Je kunt dit tabblad sluiten.</div>`, false);
+    }
+  };
+  bc.postMessage('hello');
+  window.takeover = () => { bc.postMessage('takeover'); setTimeout(() => location.reload(), 400); };
+})();
+
+function reelCard(x) {
+  if (!x) return `<div class="rc" style="--tc:#3a4660"><div class="t">?</div><div class="n">Druk op ROLL</div></div>`;
+  return `<div class="rc ${x.tier === 6 ? 'qtm' : ''}" style="--tc:var(--c${x.tier})"><div class="t">${TYPES[x.type].short}</div><div class="n">${nameHtml(x)}</div></div>`;
+}
+/* Eén reel per thread (Multithreading). Ze stoppen na elkaar, de winnaar licht op. */
+function spinReels(cands, win, dur, done) {
+  const box = $('reels'), N = cands.length;
+  const C = 40, T = 34;
+  box.className = 'reels' + (N > 1 ? ' multi' : '');
+  box.innerHTML = cands.map(() => '<div class="reel"><div class="marker"></div><div class="strip"></div></div>').join('');
+  const reels = [...box.children];
+  // positie waarop de doelkaart precies onder de markering staat, gemeten in de DOM (niet berekend)
+  const targetX = (reel, jitter = 0) => {
+    const card = reel.querySelectorAll('.rc')[T];
+    return -(card.offsetLeft + card.offsetWidth / 2 - reel.clientWidth / 2 + jitter);
+  };
+  let maxD = 0;
+  reels.forEach((reel, k) => {
+    const strip = reel.querySelector('.strip');
+    let html = '';
+    for (let i = 0; i < C; i++) html += reelCard(i === T ? cands[k] : rollOne(luck(), 0, false));
+    strip.innerHTML = html;
+    const d = dur > 0 ? dur * (N > 1 ? 0.6 + 0.4 * k / (N - 1) : 1) : 0;
+    maxD = Math.max(maxD, d);
+    const card = strip.children[T];
+    const jitter = d > 0 ? (Math.random() - 0.5) * Math.max(0, card.offsetWidth - 30) : 0; // blijft altijd binnen de kaart
+    strip.style.transition = 'none';
+    strip.style.transform = 'translateX(0px)';
+    void strip.offsetWidth;
+    strip.style.transition = d > 0 ? `transform ${d}s cubic-bezier(.12,.75,.2,1)` : 'none';
+    strip.style.transform = `translateX(${targetX(reel, jitter)}px)`;
+    reel._jitter = jitter;
+  });
+  // vangnet: als de layout tijdens de spin veranderde (scrollbalk, resize), corrigeer op het einde
+  const settle = () => reels.forEach(reel => {
+    const strip = reel.querySelector('.strip'), card = strip.children[T];
+    const m = reel.querySelector('.marker').getBoundingClientRect(), mx = m.left + m.width / 2;
+    const r = card.getBoundingClientRect();
+    if (mx < r.left + 8 || mx > r.right - 8) {
+      strip.style.transition = 'transform .18s ease-out';
+      strip.style.transform = `translateX(${targetX(reel, 0)}px)`;
+    }
+  });
+  const mark = () => {
+    settle();
+    if (N > 1 && cands[win]) reels.forEach((r, k) => {
+      r.classList.add(k === win ? 'win' : 'lose');
+      if (k === win) r.style.setProperty('--wc', `var(--c${cands[win].tier})`);
+    });
+  };
+  if (maxD > 0) setTimeout(() => { mark(); done && done(); }, maxD * 1000 + 40);
+  else { mark(); done && done(); }
+}
+function renderStaticReels() {
+  if (lastSpin && lastSpin.cands[lastSpin.win] === state.current) spinReels(lastSpin.cands, lastSpin.win, 0);
+  else spinReels([state.current], 0, 0);
+}
+
+function renderHeader() {
+  $('money').textContent = fmt(state.money);
+  $('rate').textContent = fmt(incomeCache) + '/s';
+  $('muteBtn').textContent = state.muted ? '🔇' : '🔊';
+}
+
+function slotHtml(loc, it, label) {
+  const t = locType(loc), si = selItem();
+  const isSel = sel && sel.src === 'slot' && sameLoc(sel.loc, loc);
+  const isTarget = si && si.type === t && !isSel;
+  const attrs = `data-act="slot" data-kind="${loc.kind}"` +
+    (loc.u != null ? ` data-u="${loc.u}"` : '') + (loc.slot ? ` data-slot="${loc.slot}"` : '') + (loc.i != null ? ` data-i="${loc.i}"` : '');
+  if (!it) return `<button class="slot empty ${isTarget ? 'target' : ''}" ${attrs}>+ ${label}</button>`;
+  return `<button class="slot filled ${isTarget ? 'target' : ''} ${isSel ? 'selected' : ''} ${it.tier === 6 ? 'qtm' : ''} ${isAdminItem(it) ? 'adm' : ''}" style="--tc:var(--c${it.tier})" ${attrs} title="${esc(it.name)} · ${esc(it.spec)}">
+    <span class="n">${nameHtml(it)}</span><span class="s">${statShort(it)}</span></button>`;
+}
+
+function renderRack() {
+  const nm = netMult();
+  let h = `<div class="netrow">
+    <div><div class="lbl">Router</div>${slotHtml({ kind: 'router' }, state.router, 'Router')}</div>
+    <div><div class="lbl">Switches</div><div class="sws">${state.switches.map((s, i) => slotHtml({ kind: 'switch', i }, s, 'Switch')).join('')}</div></div>
+  </div>`;
+  state.rack.forEach((u, i) => {
+    const m = matchInfo(u);
+    const inc = uBase(u) * nm;
+    // status-LED's: knipperen sneller naarmate deze U meer verdient
+    const blink = inc > 0 ? Math.max(0.16, Math.min(1.8, 1.8 - Math.log10(inc + 1) * 0.22)).toFixed(2) : 0;
+    h += `<div class="u ${m.perfect ? 'perfect' : ''} ${inc > 0 ? 'live' : ''} ${celebrate.has(i) ? 'celebrate' : ''}" style="--blink:${blink}s">
+      <div class="unum">U${i + 1}</div>
+      ${COMP.map(k => slotHtml({ kind: 'u', u: i, slot: k }, u[k], TYPES[k].label)).join('')}
+      <div class="umeta"><span class="leds"><i></i><i></i><i></i></span><span class="badge ${m.cls}">${m.label}</span><span class="uinc">${fmt(inc)}/s</span></div>
+    </div>`;
+  });
+  celebrate.clear();
+  setHTML($('rack'), h);
+  $('rack').className = 'rack skin-' + (SKINS.some(x => x.id === state.skin) ? state.skin : 'default');
+  $('rackCount').textContent = `${state.rack.length}/${CFG.maxUnits}U`;
+  $('rackBreakdown').textContent = `Basis ${fmt(baseIncome())}/s · Router ×${fmtNum(routerM())} · Switches +${switchB()}%` +
+    (lvl('income') ? ` · Overuren +${lvl('income') * 10}%` : '');
+  const n = state.rack.length;
+  if (n >= CFG.maxUnits) $('buyU').textContent = `Rack vol (${CFG.maxUnits}U)`;
+  else {
+    const newSw = Math.ceil((n + 1) / CFG.switchEveryU) > Math.ceil(n / CFG.switchEveryU);
+    $('buyU').textContent = `+ Koop U${n + 1} · ${fmt(unitCost())}${newSw ? ' (+ switch-slot)' : ''}`;
+  }
+}
+
+function renderResult() {
+  const el = $('result'), c = state.current;
+  if (rolling) { el.className = 'result'; setHTML(el, '<div class="empty-msg">Hardware detecteren…</div>'); return; }
+  if (!c) { el.className = 'result'; setHTML(el, '<div class="empty-msg">Nog niks gerold.<br>Druk op ROLL (of spatie) voor je eerste onderdeel.</div>'); return; }
+  const cmp = compareInfo(c);
+  el.className = 'result has';
+  el.style.setProperty('--tc', `var(--c${c.tier})`);
+  setHTML(el, `
+    <div class="tier ${c.tier === 6 ? 'qtm' : ''}">${TIERS[c.tier].name} · ${TYPES[c.type].label}${c.oc ? ' · ⚡ Overclocked' : ''}</div>
+    <div class="name">${mutHtml(c)}${esc(c.name)}</div>
+    ${c.mut ? `<div class="sub" style="color:${MUTATIONS[c.mut].color}">${MUTATIONS[c.mut].icon} ${mutLabel(c)}: ${MUTATIONS[c.mut].desc}</div>` : ''}
+    <div class="sub">${esc(c.spec)}</div>
+    <div class="stat">${statText(c)}</div>
+    ${state.currentBought ? '' : `<div class="cmp ${cmp.up ? 'up' : 'down'}">${cmp.text}</div>`}
+    <div class="row"><span>Kans: ${oddsText(oddsFor(luck())[c.tier])}</span><span>Verkoopwaarde ${fmt(sellPrice(c))}</span></div>
+    <div class="rbtns">
+      <button class="btn" data-act="buy" data-mode="${cmp.up ? 'place' : 'store'}" id="buyBtn"></button>
+      ${cmp.up && !state.currentBought ? '<button class="btn sec" data-act="buy" data-mode="store" id="buyStore">Naar opslag</button>' : ''}
+    </div>`);
+  updateBuyBtn();
+}
+function updateBuyBtn() {
+  const b = $('buyBtn'), s = $('buyStore'), c = state.current;
+  if (!b || !c) return;
+  if (state.currentBought) { b.textContent = 'Gekocht ✓'; b.disabled = true; if (s) s.remove(); return; }
+  const p = price(c), poor = state.money < p;
+  b.textContent = b.dataset.mode === 'place' ? `Kopen & plaatsen · ${fmt(p)}` : `Kopen naar opslag · ${fmt(p)}`;
+  b.disabled = poor;
+  if (s) s.disabled = poor;
+}
+function renderRollMeta() {
+  $('rollCount').textContent = `${state.rolls} rolls`;
+  const parts = [`🍀 Luck ×${fmtNum(luck())}`];
+  if (lvl('multi')) parts.push(`🧵 Beste van ${lvl('multi') + 1}`);
+  if (lvl('golden')) {
+    const left = CFG.goldenEvery - (state.rolls % CFG.goldenEvery);
+    parts.push(left === 1 ? '🪙 <b style="color:#facc15">Volgende roll is goud!</b>' : `🪙 Gouden roll over ${left}`);
+  }
+  if (lvl('pity')) parts.push(`📜 Rare+ binnen ${Math.max(1, PITY[lvl('pity')] - state.pity)}`);
+  if (lvl('oc')) parts.push(`⚡ ${lvl('oc') * 2}% OC`);
+  if (lvl('mutlab')) parts.push(`🧪 ${Math.round(mutChanceAt(lvl('mutlab')) * 100)}% mutatie`);
+  if (lvl('glitch')) parts.push(`👾 ${fmtNum(lvl('glitch') * 0.1, 1)}% glitch`);
+  setHTML($('rstat'), parts.map(p => `<span>${p}</span>`).join(''));
+  $('rollBtn').classList.toggle('golden', nextGolden());
+
+  let t = '';
+  if (lvl('autoroll')) t += `<button class="chip tog ${state.autoRoll ? 'on' : ''}" data-act="togAuto">⏱️ Auto-roll ${state.autoRoll ? 'aan' : 'uit'}</button>`;
+  if (lvl('autoroll') >= 2) t += `<button class="chip tog ${state.hotSwap ? 'on' : ''}" data-act="togHot" title="Koopt de aangeduide rarities; upgrades gaan meteen op de beste plek">🔥 Hot-Swap ${state.hotSwap ? 'aan' : 'uit'}</button>`;
+  if (lvl('autoroll')) {
+    const buy = hotActive();
+    t += `<span style="flex-basis:100%"></span><span class="sub">${buy ? '🔥 koop:' : '⏹️ stop bij:'}</span>`
+      + TIERS.filter(x => !x.hidden).map((x, i) => `<button class="chip rar ${state.rollTiers[i] ? 'on' : ''}" style="--tc:var(--c${i})" data-act="rollTier" data-i="${i}" title="${buy ? 'Hot-Swap koopt' : 'Auto-roll stopt bij'} ${x.name}">${x.name}</button>`).join('');
+  }
+  if (lvl('autoroll') && lvl('filter')) t += '<span style="flex-basis:100%"></span>';
+  if (lvl('filter')) t += `<span class="sub" style="margin-left:4px">🔑 Rol:</span>` +
+    [null, ...Object.keys(TYPES)].map(k => `<button class="chip ${state.rollFilter === k ? 'on' : ''}" data-act="rollFilter" data-f="${k || ''}">${k ? TYPES[k].label : 'Alles'}</button>`).join('');
+  setHTML($('tools'), t);
+  $('tools').style.display = t ? '' : 'none';
+}
+
+function renderConn() {
+  const c = CONN[state.conn], nx = CONN[state.conn + 1];
+  const cm = 0.95 ** lvl('cache');
+  setHTML($('conn'), `<div><div style="font-weight:600">📶 ${c.name}</div><div class="sub">Cooldown ${fmtNum(cooldown())}s · ${state.conn + 1}/${CONN.length}</div></div>` +
+    (nx ? `<button class="btn" data-act="conn" id="connBtn">${nx.name} (${fmtNum(nx.cd * cm)}s) · ${fmt(nx.cost)}</button>`
+        : `<span class="badge b-good">Max snelheid</span>`));
+}
+
+let shopTab = 'up';
+function renderShop() {
+  setHTML($('shopTabs'), [['up', '⬆️ Upgrades'], ['boosts', '⚡ Boosts <span class="sub" id="shopTimer"></span>'], ['skins', '🎨 Rack-skins']]
+    .map(([k, n]) => `<button class="chip ${shopTab === k ? 'on' : ''}" data-act="shopTab" data-t="${k}">${n}</button>`).join(''));
+  if (shopTab === 'boosts') return renderBoostShop();
+  if (shopTab === 'skins') {
+    setHTML($('ups'), SKINS.map(s => {
+      const owned = state.skins.includes(s.id), on = state.skin === s.id;
+      const btn = on ? '<span class="badge b-good">Actief</span>'
+        : owned ? `<button class="btn sm sec" data-act="useSkin" data-id="${s.id}">Gebruik</button>`
+        : `<button class="btn sm" data-act="buySkin" data-id="${s.id}">${fmt(s.price)}</button>`;
+      return `<div class="up tiered" style="--tc:var(--c${s.tier})">
+        <div class="rack mini skin-${s.id}"><div class="u"></div><div class="u"></div><div class="u"></div></div>
+        <div class="ub"><div class="un">${s.name} <span class="tbadge">${TIERS[s.tier].name}</span></div><div class="ud">${s.desc}</div></div>
+        ${btn}</div>`;
+    }).join(''));
+    $('upCount').textContent = `${state.skins.length}/${SKINS.length} skins`;
+    return;
+  }
+  let owned = 0, total = 0;
+  setHTML($('ups'), UPGRADES.map(u => {
+    const l = lvl(u.id), maxed = l >= u.max;
+    owned += l; total += u.max;
+    const nextTxt = maxed ? u.eff(l) : (l ? `${u.eff(l)} → ${u.eff(l + 1)}` : u.eff(1));
+    return `<div class="up ${maxed ? 'maxed' : ''}">
+      <div class="ic">${u.icon}</div>
+      <div class="ub"><div class="un">${u.name} <span class="sub">${u.max > 1 ? `${l}/${u.max}` : ''}</span></div>
+        <div class="ud">${u.desc}</div><div class="ue">${nextTxt}</div></div>
+      ${maxed ? '<span class="badge b-good">Max</span>' : `<button class="btn sm" data-act="up" data-id="${u.id}">${fmt(upCost(u))}</button>`}
+    </div>`;
+  }).join(''));
+  $('upCount').textContent = `${owned}/${total} niveaus`;
+}
+function buySkin(id) {
+  const s = SKINS.find(x => x.id === id);
+  if (!s || state.skins.includes(id) || state.money < s.price) return;
+  state.money -= s.price;
+  state.skins.push(id);
+  state.skin = id;
+  toast(`🎨 Skin gekocht: ${s.name}`);
+  SFX.upgrade(); flash(s.tier);
+  save(); renderAll();
+}
+function useSkin(id) {
+  if (!state.skins.includes(id)) return;
+  state.skin = id; save(); renderAll();
+}
+
+function renderInv() {
+  const keys = ['all', ...Object.keys(TYPES)];
+  setHTML($('filters'), keys.map(k => {
+    const n = k === 'all' ? state.inv.length : state.inv.filter(x => x.type === k).length;
+    return `<button class="chip ${filter === k ? 'on' : ''}" data-act="filter" data-f="${k}">${k === 'all' ? 'Alles' : TYPES[k].label} (${n})</button>`;
+  }).join(''));
+  const list = state.inv.filter(x => filter === 'all' || x.type === filter)
+    .sort((a, b) => b.tier - a.tier || basePrice(b) - basePrice(a));
+  setHTML($('inv'), list.length ? list.map(it => `
+    <button class="it ${sel && sel.src === 'inv' && sel.id === it.id ? 'selected' : ''} ${isAdminItem(it) ? 'adm' : ''}" style="--tc:var(--c${it.tier})" data-act="inv" data-id="${it.id}">
+      <div class="top"><span class="ty">${TYPES[it.type].label}</span><span class="tr">${TIERS[it.tier].name}</span></div>
+      <div class="n">${nameHtml(it)}</div><div class="s">${esc(it.spec)}</div><div class="v">${statText(it)}</div>
+    </button>`).join('') : `<div class="sub" style="grid-column:1/-1">Niks hier. Gekochte items die niet meer in je rack passen komen hier terecht.</div>`);
+  $('invCount').textContent = `· ${state.inv.length} items`;
+  $('autoSell').value = String(state.autoSellTier);
+}
+
+function renderSel() {
+  const it = selItem(), bar = $('selbar');
+  if (!it) { sel = null; bar.hidden = true; return; }
+  bar.hidden = false;
+  bar.style.setProperty('--tc', `var(--c${it.tier})`);
+  const hint = sel.src === 'inv' ? 'Klik op een gemarkeerd slot om te plaatsen' : 'Klik een gemarkeerd slot om te wisselen';
+  setHTML(bar, `
+    <div class="info"><div style="font-weight:600">${nameHtml(it)} <span class="sub">· ${TIERS[it.tier].name} ${TYPES[it.type].label} · ${statText(it)}</span></div><div class="hint">${hint}</div></div>
+    ${sel.src === 'slot' ? '<button class="btn sec" data-act="toInv">Naar opslag</button>' : ''}
+    ${isAdminItem(it) ? '<span class="sub">🛠️ Admin-item: blijft altijd bewaard</span>' : `<button class="btn sec" data-act="sell">Verkoop ${fmt(sellPrice(it))}</button>`}
+    <button class="ghost" data-act="desel">✕</button>`);
+}
+
+function renderOdds() {
+  const o = oddsFor(luck());
+  setHTML($('odds'), TIERS.map((t, i) => t.hidden ? '' : `<span><b style="color:var(--c${i})">${t.name}</b> ${oddsText(o[i])}</span>`).join(''));
+}
+
+function updateAfford() {
+  updateBuyBtn();
+  $('buyU').disabled = state.rack.length >= CFG.maxUnits || state.money < unitCost();
+  const cb = $('connBtn'), nx = CONN[state.conn + 1];
+  if (cb && nx) cb.disabled = state.money < nx.cost;
+  document.querySelectorAll('[data-act="up"]').forEach(b => { b.disabled = state.money < upCost(upDef(b.dataset.id)); });
+  document.querySelectorAll('[data-act="buySkin"]').forEach(b => { b.disabled = state.money < SKINS.find(x => x.id === b.dataset.id).price; });
+  document.querySelectorAll('[data-act="buyBoost"]').forEach(b => { const o = state.shop.offers[+b.dataset.i]; b.disabled = state.money < boostPrice(o); });
+}
+
+function renderAll() {
+  incomeCache = totalIncome();
+  renderHeader(); renderRack(); renderConn(); renderShop(); renderInv(); renderSel(); renderResult(); renderRollMeta(); renderOdds();
+  renderCasinoControls(); renderEvent(true);
+  updateAfford();
+}
+
+/* =====================================================================
+   LOOPS & EVENTS
+   ===================================================================== */
+function frame() {
+  const now = Date.now(), cdMs = cooldown() * 1000, rem = state.rollReadyAt - now;
+  const btn = $('rollBtn');
+  if (rem <= 0 && !rolling) {
+    btn.classList.add('ready'); btn.disabled = false;
+    $('rollFill').style.width = '0%';
+    $('rollLbl').textContent = nextGolden() ? '🪙 GOUDEN ROLL' : 'ROLL';
+  } else {
+    btn.classList.remove('ready'); btn.disabled = true;
+    const pct = Math.min(100, Math.max(0, (1 - rem / cdMs) * 100));
+    $('rollFill').style.width = pct + '%';
+    $('rollLbl').textContent = `Downloaden via ${CONN[state.conn].name}… ${Math.floor(pct)}%`;
+  }
+  crTick();
+  requestAnimationFrame(frame);
+}
+
+let lastTick = Date.now();
+setInterval(() => {
+  const now = Date.now();
+  state.money += incomeCache * (now - lastTick) / 1000;
+  lastTick = now;
+  renderHeader(); updateAfford();
+  tryAutoRoll(); // in de interval, zodat auto-roll ook doorloopt als het tabblad op de achtergrond staat
+  tickEvents(); renderEvent();
+  if (ensureShop()) { save(); if (shopTab === 'boosts') renderShop(); }
+  renderBoostBar();
+  { const t = $('shopTimer'); if (t) t.textContent = shopTimerTxt(); }
+  if (shopTab === 'boosts') $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
+  crTick();
+}, 200);
+setInterval(save, 5000);
+document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+window.addEventListener('pagehide', save);
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  switch (el.dataset.act) {
+    case 'roll': roll(); break;
+    case 'buy': buyCurrent(el.dataset.mode); break;
+    case 'buyU': buyUnit(); break;
+    case 'equipBest': equipBest(); break;
+    // events
+    case 'evFix': fixCable(); break;
+    case 'evPay': ransomChoice('pay'); break;
+    case 'evBackup': ransomChoice('backup'); break;
+    // casino
+    case 'ctab': ctab = el.dataset.t; renderCasinoControls(); renderGame(); break;
+    case 'ctable': state.table = +el.dataset.i; save(); renderCasinoControls(); break;
+    case 'betQ': $('betIn').value = Math.max(1, Math.floor(Math.min(maxBet(), state.money) * +el.dataset.q)); break;
+    case 'bjDeal': bjDeal(); break;
+    case 'bjHit': bjHit(); break;
+    case 'bjStand': bjStand(); break;
+    case 'bjDouble': bjDouble(); break;
+    case 'crStart': crStart(); break;
+    case 'crCash': crCash(); break;
+    case 'conn': upgradeConn(); break;
+    case 'up': buyUpgrade(el.dataset.id); break;
+    case 'shopTab': shopTab = el.dataset.t; renderShop(); updateAfford(); break;
+    case 'buySkin': buySkin(el.dataset.id); break;
+    case 'useSkin': useSkin(el.dataset.id); break;
+    case 'buyBoost': buyBoost(+el.dataset.i); break;
+    case 'togHot': state.hotSwap = !state.hotSwap; save(); renderRollMeta(); break;
+    case 'rollTier': state.rollTiers[+el.dataset.i] = !state.rollTiers[+el.dataset.i]; save(); renderRollMeta(); break;
+    case 'slot': clickSlot(locFromEl(el)); break;
+    case 'inv': {
+      const id = +el.dataset.id;
+      sel = sel && sel.src === 'inv' && sel.id === id ? null : { src: 'inv', id };
+      renderAll(); break;
+    }
+    case 'filter': filter = el.dataset.f; renderInv(); break;
+    case 'rollFilter': state.rollFilter = el.dataset.f || null; save(); renderRollMeta(); break;
+    case 'togAuto': state.autoRoll = !state.autoRoll; save(); renderRollMeta(); break;
+    case 'sell': sellSel(); break;
+    case 'toInv': toInvSel(); break;
+    case 'bulkSell': bulkSell(); break;
+    case 'desel': sel = null; renderAll(); break;
+    case 'mute': state.muted = !state.muted; save(); renderHeader(); break;
+    case 'saveMenu': showSaveMenu(); break;
+    case 'help': showHelp(); break;
+    case 'betaPanel': showBetaPanel(); break;
+    case 'betaMoney': state.money += +el.dataset.v; save(); renderAll(); toast('🧪 +' + fmt(+el.dataset.v)); break;
+    case 'betaMaxUp': UPGRADES.forEach(u => state.up[u.id] = u.max); save(); renderAll(); toast('🧪 Alle upgrades op max'); break;
+    case 'betaFast': state.conn = CONN.length - 1; state.rollReadyAt = 0; save(); renderAll(); toast('🧪 Glasvezel'); break;
+    case 'betaEvent': startEvent(EVENTS.filter(e => e.w > 0)[Math.floor(Math.random() * EVENTS.filter(e => e.w > 0).length)]); closeModal(); break;
+    case 'betaCopyMain': {
+      const raw = localStorage.getItem('rackrng-save-v1');
+      if (!raw) { toast('Geen save van de echte game gevonden in deze browser'); break; }
+      if (!confirm('Je beta-save wordt vervangen door een KOPIE van je echte save. Je echte save blijft onaangeroerd. Doorgaan?')) break;
+      state = fromJSON(JSON.parse(raw)); ensureSwitchSlots(); sel = null; save(); closeModal(); renderAll(); renderStaticReels(); toast('🧪 Echte save gekopieerd naar beta');
+      break;
+    }
+    case 'betaReset':
+      if (!confirm('Beta-save wissen?')) break;
+      localStorage.removeItem(SAVE_KEY); state = newState(); state.seenHelp = true; sel = null; save(); closeModal(); renderAll(); renderStaticReels();
+      break;
+    case 'redeem': showRedeem(); break;
+    case 'redeemGo': redeem(); break;
+    case 'adminPanel': showAdmin(); break;
+    case 'admGen': admGenerateKeys(); break;
+    case 'admImport': admImportKey(); break;
+    case 'admMe': $('admPid').value = state.playerId; break;
+    case 'admMake': admMake(); break;
+    case 'admBackup': navigator.clipboard?.writeText(localStorage.getItem(PRIV_STORE)).then(() => toast('Private key gekopieerd. Bewaar hem veilig!')); break;
+    case 'copyEl': { const t = $(el.dataset.el); const v = t.value ?? t.textContent; navigator.clipboard?.writeText(v || t.textContent).then(() => toast('Gekopieerd!')); break; }
+    case 'takeover': window.takeover && window.takeover(); break;
+    case 'copySave':
+      navigator.clipboard?.writeText($('saveCode').value).then(() => toast('Gekopieerd!'), () => { $('saveCode').select(); });
+      break;
+    case 'importSave': importSave(); break;
+    case 'closeModal':
+      if (el.classList.contains('modal') && e.target !== el) break; // klik binnen de box
+      closeModal(); break;
+    case 'reset':
+      if (confirm('Alles wissen en opnieuw beginnen? Dit kan niet ongedaan worden.')) {
+        localStorage.removeItem(SAVE_KEY);
+        state = newState(); sel = null; rolling = false; bj = cr = null;
+        renderAll(); renderGame(); renderStaticReels();
+      }
+      break;
+  }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'crAuto') crAuto = e.target.value;
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'autoSell') { state.autoSellTier = +e.target.value; save(); toast(state.autoSellTier < 0 ? 'Auto-verkoop uit' : `Auto-verkoop: ${$('autoSell').selectedOptions[0].text}`); }
+  if (e.target.id === 'admKind') { const m = e.target.value === 'money'; $('admItemF').style.display = m ? 'none' : ''; $('admMoneyF').style.display = m ? '' : 'none'; }
+  if (e.target.id === 'admType') $('admValLbl').textContent = VALUE_LABEL[e.target.value];
+});
+document.addEventListener('keydown', e => {
+  if (blocked) return;
+  if (e.target.matches('textarea, input, select')) return;
+  if (e.code === 'Space' && !e.repeat) { e.preventDefault(); roll(); }
+  if (e.key === 'Escape') { if ($('modal').querySelector('[data-act="closeModal"]')) closeModal(); else if (!$('modal').innerHTML && sel) { sel = null; renderAll(); } }
+});
+let rz;
+window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (!rolling) renderStaticReels(); }, 150); });
+
+/* =====================================================================
+   START
+   ===================================================================== */
+$('bulkTier').innerHTML = TIERS.map((t, i) => t.hidden ? '' : `<option value="${i}">${t.name}</option>`).join('');
+if (state.event && Date.now() >= state.event.until) { state.event = null; state.nextEventAt = 0; }
+if (state.casinoPending > 0) { // pagina gesloten tijdens een casino-spel: inzet terug
+  const refund = state.casinoPending;
+  state.money += refund;
+  state.casinoPending = 0;
+  setTimeout(() => toast(`🎰 Onafgewerkte inzet terugbetaald: ${fmt(refund)}`), 300);
+}
+ensureShop();
+if (new URLSearchParams(location.search).has('admin')) { $('adminBtn').hidden = false; setTimeout(showAdmin, 50); }
+incomeCache = totalIncome();
+{
+  const elapsedMs = Date.now() - state.lastSave;
+  const maxMs = offlineMax() * 3600e3;
+  const away = Math.min(elapsedMs, maxMs) / 1000;
+  if (!state.seenHelp) { state.seenHelp = true; showHelp(); }
+  else if (away > 30 && incomeCache > 0) {
+    const earned = incomeCache * away;
+    state.money += earned;
+    showModal(`<div style="font-weight:700;font-size:17px">Welkom terug!</div>
+      <div class="sub" style="margin-top:6px">Je servers draaiden ${fmtDur(away)} door${elapsedMs > maxMs ? ` (max ${offlineMax()}u)` : ''}.</div>
+      <div class="amt">+${fmt(earned)}</div><button class="btn full" data-act="closeModal">Lekker</button>`);
+  }
+}
+renderAll();
+$('betIn').value = Math.max(10, Math.floor(maxBet() / 10));
+renderGame();
+renderStaticReels();
+requestAnimationFrame(frame);
+save();
+// App-installatie / offline (sw.js). Alleen via http(s), niet bij een lokaal geopend bestand.
+if (false) { // BETA: geen service worker, altijd de nieuwste versie
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>
