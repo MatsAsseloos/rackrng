@@ -951,7 +951,7 @@ function newState() {
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
            skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
            shop: null, boosts: {}, router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
-           prestige: newPrestige() };
+           prestige: newPrestige(), runV: 1 };
 }
 // Blijft altijd bewaard bij afstuderen
 const newPrestige = () => ({ count: 0, ects: 0, ectsTotal: 0, nodes: {}, bestRun: 0, fastestRun: 0, totalEarned: 0 });
@@ -962,6 +962,9 @@ function fromJSON(raw) {
   s.router = hyd(raw.router);
   s.router2 = hyd(raw.router2);
   s.prestige = Object.assign(newPrestige(), raw.prestige || {});
+  // Saves van vóór de prestige-update hadden geen run-teller: tel je huidige saldo als verdiend in deze run
+  // (eenmalig, ook voor beta-saves die de teller al op €0 hadden gezet)
+  if (raw.runV !== 1) { s.runEarned = Math.max(+raw.runEarned || 0, +raw.money || 0); s.runV = 1; }
   if (!s.prestige.nodes || typeof s.prestige.nodes !== 'object') s.prestige.nodes = {};
   s.switches = (Array.isArray(raw.switches) ? raw.switches : [null]).map(hyd);
   s.inv = (Array.isArray(raw.inv) ? raw.inv : []).map(hyd).filter(Boolean);
