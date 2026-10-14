@@ -163,6 +163,64 @@ button.pc{cursor:pointer}
 .help{text-align:left; font-size:13.5px; line-height:1.5; max-height:60vh; overflow:auto; margin:10px 0 14px}
 .help p{margin:0 0 8px}
 .qtm{animation:hue 3s linear infinite}
+.careerbtn{color:var(--text); font-family:var(--cond); font-weight:600}
+.careerbtn.ready{border-color:var(--vfd); color:var(--vfd); box-shadow:0 0 12px -2px rgba(255,181,71,.6); animation:gradglow 1.6s ease-in-out infinite}
+@keyframes gradglow{50%{box-shadow:0 0 18px 0 rgba(255,181,71,.8)}}
+.modal .box.wide{width:min(1180px,96vw); max-height:92vh; text-align:left; padding:18px}
+.career .chead{display:flex; gap:18px; align-items:flex-start; justify-content:space-between}
+.crank{font:700 24px var(--cond); color:var(--vfd)}
+.cects{text-align:right; margin-left:auto}
+.cects .big{font:600 28px var(--mono); color:var(--vfd); text-shadow:0 0 10px rgba(255,181,71,.4)}
+.cclose{align-self:flex-start}
+.cgrad{margin:12px 0 14px; padding:12px; border:1px solid var(--line); border-radius:8px; background:#101a28}
+.btn.gradbtn{width:100%; font-size:16px; padding:12px; margin-bottom:6px; background:linear-gradient(180deg,#ffc56b,#e8962a); color:#1a1000}
+.btn.gradbtn:hover:not(:disabled){background:linear-gradient(180deg,#ffd38a,#f0a43a)}
+.gradbar{height:10px; border-radius:6px; background:#0a121d; overflow:hidden; margin-bottom:6px}
+.gradbar>div{height:100%; background:linear-gradient(90deg,#4ea1ff,var(--vfd))}
+.tree{overflow:auto; padding-bottom:6px}
+.troot{width:max-content; margin:0 auto; padding:8px 18px; border-radius:8px; font:700 15px var(--cond); background:linear-gradient(180deg,#3a2a10,#21180a); border:1px solid #7a5a22; color:var(--vfd); position:relative}
+.troot::after{content:""; position:absolute; left:50%; top:100%; width:2px; height:14px; background:#4a5d7a}
+.branches{display:grid; grid-template-columns:repeat(5,minmax(205px,1fr)); gap:14px; margin-top:14px; padding-top:14px; border-top:2px solid #4a5d7a; min-width:1080px}
+.branch{display:flex; flex-direction:column; gap:12px; position:relative}
+.branch::before{content:""; position:absolute; left:50%; top:-14px; width:2px; height:14px; background:#4a5d7a}
+.bname{text-align:center; font:700 14px var(--cond); padding:6px; border-radius:6px; background:#1b283b; border:1px solid var(--line)}
+.trow{display:grid; gap:8px; position:relative}
+.trow.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.trow::before{content:""; position:absolute; left:50%; top:-12px; width:2px; height:12px; background:#33465f}
+.trow.two::before{display:none}
+.trow.two .node{position:relative}
+.trow.two .node::before{content:""; position:absolute; left:50%; top:-13px; width:2px; height:12px; background:#33465f}
+.node{display:flex; flex-direction:column; gap:3px; text-align:left; padding:8px 9px; border-radius:7px; border:1px solid var(--line); background:#141f30; color:var(--text); min-height:84px; font-family:inherit}
+.node .nn{font:600 13px var(--cond); overflow-wrap:anywhere} .node .nn i{font-style:normal; color:var(--muted); font-weight:500}
+.node .nd{font-size:11.5px; color:var(--muted); line-height:1.3}
+.node .nf{margin-top:auto; font:600 11.5px var(--mono)}
+.node.n-buy{border-color:var(--vfd); box-shadow:0 0 0 1px rgba(255,181,71,.25) inset; cursor:pointer}
+.node.n-buy .nf{color:var(--vfd)}
+.node.n-buy:hover{background:#1d2a3e}
+.node.n-poor .nf{color:#a37a3a}
+.node.n-max{border-color:rgba(61,220,151,.55); background:linear-gradient(180deg,#123024,#10241c)}
+.node.n-max .nf{color:var(--good)}
+.node.n-lock, .node.n-dim{opacity:.5; cursor:default}
+.node.ks{border-width:2px}
+.node.ks.n-max{border-color:var(--vfd); background:linear-gradient(180deg,#3a2a10,#21180a)}
+.node.inf{border-style:dashed}
+.btabs{display:none; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:12px}
+@media (max-width:760px){
+  .btabs{display:flex}
+  .troot{display:none}
+  .branches{grid-template-columns:1fr; min-width:0; border-top:0; padding-top:0; margin-top:10px}
+  .branch::before{display:none}
+  .branch:not(.active){display:none}
+  .branch .bname{display:none}
+  .modal .box.wide{padding:14px}
+}
+.diploma{text-align:center}
+.dtop{font:600 12px var(--mono); color:var(--muted); letter-spacing:1px}
+.dtitle{font:700 22px var(--cond); margin:6px 0 2px}
+.drank{font:700 34px var(--cond); color:var(--vfd); text-shadow:0 0 14px rgba(255,181,71,.5); margin:2px 0 4px}
+.dstats{display:flex; justify-content:center; gap:16px; font-size:12px; color:var(--muted)}
+.dstats b{display:block; color:var(--text); font:600 14px var(--mono)}
+@media (prefers-reduced-motion: reduce){ .careerbtn.ready{animation:none} }
 .betatag{font:700 11px var(--mono); color:#1a1000; background:var(--vfd); border-radius:4px; padding:1px 6px; vertical-align:3px}
 body{box-shadow:inset 0 4px 0 var(--vfd)}
 .rc{width:100px; min-width:0; overflow:hidden}
@@ -422,6 +480,7 @@ header{background:linear-gradient(180deg,#1c2b43,#132033); border:1px solid var(
       <div><div class="sub">Inkomen</div><div class="rate" id="rate">€0/s</div></div>
     </div>
     <div class="hbtns">
+      <button class="ghost careerbtn" data-act="career" id="careerBtn">🎓 Stagiair</button>
       <button class="ghost" data-act="mute" id="muteBtn" title="Geluid">🔊</button>
       <button class="ghost" data-act="adminPanel" id="adminBtn" title="Admin panel" hidden>🛠️</button>
       <button class="ghost" data-act="redeem" title="Code inwisselen">🎁</button>
@@ -563,6 +622,7 @@ const CONN = [
 ];
 
 /* Upgrades: kost = base × growth^niveau */
+const pityLimit = () => Math.round(PITY[lvl('pity')] * (pn('lk_super') ? 0.75 : 1));
 const PITY = [0, 100, 80, 60, 45, 30];
 const UPGRADES = [
   { id: 'luck',     icon: '☕', name: 'Koffie',           base: 100,   growth: 1.6, max: 25,
@@ -617,6 +677,78 @@ const MUTATIONS = {
 };
 const mutChanceAt = l => 0.03 + 0.02 * l;   // 3% basis, +2% per Stralingslab-niveau
 
+/* =====================================================================
+   🎓 CARRIÈRE (prestige). Afstuderen vanaf 1T verdiend in één run.
+   ECTS = 10 × √(verdiend deze run ÷ 1T). Rang = aantal keer afgestudeerd.
+   ===================================================================== */
+const GRAD_MIN = 1e12;
+const ectsFor = earned => earned >= GRAD_MIN ? Math.floor(10 * Math.sqrt(earned / GRAD_MIN)) : 0;
+const CAREER = [[0, 'Stagiair'], [1, 'Junior'], [3, 'Medior'], [6, 'Senior'], [10, 'Lead'], [15, 'Architect'], [25, 'CTO']];
+const LAYER_RANK = { 1: 1, 2: 3, 3: 6, 4: 10, 5: 15, 6: 25 };          // laag → minimaal aantal keer afgestudeerd
+const LAYER_COST = { 1: 2, 2: 5, 3: 12, 4: 30, 5: 80, 6: 100 };        // ECTS (per niveau ×1,5; oneindig ×1,15)
+const LAYER_NAME = { 5: 'Keystone', 6: 'Oneindig' };
+const BRANCHES = [
+  { id: 'hw', icon: '🖥️', name: 'Hardware' },
+  { id: 'lk', icon: '🍀', name: 'Geluk' },
+  { id: 'nw', icon: '🌐', name: 'Netwerk' },
+  { id: 'au', icon: '⚙️', name: 'Automatisering' },
+  { id: 'ec', icon: '💰', name: 'Economie' },
+];
+// layer 1-3: col 0/1 (L2 vereist L1 van dezelfde kolom, …) · layer 4 vereist beide L3 · keystone vereist L4 · oneindig vereist keystone
+const NODES = [
+  // 🖥️ Hardware
+  { id: 'hw_income',  br: 'hw', layer: 1, col: 0, max: 3, name: 'Voorkennis',        desc: 'Inkomen ×1,5 per niveau' },
+  { id: 'hw_paste',   br: 'hw', layer: 1, col: 1, max: 1, name: 'Koelpasta',         desc: '+5% kans op overclocked items' },
+  { id: 'hw_thermal', br: 'hw', layer: 2, col: 0, max: 1, name: 'Thermisch ontwerp', desc: 'OC-items ×2 in plaats van ×1,5' },
+  { id: 'hw_rad',     br: 'hw', layer: 2, col: 1, max: 1, name: 'Stralingsbestendig', desc: '+5% mutatiekans' },
+  { id: 'hw_match',   br: 'hw', layer: 3, col: 0, max: 1, name: 'Matching-expert',   desc: 'Goed ×1,75 · Perfect ×2,5' },
+  { id: 'hw_firm',    br: 'hw', layer: 3, col: 1, max: 1, name: 'Firmware-hacker',   desc: '+5% kans dat een roll +1 tier uitvalt' },
+  { id: 'hw_gold',    br: 'hw', layer: 4,         max: 1, name: 'Gouden handen',     desc: 'Goud-mutatie ×5 in plaats van ×3' },
+  { id: 'ks_cluster', br: 'hw', layer: 5,         max: 1, name: 'Clusterbeheer',     desc: 'Perfect ×3, en elke Perfect U geeft +5% aan het hele rack' },
+  { id: 'inf_hw',     br: 'hw', layer: 6,         max: Infinity, name: 'Rekenkracht', desc: '+5% inkomen per niveau' },
+  // 🍀 Geluk
+  { id: 'lk_clover',  br: 'lk', layer: 1, col: 0, max: 3, name: 'Klavertje vier',    desc: 'Luck ×1,25 per niveau' },
+  { id: 'lk_cent',    br: 'lk', layer: 1, col: 1, max: 1, name: 'Gelukscent',        desc: 'Gouden roll elke 8e in plaats van 10e' },
+  { id: 'lk_super',   br: 'lk', layer: 2, col: 0, max: 1, name: 'Bijgeloof',         desc: 'Garantiecontract (pity) 25% sneller' },
+  { id: 'lk_thread',  br: 'lk', layer: 2, col: 1, max: 1, name: 'Extra thread',      desc: 'Multithreading: 1 item extra per roll' },
+  { id: 'lk_streak',  br: 'lk', layer: 3, col: 0, max: 1, name: 'Lucky streak',      desc: 'Na een Epic+ krijgen de volgende 10 rolls luck ×2' },
+  { id: 'lk_vein',    br: 'lk', layer: 3, col: 1, max: 1, name: 'Goudader',          desc: 'Gouden roll-luck ×1,5' },
+  { id: 'lk_stat',    br: 'lk', layer: 4,         max: 1, name: 'Statisticus',       desc: 'Legendary en hoger ×1,5 vaker' },
+  { id: 'ks_quantum', br: 'lk', layer: 5,         max: 1, name: 'Quantum-onderzoek', desc: 'Quantum ×3 vaker, Mythic ×1,5 vaker' },
+  { id: 'inf_lk',     br: 'lk', layer: 6,         max: Infinity, name: 'Intuïtie',   desc: '+3% luck per niveau' },
+  // 🌐 Netwerk
+  { id: 'nw_patch',   br: 'nw', layer: 1, col: 0, max: 1, name: 'Patchkabels',       desc: 'Switch-bonus +25%' },
+  { id: 'nw_fw',      br: 'nw', layer: 1, col: 1, max: 1, name: 'Firewall',          desc: 'Router-multiplier +0,5' },
+  { id: 'nw_vlan',    br: 'nw', layer: 2, col: 0, max: 1, name: "VLAN's",            desc: '+1 extra switch-slot' },
+  { id: 'nw_lb',      br: 'nw', layer: 2, col: 1, max: 1, name: 'Load balancing',    desc: 'Switch-slot per 4U in plaats van per 6U' },
+  { id: 'nw_router2', br: 'nw', layer: 3, col: 0, max: 1, name: 'Redundante router', desc: 'Een 2e router-slot (beide tellen)' },
+  { id: 'nw_backbone',br: 'nw', layer: 3, col: 1, max: 1, name: 'Backbone',          desc: 'Roll-cooldown −20%' },
+  { id: 'nw_mesh',    br: 'nw', layer: 4,         max: 1, name: 'Mesh-netwerk',      desc: 'Switch-bonus telt dubbel' },
+  { id: 'ks_ix',      br: 'nw', layer: 5,         max: 1, name: 'Internet Exchange', desc: 'Router ×2, en netwerk-items tellen als 1 tier hoger' },
+  { id: 'inf_nw',     br: 'nw', layer: 6,         max: Infinity, name: 'Bandbreedte', desc: '+3% router-multiplier per niveau' },
+  // ⚙️ Automatisering
+  { id: 'au_cron',    br: 'au', layer: 1, col: 0, max: 1, name: 'Cron-script',       desc: 'Cronjob (auto-roll) blijft na afstuderen' },
+  { id: 'au_start',   br: 'au', layer: 1, col: 1, max: 1, name: 'Startpakket',       desc: 'Start met een Rare CPU, RAM en Storage' },
+  { id: 'au_hot',     br: 'au', layer: 2, col: 0, max: 1, name: 'Hot-Swap-script',   desc: 'Hot-Swap blijft na afstuderen' },
+  { id: 'au_home',    br: 'au', layer: 2, col: 1, max: 1, name: 'Thuiswerken',       desc: 'Offline inkomen +12 uur langer' },
+  { id: 'au_anim',    br: 'au', layer: 3, col: 0, max: 1, name: 'Snelle animatie',   desc: 'Spin-animatie 2× sneller' },
+  { id: 'au_keys',    br: 'au', layer: 3, col: 1, max: 1, name: 'Sleutelbos',        desc: 'Labo-sleutel en Leverancierscontract blijven' },
+  { id: 'au_ansible', br: 'au', layer: 4,         max: 1, name: 'Ansible',           desc: 'Gewone upgrades houden 25% van hun niveau' },
+  { id: 'ks_botnet',  br: 'au', layer: 5,         max: 1, name: 'Botnet',            desc: 'Offline rolt de game door en Hot-Swap koopt mee' },
+  { id: 'inf_au',     br: 'au', layer: 6,         max: Infinity, name: 'Optimalisatie', desc: '−2% roll-cooldown per niveau' },
+  // 💰 Economie
+  { id: 'ec_grant',   br: 'ec', layer: 1, col: 0, max: 3, name: 'Studiebeurs',       desc: 'Startgeld €1M → €1B → €1T' },
+  { id: 'ec_job',     br: 'ec', layer: 1, col: 1, max: 1, name: 'Studentenjob',      desc: 'Verkoopwaarde +20%' },
+  { id: 'ec_intern',  br: 'ec', layer: 2, col: 0, max: 3, name: 'Stageplaats',       desc: 'Start met 3 → 6 → 10 U' },
+  { id: 'ec_kot',     br: 'ec', layer: 2, col: 1, max: 3, name: 'Kot met glasvezel', desc: 'Start op 4G → Wifi 6 → Ethernet 1 Gbit' },
+  { id: 'ec_bulk',    br: 'ec', layer: 3, col: 0, max: 1, name: 'Groothandel',       desc: 'Itemprijzen −25%' },
+  { id: 'ec_estate',  br: 'ec', layer: 3, col: 1, max: 1, name: 'Vastgoed',          desc: 'Nieuwe U wordt ×3,5 duurder in plaats van ×4' },
+  { id: 'ec_vip',     br: 'ec', layer: 4,         max: 1, name: 'VIP-klant',         desc: 'Boost-shop +2 plekken en zeldzamere boosts' },
+  { id: 'ks_mono',    br: 'ec', layer: 5,         max: 1, name: 'Monopolie',         desc: '+1% inkomen per ECTS die je ooit verdiend hebt' },
+  { id: 'inf_ec',     br: 'ec', layer: 6,         max: Infinity, name: 'Erfenis',     desc: '+10% startgeld per niveau' },
+];
+const NODE = Object.fromEntries(NODES.map(n => [n.id, n]));
+
 /* Rack-skins (puur cosmetisch). tier bepaalt de kleur in de shop. */
 const SKINS = [
   { id: 'default', name: 'Standaard',      tier: 0, price: 0,     desc: 'Zwart staal, gewoon degelijk.' },
@@ -645,8 +777,8 @@ const BOOSTS = {
   oc:     { icon: '🧊', label: 'OC-kans',  add: [0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6],
             names: ['Thermal paste', 'Betere koeler', 'Extra fans', 'Waterkoeling', 'Peltier-element', 'Vloeibare stikstof', 'Absolute nulpunt'] },
 };
-const shopSlots = l => 3 + Math.floor((l + 1) / 2);   // 3 → 6 plekken
-const shopLuck  = l => 2 * (1 + 0.6 * l);             // luck voor de rarity van shop-boosts
+const shopSlots = l => 3 + Math.floor((l + 1) / 2) + (typeof state !== 'undefined' && pn('ec_vip') ? 2 : 0);   // 3 → 6 plekken (+2 VIP-klant)
+const shopLuck  = l => 2 * (1 + 0.6 * l) * (typeof state !== 'undefined' && pn('ec_vip') ? 1.5 : 1);   // luck voor de rarity van shop-boosts
 
 /* Random events. kind: good / bad / mixed. w = hoe vaak (gewicht). dur = seconden.
    fx: luck, cd (cooldown), income, price, sell = vermenigvuldigers · ocAdd = extra OC-kans */
@@ -809,7 +941,7 @@ const newPlayerId = () => {
 const isAdminItem = it => it && it.tier === ADMIN_TIER;
 /* BELANGRIJK voor een toekomstige prestige/rebirth: deze items moeten altijd bewaard blijven.
    Een rebirth reset het rack en de opslag, en zet daarna permanentItems() terug in de opslag. */
-const permanentItems = () => [...state.inv, state.router, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(isAdminItem);
+const permanentItems = () => [...state.inv, state.router, state.router2, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(isAdminItem);
 const emptyU = () => ({ cpu: null, ram: null, storage: null });
 function newState() {
   return { v: SAVE_VERSION, money: CFG.startMoney, rack: [emptyU()], router: null, switches: [null], inv: [],
@@ -818,13 +950,19 @@ function newState() {
            hotSwap: false, rollTiers: [false, false, false, true, true, true, true], autoSellTier: -1,
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
            skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
-           shop: null, boosts: {} };
+           shop: null, boosts: {}, router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
+           prestige: newPrestige() };
 }
+// Blijft altijd bewaard bij afstuderen
+const newPrestige = () => ({ count: 0, ects: 0, ectsTotal: 0, nodes: {}, bestRun: 0, fastestRun: 0, totalEarned: 0 });
 function fromJSON(raw) {
   const s = Object.assign(newState(), raw);
   s.rack = (Array.isArray(raw.rack) && raw.rack.length ? raw.rack : [emptyU()])
     .map(u => ({ cpu: hyd(u.cpu), ram: hyd(u.ram), storage: hyd(u.storage) }));
   s.router = hyd(raw.router);
+  s.router2 = hyd(raw.router2);
+  s.prestige = Object.assign(newPrestige(), raw.prestige || {});
+  if (!s.prestige.nodes || typeof s.prestige.nodes !== 'object') s.prestige.nodes = {};
   s.switches = (Array.isArray(raw.switches) ? raw.switches : [null]).map(hyd);
   s.inv = (Array.isArray(raw.inv) ? raw.inv : []).map(hyd).filter(Boolean);
   s.current = hyd(raw.current);
@@ -846,7 +984,7 @@ function fromJSON(raw) {
   for (const u of UPGRADES) if ((s.up[u.id] || 0) > u.max) s.up[u.id] = u.max;
   s.v = SAVE_VERSION;
   // zorg dat nieuwe ID's nooit botsen
-  const ids = [...s.inv, s.router, s.current, ...s.switches, ...s.rack.flatMap(u => COMP.map(k => u[k]))]
+  const ids = [...s.inv, s.router, s.router2, s.current, ...s.switches, ...s.rack.flatMap(u => COMP.map(k => u[k]))]
     .filter(Boolean).map(x => x.id || 0);
   s.nextId = Math.max(s.nextId || 1, ...ids, 0) + 1;
   return s;
@@ -876,6 +1014,7 @@ const celebrate = new Set();
    UPGRADES & AFGELEIDE WAARDES
    ===================================================================== */
 const lvl = id => state.up[id] || 0;
+const pn  = id => (state.prestige && state.prestige.nodes[id]) || 0;   // niveau van een skill-tree-node
 const upDef = id => UPGRADES.find(u => u.id === id);
 const upCost = u => Math.round(u.base * u.growth ** lvl(u.id));
 
@@ -885,26 +1024,31 @@ const boostMod = k => { const b = activeBoost(k); return b ? b.val : (k === 'oc'
 const activeEv = () => state.event && Date.now() < state.event.until ? EV[state.event.id] : null;
 const evMod = k => { const e = activeEv(); return e && e.fx && e.fx[k] != null ? e.fx[k] : (k === 'ocAdd' ? 0 : 1); };
 
-const luck       = () => (1 + 0.1 * lvl('luck')) * evMod('luck') * boostMod('luck') * radLuck();
-const goldenMult = () => 1 + lvl('golden');
-const nextGolden = () => lvl('golden') > 0 && (state.rolls + 1) % CFG.goldenEvery === 0;
-const ocChance   = () => Math.min(1, 0.02 * lvl('oc') + evMod('ocAdd') + boostMod('oc'));
-const priceMult  = () => (1 - 0.04 * lvl('discount')) * evMod('price');
-const sellRate   = () => Math.min(1, (CFG.sellRate + 0.05 * lvl('resale')) * evMod('sell'));
-const incomeMult = () => 1 + 0.1 * lvl('income');
-const offlineMax = () => CFG.offlineMaxHours + 2 * lvl('ups');
-const cooldown   = () => CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed');
-const unitCost   = () => Math.round(CFG.unitBaseCost * CFG.unitCostGrowth ** (state.rack.length - 1) * (1 - 0.05 * lvl('permit')));
+const luck       = () => (1 + 0.1 * lvl('luck')) * evMod('luck') * boostMod('luck') * radLuck()
+                   * 1.25 ** pn('lk_clover') * (pn('lk_streak') && state.streak > 0 ? 2 : 1) * (1 + 0.03 * pn('inf_lk'));
+const goldenMult = () => (1 + lvl('golden')) * (pn('lk_vein') ? 1.5 : 1);
+const goldenEvery = () => pn('lk_cent') ? 8 : CFG.goldenEvery;
+const nextGolden = () => lvl('golden') > 0 && (state.rolls + 1) % goldenEvery() === 0;
+const ocChance   = () => Math.min(1, 0.02 * lvl('oc') + evMod('ocAdd') + boostMod('oc') + 0.05 * pn('hw_paste'));
+const priceMult  = () => (1 - 0.04 * lvl('discount')) * evMod('price') * (pn('ec_bulk') ? 0.75 : 1);
+const sellRate   = () => Math.min(1, (CFG.sellRate + 0.05 * lvl('resale')) * evMod('sell') * (pn('ec_job') ? 1.2 : 1));
+const incomeMult = () => (1 + 0.1 * lvl('income')) * 1.5 ** pn('hw_income') * (1 + 0.05 * pn('inf_hw'))
+                   * (pn('ks_mono') ? 1 + 0.01 * state.prestige.ectsTotal : 1);
+const offlineMax = () => CFG.offlineMaxHours + 2 * lvl('ups') + 12 * pn('au_home');
+const cooldown   = () => CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed') * (pn('nw_backbone') ? 0.8 : 1) * 0.98 ** pn('inf_au');
+const unitCost   = () => Math.round(CFG.unitBaseCost * (CFG.unitCostGrowth - (pn('ec_estate') ? 0.5 : 0)) ** (state.rack.length - 1) * (1 - 0.05 * lvl('permit')));
 
 /* Item-waardes */
-const ocM      = it => (it.oc ? CFG.ocMult : 1) * mutM(it);
-const mutM     = it => !it.mut ? 1 : it.mut === 'bitflip' ? (it.mv || 1) : MUTATIONS[it.mut].mult;
+const ocM      = it => (it.oc ? (pn('hw_thermal') ? 2 : CFG.ocMult) : 1) * mutM(it);
+const mutM     = it => !it.mut ? 1 : it.mut === 'bitflip' ? (it.mv || 1) : it.mut === 'gold' && pn('hw_gold') ? 5 : MUTATIONS[it.mut].mult;
 const matchTier = it => it.mut === 'cold' ? Math.min(6, it.tier + 1) : it.tier;
-const placedItems = () => [state.router, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(Boolean);
+const placedItems = () => [state.router, state.router2, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(Boolean);
 const radLuck  = () => 1 + 0.1 * placedItems().filter(x => x.mut === 'rad').length;
 const income   = it => TIERS[it.tier].income * it.q * ocM(it);
-const swBonus  = it => Math.round(TIERS[it.tier].sw * it.q * ocM(it));
-const rtMult   = it => Math.round((1 + (TIERS[it.tier].rt - 1) * it.q * ocM(it)) * 100) / 100;
+// Internet Exchange: netwerk-items tellen als 1 tier hoger (niet voor admin-items)
+const netTier  = it => pn('ks_ix') && it.tier < 6 ? it.tier + 1 : it.tier;
+const swBonus  = it => Math.round(TIERS[netTier(it)].sw * it.q * ocM(it) * (pn('nw_patch') ? 1.25 : 1));
+const rtMult   = it => Math.round((1 + (TIERS[netTier(it)].rt - 1) * it.q * ocM(it)) * 100) / 100 + (pn('nw_fw') ? 0.5 : 0);
 function basePrice(it) {
   const b = TIERS[it.tier].income * CFG.priceSeconds * it.q * ocM(it);
   if (it.type === 'switch') return b * CFG.switchPriceMult;
@@ -928,7 +1072,8 @@ const mutHtml  = it => it.mut ? `<span class="mut" style="--mc:${MUTATIONS[it.mu
 const nameHtml = it => (isAdminItem(it) ? '🛠️ ' : '') + mutHtml(it) + (it.oc ? '<span class="oc">OC</span>' : '') + esc(it.name);
 
 /* Kansen (met huidige luck) */
-const tierChance = (i, L) => Math.min(1, L / TIERS[i].oneIn);
+const tierChance = (i, L) => Math.min(1, L / TIERS[i].oneIn
+  * (i >= 4 && pn('lk_stat') ? 1.5 : 1) * (pn('ks_quantum') ? (i === 6 ? 3 : i === 5 ? 1.5 : 1) : 1));
 function oddsFor(L) {
   return TIERS.map((t, i) => {
     let p = i === 0 ? 1 : tierChance(i, L);
@@ -954,7 +1099,7 @@ function rollOne(L, minTier = 0, useFilter = true) {
   const tier = Math.max(rollTier(L), minTier);
   const refs = DEFS_BY[type][tier];
   const it = new Item(refs[Math.floor(Math.random() * refs.length)], null, Math.random() < ocChance());
-  if (Math.random() < mutChanceAt(lvl('mutlab'))) {
+  if (Math.random() < mutChanceAt(lvl('mutlab')) + 0.05 * pn('hw_rad')) {
     it.mut = pickWeighted(Object.fromEntries(Object.entries(MUTATIONS).map(([k, m]) => [k, m.w])));
     if (it.mut === 'bitflip') it.mv = Math.round((0.5 + Math.random() ** 2 * 5.5) * 100) / 100; // meestal laag, soms hoog
   }
@@ -964,13 +1109,13 @@ function generateRoll() {
   const golden = nextGolden();
   const L = luck() * (golden ? goldenMult() : 1);
   const cands = [];
-  for (let k = 0; k <= lvl('multi'); k++) cands.push(rollOne(L));
+  for (let k = 0; k <= lvl('multi') + pn('lk_thread'); k++) cands.push(rollOne(L));
   let win = 0;
   cands.forEach((c, i) => { if (price(c) > price(cands[win])) win = i; });
   let best = cands[win], pityHit = false;
-  if (lvl('pity') && best.tier < 2 && state.pity + 1 >= PITY[lvl('pity')]) { best = rollOne(L, 2); cands[win] = best; pityHit = true; }
+  if (lvl('pity') && best.tier < 2 && state.pity + 1 >= pityLimit()) { best = rollOne(L, 2); cands[win] = best; pityHit = true; }
   let fwHit = false;
-  if (best.tier < 6 && Math.random() < 0.015 * lvl('firmware')) {
+  if (best.tier < 6 && Math.random() < 0.015 * lvl('firmware') + 0.05 * pn('hw_firm')) {
     const refs = DEFS_BY[best.type][best.tier + 1];
     const up = new Item(refs[Math.floor(Math.random() * refs.length)], null, best.oc);
     if (best.mut) { up.mut = best.mut; up.mv = best.mv; }
@@ -985,13 +1130,20 @@ function generateRoll() {
    ECONOMIE
    ===================================================================== */
 const emptyM = { mult: 1, label: 'Onvolledig', cls: '' };
+const matchTab = () => {
+  const m = CFG.match.slice();
+  if (pn('hw_match')) { m[0] = 2.5; m[1] = 1.75; }
+  if (pn('ks_cluster')) m[0] = 3;
+  return m;
+};
 function matchInfo(u) {
+  const M = matchTab();
   const its = COMP.map(k => u[k]);
   if (its.some(x => !x)) return emptyM;
   const ts = its.filter(x => !isAdminItem(x)).map(matchTier);  // admin-items matchen met alles
-  if (!ts.length) return { mult: CFG.match[0], label: `✨ Perfect ×${fmtNum(CFG.match[0])}`, cls: 'b-perfect', perfect: true };
+  if (!ts.length) return { mult: M[0], label: `✨ Perfect ×${fmtNum(M[0])}`, cls: 'b-perfect', perfect: true };
   const spread = Math.max(...ts) - Math.min(...ts);
-  const m = CFG.match[Math.min(spread, 3)];
+  const m = M[Math.min(spread, 3)];
   if (spread === 0) return { mult: m, label: `✨ Perfect ×${fmtNum(m)}`, cls: 'b-perfect', perfect: true };
   if (spread === 1) return { mult: m, label: `Goed ×${fmtNum(m)}`, cls: 'b-good' };
   if (spread === 2) return { mult: m, label: `Oké ×${fmtNum(m)}`, cls: '' };
@@ -1003,7 +1155,8 @@ function matchMult(u) {
   if (!a || !b || !c) return 1;
   let lo = 99, hi = -1;
   for (const x of [a, b, c]) { if (x.tier === ADMIN_TIER) continue; const t = matchTier(x); if (t < lo) lo = t; if (t > hi) hi = t; }
-  return hi < 0 ? CFG.match[0] : CFG.match[Math.min(hi - lo, 3)];
+  const M = matchTab();
+  return hi < 0 ? M[0] : M[Math.min(hi - lo, 3)];
 }
 const uFast = u => {
   let sum = 0, rgb = 1;
@@ -1011,34 +1164,42 @@ const uFast = u => {
   return sum * matchMult(u) * rgb;
 };
 const uBase    = u => COMP.reduce((a, k) => a + (u[k] ? income(u[k]) : 0), 0) * matchInfo(u).mult * 1.25 ** COMP.filter(k => u[k] && u[k].mut === 'rgb').length;
-const routerM  = () => state.router ? rtMult(state.router) : 1;
-const switchB  = () => state.switches.reduce((a, s) => a + (s ? swBonus(s) : 0), 0);
-const steadyMult = () => routerM() * (1 + switchB() / 100) * incomeMult();   // zonder events
+const routerM  = () => {
+  const rs = [state.router, pn('nw_router2') ? state.router2 : null].filter(Boolean);
+  if (!rs.length) return 1;
+  return rs.reduce((a, r) => a * rtMult(r), 1) * (pn('ks_ix') ? 2 : 1) * (1 + 0.03 * pn('inf_nw'));
+};
+const clusterM = () => pn('ks_cluster') ? 1 + 0.05 * state.rack.filter(u => matchInfo(u).perfect).length : 1;
+const switchB  = () => state.switches.reduce((a, s) => a + (s ? swBonus(s) : 0), 0) * (pn('nw_mesh') ? 2 : 1);
+const steadyMult = () => routerM() * (1 + switchB() / 100) * incomeMult() * clusterM();   // zonder events
 const netMult  = () => steadyMult() * evMod('income') * boostMod('income');
 const steadyIncome = () => baseIncome() * steadyMult();
 const baseIncome = () => state.rack.reduce((a, u) => a + uBase(u), 0);
 const totalIncome = () => baseIncome() * netMult();
 
+const swEvery = () => pn('nw_lb') ? 4 : CFG.switchEveryU;
+const swSlots = n => Math.ceil(n / swEvery()) + pn('nw_vlan');
 function ensureSwitchSlots() {
-  const n = Math.ceil(state.rack.length / CFG.switchEveryU);
+  const n = swSlots(state.rack.length);
   while (state.switches.length < n) state.switches.push(null);
 }
 ensureSwitchSlots();
 
 /* Slot-locaties */
-function getAt(l) { return l.kind === 'u' ? state.rack[l.u][l.slot] : l.kind === 'router' ? state.router : state.switches[l.i]; }
+function getAt(l) { return l.kind === 'u' ? state.rack[l.u][l.slot] : l.kind === 'router' ? state.router : l.kind === 'router2' ? state.router2 : state.switches[l.i]; }
 function setAt(l, it) {
   if (l.kind === 'u') state.rack[l.u][l.slot] = it;
   else if (l.kind === 'router') state.router = it;
+  else if (l.kind === 'router2') state.router2 = it;
   else state.switches[l.i] = it;
 }
-const locType = l => l.kind === 'u' ? l.slot : l.kind;
+const locType = l => l.kind === 'u' ? l.slot : l.kind === 'router2' ? 'router' : l.kind;
 const sameLoc = (a, b) => a.kind === b.kind && a.u === b.u && a.slot === b.slot && a.i === b.i;
 function locFromEl(el) {
   const d = el.dataset;
   return { kind: d.kind, u: d.u != null ? +d.u : undefined, slot: d.slot, i: d.i != null ? +d.i : undefined };
 }
-const locName = l => l.kind === 'u' ? `U${l.u + 1}` : l.kind === 'router' ? 'het router-slot' : `switch-slot ${l.i + 1}`;
+const locName = l => l.kind === 'u' ? `U${l.u + 1}` : l.kind === 'router' ? 'het router-slot' : l.kind === 'router2' ? 'het 2e router-slot' : `switch-slot ${l.i + 1}`;
 
 /* Probeert elk passend slot en geeft de plek waar je totale inkomen het meest stijgt (incl. match-bonus) */
 function bestPlacement(it) {
@@ -1052,7 +1213,7 @@ function bestPlacement(it) {
     if (!best || g > best.gain + 1e-9 || (Math.abs(g - best.gain) < 1e-9 && !old && !best.empty)) best = { loc, gain: g, empty: !old };
   };
   if (COMP.includes(it.type)) state.rack.forEach((u, i) => tryLoc({ kind: 'u', u: i, slot: it.type }));
-  else if (it.type === 'router') tryLoc({ kind: 'router' });
+  else if (it.type === 'router') { tryLoc({ kind: 'router' }); if (pn('nw_router2')) tryLoc({ kind: 'router2' }); }
   else state.switches.forEach((s, i) => tryLoc({ kind: 'switch', i }));
   return best;
 }
@@ -1152,7 +1313,7 @@ const perfectSet = () => new Set(state.rack.map((u, i) => matchInfo(u).perfect ?
 function afterChange(before) {
   for (const i of perfectSet()) if (!before.has(i)) {
     celebrate.add(i);
-    toast(`✨ Perfect match op U${i + 1}! Inkomen ×${fmtNum(CFG.match[0])}`);
+    toast(`✨ Perfect match op U${i + 1}! Inkomen ×${fmtNum(matchTab()[0])}`);
     SFX.perfect();
   }
   save(); renderAll();
@@ -1167,10 +1328,11 @@ function roll() {
   state.currentBought = false;
   state.rolls++;
   state.pity = item.tier >= 2 ? 0 : state.pity + 1;
+  if (pn('lk_streak')) { if (state.streak > 0) state.streak--; if (item.tier >= 3) state.streak = 10; }
   state.rollReadyAt = now + cooldown() * 1000;
   rolling = true;
   SFX.roll();
-  const dur = Math.max(0.45, Math.min(1.8, cooldown() * 0.6));
+  const dur = Math.max(0.45, Math.min(1.8, cooldown() * 0.6)) * (pn('au_anim') ? 0.5 : 1);
   renderResult(); renderRollMeta();
   spinReels(cands, win, dur, () => {
     rolling = false;
@@ -1265,7 +1427,8 @@ function optimizeRack() {
   // netwerk
   const routers = all.filter(x => x.type === 'router').sort((a, b) => rtMult(b) - rtMult(a));
   state.router = routers[0] || null;
-  if (state.router) placed.add(state.router);
+  state.router2 = pn('nw_router2') ? routers[1] || null : null;
+  [state.router, state.router2].forEach(r => r && placed.add(r));
   const sws = all.filter(x => x.type === 'switch').sort((a, b) => swBonus(b) - swBonus(a));
   state.switches = state.switches.map((_, i) => sws[i] || null);
   state.switches.forEach(x => x && placed.add(x));
@@ -1897,6 +2060,172 @@ async function redeem() {
 }
 
 /* =====================================================================
+   🎓 CARRIÈRE: rang, afstuderen, skill tree
+   ===================================================================== */
+const ROMAN = n => [['X', 10], ['IX', 9], ['V', 5], ['IV', 4], ['I', 1]].reduce((a, [r, v]) => { while (n >= v) { a += r; n -= v; } return a; }, '');
+function rankName(c = state.prestige.count) {
+  if (c >= 35) return 'CTO ' + ROMAN(Math.floor((c - 25) / 10) + 1);
+  return CAREER.filter(([n]) => c >= n).pop()[1];
+}
+function nextRank(c = state.prestige.count) {   // {name, at} van de volgende rang
+  const nx = CAREER.find(([n]) => n > c);
+  if (nx) return { name: nx[1], at: nx[0] };
+  const at = c < 35 ? 35 : 25 + (Math.floor((c - 25) / 10) + 1) * 10;
+  return { name: rankName(at), at };
+}
+const layerOpen = layer => state.prestige.count >= LAYER_RANK[layer];
+const rankForLayer = layer => rankName(LAYER_RANK[layer]);
+function nodeReq(n) {   // vereiste nodes
+  const sib = NODES.filter(x => x.br === n.br);
+  if (n.layer === 1) return [];
+  if (n.layer <= 3) return sib.filter(x => x.layer === n.layer - 1 && x.col === n.col);
+  return sib.filter(x => x.layer === n.layer - 1);
+}
+const nodeCost = n => Math.round(LAYER_COST[n.layer] * (n.layer === 6 ? 1.15 : 1.5) ** pn(n.id));
+function nodeState(n) {
+  const l = pn(n.id);
+  if (l >= n.max) return 'max';
+  if (!layerOpen(n.layer)) return 'lock';
+  if (nodeReq(n).some(r => !pn(r.id))) return 'dim';
+  return state.prestige.ects >= nodeCost(n) ? 'buy' : 'poor';
+}
+function buyNode(id) {
+  const n = NODE[id];
+  if (!n || nodeState(n) !== 'buy') return;
+  state.prestige.ects -= nodeCost(n);
+  state.prestige.nodes[id] = pn(id) + 1;
+  // effecten die meteen iets in het rack veranderen
+  if (id === 'nw_vlan' || id === 'nw_lb') ensureSwitchSlots();
+  ensureShop();
+  SFX.upgrade();
+  toast(`🎓 ${n.name}${n.max > 1 && n.max < Infinity ? ' ' + pn(id) + '/' + n.max : ''}: ${n.desc}`);
+  save(); renderAll(); showCareer();
+}
+
+function graduate() {
+  const gain = ectsFor(state.runEarned);
+  if (!gain) return;
+  if (!confirm(`Afstuderen? Je krijgt ${gain} ECTS.\n\nJe geld, rack, items, verbinding en gewone upgrades worden gereset.\nJe skill tree, ECTS, admin-items en skins blijven.`)) return;
+  const P = state.prestige, old = state, runMs = Date.now() - (old.runStart || Date.now());
+  P.count++; P.ects += gain; P.ectsTotal += gain;
+  P.totalEarned += old.runEarned;
+  P.bestRun = Math.max(P.bestRun, old.runEarned);
+  P.fastestRun = P.fastestRun ? Math.min(P.fastestRun, runMs) : runMs;
+  const keep = { prestige: P, skins: old.skins, skin: old.skin, playerId: old.playerId, redeemed: old.redeemed, muted: old.muted,
+                 seenHelp: true, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
+  const admin = permanentItems(), oldUp = old.up;
+  state = newState();
+  Object.assign(state, keep);
+  // gewone upgrades: Ansible houdt 25%, scripts houden specifieke upgrades
+  if (pn('au_ansible')) for (const u of UPGRADES) { const l = Math.floor((oldUp[u.id] || 0) * 0.25); if (l) state.up[u.id] = l; }
+  const keepUp = (id, max) => { const l = Math.min(oldUp[id] || 0, max); if (l > lvl(id)) state.up[id] = l; };
+  if (pn('au_cron')) keepUp('autoroll', 1);
+  if (pn('au_hot')) keepUp('autoroll', 2);
+  if (pn('au_keys')) { keepUp('filter', 9); keepUp('supplier', 99); }
+  state.hotSwap = old.hotSwap && lvl('autoroll') >= 2;
+  // startbonussen
+  state.money = [CFG.startMoney, 1e6, 1e9, 1e12][pn('ec_grant')] * (1 + 0.1 * pn('inf_ec'));
+  state.rack = Array.from({ length: [1, 3, 6, 10][pn('ec_intern')] }, emptyU);
+  state.conn = [0, 4, 8, 11][pn('ec_kot')];
+  if (pn('au_start')) COMP.forEach(k => { const refs = DEFS_BY[k][2]; state.rack[0][k] = new Item(refs[Math.floor(Math.random() * refs.length)], state.nextId++); });
+  state.inv = admin;
+  ensureSwitchSlots();
+  if (admin.length) optimizeRack();
+  ensureShop();
+  bj = cr = null; sel = null; rolling = false; lastSpin = null;
+  save(); renderAll(); renderGame(); renderStaticReels();
+  ceremony(gain, runMs, old);
+}
+function ceremony(gain, runMs, old) {
+  flash(4); SFX.perfect(); setTimeout(() => SFX.tier(5), 450);
+  const nx = nextRank();
+  showModal(`<div class="diploma">
+    <div class="dtop">🎓 Diploma</div>
+    <div class="dtitle">Proficiat, ${esc(state.playerId)}!</div>
+    <div class="sub">Je bent afgestudeerd en nu</div>
+    <div class="drank">${rankName()}</div>
+    <div class="amt">+${gain} ECTS</div>
+    <div class="dstats"><span>Verdiend<b>${fmt(old.runEarned)}</b></span><span>Rolls<b>${fmtNum(old.rolls, 0)}</b></span><span>Tijd<b>${fmtDur(runMs / 1000)}</b></span></div>
+    <div class="sub" style="margin:10px 0 14px">Volgende rang: ${nx.name} na ${nx.at}× afstuderen.</div>
+    <div class="row2"><button class="btn" data-act="career">Naar je skill tree</button><button class="btn sec" data-act="closeModal">Verder spelen</button></div>
+  </div>`);
+}
+
+/* Botnet: offline rolt de game door (met Hot-Swap) */
+function botnetOffline(awaySec) {
+  if (!pn('ks_botnet') || !state.hotSwap || lvl('autoroll') < 2) return null;
+  const n = Math.min(3000, Math.floor(awaySec / Math.max(0.3, cooldown())));
+  let bought = 0, best = null;
+  for (let i = 0; i < n; i++) {
+    const { item } = generateRoll();
+    state.rolls++;
+    state.pity = item.tier >= 2 ? 0 : state.pity + 1;
+    if (pn('lk_streak')) { if (state.streak > 0) state.streak--; if (item.tier >= 3) state.streak = 10; }
+    if (!best || price(item) > price(best)) best = item;
+    if (!state.rollTiers[item.tier] || state.money < price(item)) continue;
+    const b = bestPlacement(item), up = b.gain > 1e-9 || b.empty;
+    if (!up && shouldAutoSell(item)) continue;
+    state.money -= price(item); bought++;
+    if (up) { const old = getAt(b.loc); setAt(b.loc, item); if (old) toStorage(old, true); }
+    else toStorage(item, true);
+  }
+  if (bought) optimizeRack();
+  incomeCache = totalIncome();
+  return { n, bought, best };
+}
+
+/* Carrière-pop-up */
+function nodeHtml(n) {
+  const st = nodeState(n), l = pn(n.id);
+  const lvTxt = n.max === Infinity ? (l ? `niv. ${l}` : '') : n.max > 1 ? `${l}/${n.max}` : '';
+  const foot = st === 'max' ? '✓ gekocht' : st === 'lock' ? `🔒 vanaf ${rankForLayer(n.layer)}` : st === 'dim' ? '🔗 eerst de node erboven' : `${nodeCost(n)} ECTS`;
+  return `<button class="node n-${st} ${n.layer === 5 ? 'ks' : ''} ${n.layer === 6 ? 'inf' : ''}" data-act="pnode" data-id="${n.id}" ${st === 'buy' ? '' : 'aria-disabled="true"'}>
+    <span class="nn">${n.layer === 5 ? '🔑 ' : n.layer === 6 ? '♾️ ' : ''}${n.name}${lvTxt ? ` <i>${lvTxt}</i>` : ''}</span>
+    <span class="nd">${n.desc}</span><span class="nf">${foot}</span></button>`;
+}
+function showCareer() {
+  const P = state.prestige, gain = ectsFor(state.runEarned), nx = nextRank();
+  const old = $('modal').querySelector('.tree');
+  const keep = old ? [old.scrollLeft, old.scrollTop, $('modal').querySelector('.box').scrollTop] : null;
+  const pct = Math.min(100, state.runEarned / GRAD_MIN * 100);
+  const grad = gain
+    ? `<button class="btn gradbtn" data-act="graduate">🎓 Afstuderen: +${gain} ECTS</button>
+       <div class="sub">Reset: geld, rack, items, verbinding en upgrades. Blijft: skill tree, ECTS, admin-items, skins.</div>`
+    : `<div class="gradbar"><div style="width:${pct}%"></div></div>
+       <div class="sub">Afstuderen kan vanaf ${fmt(GRAD_MIN)} verdiend in één run. Deze run: <b>${fmt(state.runEarned)}</b> (${pct.toFixed(1)}%).</div>`;
+  const rows = br => {
+    const ns = NODES.filter(n => n.br === br.id);
+    let h = '';
+    for (let L = 1; L <= 6; L++) {
+      const row = ns.filter(n => n.layer === L);
+      if (row.length) h += `<div class="trow ${row.length > 1 ? 'two' : ''}">${row.map(nodeHtml).join('')}</div>`;
+    }
+    return h;
+  };
+  showModal(`<div class="career">
+    <div class="chead">
+      <div><div class="sub">Rang</div><div class="crank">🎓 ${rankName()}</div>
+        <div class="sub">${P.count}× afgestudeerd · volgende: ${nx.name} (${nx.at}×)</div></div>
+      <div class="cects"><div class="sub">ECTS</div><div class="big">${fmtNum(P.ects, 0)}</div><div class="sub">${fmtNum(P.ectsTotal, 0)} ooit verdiend</div></div>
+      <button class="ghost cclose" data-act="closeModal" aria-label="Sluiten">✕</button>
+    </div>
+    <div class="cgrad">${grad}</div>
+    <div class="btabs">${BRANCHES.map(b => `<button class="chip ${careerBranch === b.id ? 'on' : ''}" data-act="cbranch" data-b="${b.id}">${b.icon} ${b.name}</button>`).join('')}</div>
+    <div class="tree"><div class="troot">🎓 Afgestudeerd</div>
+      <div class="branches">${BRANCHES.map(b => `<div class="branch ${careerBranch === b.id ? 'active' : ''}"><div class="bname">${b.icon} ${b.name}</div>${rows(b)}</div>`).join('')}</div>
+    </div>
+  </div>`);
+  const box = $('modal').querySelector('.box'); box.classList.add('wide');
+  if (keep) { const t = box.querySelector('.tree'); t.scrollLeft = keep[0]; t.scrollTop = keep[1]; box.scrollTop = keep[2]; }
+}
+function renderCareerBtn() {
+  const b = $('careerBtn'); if (!b) return;
+  b.textContent = `🎓 ${rankName()}`;
+  b.classList.toggle('ready', ectsFor(state.runEarned) > 0);
+  b.title = ectsFor(state.runEarned) ? `Je kunt afstuderen: +${ectsFor(state.runEarned)} ECTS` : 'Carrière & skill tree';
+}
+
+/* =====================================================================
    HELP & TABBLAD-BESCHERMING
    ===================================================================== */
 function showBetaPanel() {
@@ -1906,6 +2235,8 @@ function showBetaPanel() {
     <div class="row2"><button class="btn sm sec" data-act="betaMoney" data-v="1e6">+1M</button><button class="btn sm sec" data-act="betaMoney" data-v="1e9">+1B</button><button class="btn sm sec" data-act="betaMoney" data-v="1e12">+1T</button></div>
     <label>Snel testen</label>
     <div class="row2"><button class="btn sm sec" data-act="betaMaxUp">Alle upgrades max</button><button class="btn sm sec" data-act="betaFast">Glasvezel</button><button class="btn sm sec" data-act="betaEvent">Random event</button></div>
+    <label>Carrière</label>
+    <div class="row2"><button class="btn sm sec" data-act="betaRun">+1T run-verdiend</button><button class="btn sm sec" data-act="betaEcts">+100 ECTS</button><button class="btn sm sec" data-act="betaGrads">+5× afgestudeerd</button></div>
     <label>Save</label>
     <div class="row2"><button class="btn sm sec" data-act="betaCopyMain">Kopieer echte save</button><button class="btn sm sec" data-act="betaReset">Beta-save wissen</button></div>
     <button class="ghost" style="margin-top:14px" data-act="closeModal">Sluiten</button></div>`);
@@ -2006,6 +2337,7 @@ function renderHeader() {
   $('money').textContent = fmt(state.money);
   $('rate').textContent = fmt(incomeCache) + '/s';
   $('muteBtn').textContent = state.muted ? '🔇' : '🔊';
+  renderCareerBtn();
 }
 
 function slotHtml(loc, it, label) {
@@ -2022,7 +2354,7 @@ function slotHtml(loc, it, label) {
 function renderRack() {
   const nm = netMult();
   let h = `<div class="netrow">
-    <div><div class="lbl">Router</div>${slotHtml({ kind: 'router' }, state.router, 'Router')}</div>
+    <div><div class="lbl">Router${pn('nw_router2') ? 's' : ''}</div>${slotHtml({ kind: 'router' }, state.router, 'Router')}${pn('nw_router2') ? '<div style="height:6px"></div>' + slotHtml({ kind: 'router2' }, state.router2, '2e router') : ''}</div>
     <div><div class="lbl">Switches</div><div class="sws">${state.switches.map((s, i) => slotHtml({ kind: 'switch', i }, s, 'Switch')).join('')}</div></div>
   </div>`;
   state.rack.forEach((u, i) => {
@@ -2045,7 +2377,7 @@ function renderRack() {
   const n = state.rack.length;
   if (n >= CFG.maxUnits) $('buyU').textContent = `Rack vol (${CFG.maxUnits}U)`;
   else {
-    const newSw = Math.ceil((n + 1) / CFG.switchEveryU) > Math.ceil(n / CFG.switchEveryU);
+    const newSw = swSlots(n + 1) > swSlots(n);
     $('buyU').textContent = `+ Koop U${n + 1} · ${fmt(unitCost())}${newSw ? ' (+ switch-slot)' : ''}`;
   }
 }
@@ -2085,12 +2417,13 @@ function renderRollMeta() {
   const parts = [`🍀 Luck ×${fmtNum(luck())}`];
   if (lvl('multi')) parts.push(`🧵 Beste van ${lvl('multi') + 1}`);
   if (lvl('golden')) {
-    const left = CFG.goldenEvery - (state.rolls % CFG.goldenEvery);
+    const left = goldenEvery() - (state.rolls % goldenEvery());
     parts.push(left === 1 ? '🪙 <b style="color:#facc15">Volgende roll is goud!</b>' : `🪙 Gouden roll over ${left}`);
   }
-  if (lvl('pity')) parts.push(`📜 Rare+ binnen ${Math.max(1, PITY[lvl('pity')] - state.pity)}`);
+  if (lvl('pity')) parts.push(`📜 Rare+ binnen ${Math.max(1, pityLimit() - state.pity)}`);
+  if (pn('lk_streak') && state.streak > 0) parts.push(`🔥 Lucky streak: nog ${state.streak}`);
   if (lvl('oc')) parts.push(`⚡ ${lvl('oc') * 2}% OC`);
-  if (lvl('mutlab')) parts.push(`🧪 ${Math.round(mutChanceAt(lvl('mutlab')) * 100)}% mutatie`);
+  if (lvl('mutlab') || pn('hw_rad')) parts.push(`🧪 ${Math.round((mutChanceAt(lvl('mutlab')) + 0.05 * pn('hw_rad')) * 100)}% mutatie`);
   if (lvl('glitch')) parts.push(`👾 ${fmtNum(lvl('glitch') * 0.1, 1)}% glitch`);
   setHTML($('rstat'), parts.map(p => `<span>${p}</span>`).join(''));
   $('rollBtn').classList.toggle('golden', nextGolden());
@@ -2119,6 +2452,7 @@ function renderConn() {
 }
 
 let shopTab = 'up';
+let careerBranch = 'hw';
 function renderShop() {
   setHTML($('shopTabs'), [['up', '⬆️ Upgrades'], ['boosts', '⚡ Boosts <span class="sub" id="shopTimer"></span>'], ['skins', '🎨 Rack-skins']]
     .map(([k, n]) => `<button class="chip ${shopTab === k ? 'on' : ''}" data-act="shopTab" data-t="${k}">${n}</button>`).join(''));
@@ -2241,7 +2575,8 @@ function frame() {
 let lastTick = Date.now();
 setInterval(() => {
   const now = Date.now();
-  state.money += incomeCache * (now - lastTick) / 1000;
+  const gain = incomeCache * (now - lastTick) / 1000;
+  state.money += gain; state.runEarned += gain;
   lastTick = now;
   renderHeader(); updateAfford();
   tryAutoRoll(); // in de interval, zodat auto-roll ook doorloopt als het tabblad op de achtergrond staat
@@ -2302,8 +2637,15 @@ document.addEventListener('click', e => {
     case 'mute': state.muted = !state.muted; save(); renderHeader(); break;
     case 'saveMenu': showSaveMenu(); break;
     case 'help': showHelp(); break;
+    case 'career': showCareer(); break;
+    case 'cbranch': careerBranch = el.dataset.b; showCareer(); break;
+    case 'pnode': buyNode(el.dataset.id); break;
+    case 'graduate': graduate(); break;
     case 'betaPanel': showBetaPanel(); break;
     case 'betaMoney': state.money += +el.dataset.v; save(); renderAll(); toast('🧪 +' + fmt(+el.dataset.v)); break;
+    case 'betaRun': state.runEarned += 1e12; save(); renderAll(); toast('🧪 +1T run-verdiend'); break;
+    case 'betaEcts': state.prestige.ects += 100; state.prestige.ectsTotal += 100; save(); renderAll(); toast('🧪 +100 ECTS'); break;
+    case 'betaGrads': state.prestige.count += 5; save(); renderAll(); toast(`🧪 Rang: ${rankName()}`); break;
     case 'betaMaxUp': UPGRADES.forEach(u => state.up[u.id] = u.max); save(); renderAll(); toast('🧪 Alle upgrades op max'); break;
     case 'betaFast': state.conn = CONN.length - 1; state.rollReadyAt = 0; save(); renderAll(); toast('🧪 Glasvezel'); break;
     case 'betaEvent': startEvent(EVENTS.filter(e => e.w > 0)[Math.floor(Math.random() * EVENTS.filter(e => e.w > 0).length)]); closeModal(); break;
@@ -2382,10 +2724,13 @@ incomeCache = totalIncome();
   if (!state.seenHelp) { state.seenHelp = true; showHelp(); }
   else if (away > 30 && incomeCache > 0) {
     const earned = incomeCache * away;
-    state.money += earned;
+    state.money += earned; state.runEarned += earned;
+    const bn = botnetOffline(away);
     showModal(`<div style="font-weight:700;font-size:17px">Welkom terug!</div>
       <div class="sub" style="margin-top:6px">Je servers draaiden ${fmtDur(away)} door${elapsedMs > maxMs ? ` (max ${offlineMax()}u)` : ''}.</div>
-      <div class="amt">+${fmt(earned)}</div><button class="btn full" data-act="closeModal">Lekker</button>`);
+      <div class="amt">+${fmt(earned)}</div>
+      ${bn ? `<div class="sub" style="margin:-6px 0 14px">🤖 Botnet: ${fmtNum(bn.n, 0)} rolls, ${bn.bought} gekocht${bn.best ? ` · beste vondst: ${TIERS[bn.best.tier].name} ${esc(bn.best.name)}` : ''}</div>` : ''}
+      <button class="btn full" data-act="closeModal">Lekker</button>`);
   }
 }
 renderAll();
