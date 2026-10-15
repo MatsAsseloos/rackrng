@@ -879,6 +879,67 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
   .casbody .cfine{display:none}
   .cq{margin-left:0}
 }
+/* Carrière-venster */
+#win-career{--shop:#ffb547}
+#win-career .wbar .ico{color:var(--vfd)}
+.wbody.careerbody{display:grid; grid-template-columns:300px 1fr; padding:0; overflow:hidden}
+.cprof{overflow:auto; padding:16px; display:flex; flex-direction:column; gap:12px; border-right:1px solid #22324a; background:linear-gradient(180deg,#121c2c,#0c1420)}
+.cbadge{text-align:center; padding:6px 0 2px}
+.cring{--p:0; width:92px; height:92px; margin:0 auto 8px; border-radius:50%; display:grid; place-items:center;
+  background:radial-gradient(circle,#1d2a40 0 58%,transparent 59%), conic-gradient(var(--vfd) calc(var(--p)*1%),#25344c 0); box-shadow:0 0 28px -8px rgba(255,181,71,.6)}
+.cring .ico{width:40px; height:40px; color:var(--vfd)}
+.crk{font:700 24px var(--cond); color:var(--vfd); letter-spacing:.5px}
+.cnext{font-size:12px; color:#8ea2bd; margin-top:3px} .cnext b{color:#e6eefb}
+.cects2{display:flex; flex-direction:column; align-items:center; padding:10px; border-radius:12px; border:1px solid rgba(255,181,71,.3); background:linear-gradient(180deg,#221b10,#15110a)}
+.cects2 span{font:600 10.5px var(--mono); letter-spacing:1.5px; color:#b08a4a}
+.cects2 b{font:700 30px var(--mono); color:var(--vfd); line-height:1.1}
+.cects2 small{font-size:11px; color:#8a7553}
+.cgrad2 .gradbtn{display:flex; justify-content:space-between; align-items:center}
+.cgrad2 .sub{font-size:11.5px; margin-top:6px}
+.cgl{display:flex; justify-content:space-between; font:500 12px var(--cond); color:#cfd9e8; margin-bottom:5px} .cgl b{font-family:var(--mono); color:var(--vfd)}
+.cstats{display:flex; flex-direction:column; gap:6px; padding:10px; border-radius:10px; border:1px solid #22324a; background:rgba(5,10,18,.5); font-size:12px}
+.cstats div{display:flex; justify-content:space-between; color:#8ea2bd} .cstats b{font:600 12px var(--mono); color:#e6eefb}
+.cdet{padding:12px; border-radius:12px; border:1px solid color-mix(in srgb,var(--bc,#33465f) 50%,#22324a); background:linear-gradient(180deg,color-mix(in srgb,var(--bc,#33465f) 12%,#121c2c),#0f1724); display:flex; flex-direction:column; gap:6px}
+.cdet.empty{color:#7f93ad; font-size:12.5px; text-align:center; border-style:dashed}
+.cdh{display:flex; justify-content:space-between; font:600 11px var(--mono); color:var(--bc)}
+.cdl{color:#7f93ad}
+.cdn{font:700 19px var(--cond); color:#f1f5fb}
+.cdlv{font:500 11px var(--mono); color:#8ea2bd; text-transform:uppercase; letter-spacing:.5px}
+.cdd{font-size:13px; color:#d2dceb; line-height:1.45}
+.cdw{font-size:12px; color:#a9b8cc; padding:6px 8px; border-radius:7px; background:rgba(0,0,0,.25)}
+.cdbuy{display:flex; justify-content:space-between; width:100%; padding:9px 12px}
+.ctreewrap{display:flex; flex-direction:column; min-width:0; min-height:0}
+.ctree{flex:1; overflow:auto; padding:6px 10px 20px; background:radial-gradient(ellipse at 50% 0%,rgba(255,181,71,.06),transparent 60%); scrollbar-width:thin}
+.ccanvas{position:relative; margin:0 auto}
+.clines{position:absolute; inset:0; pointer-events:none}
+.cbh{position:absolute; top:14px; text-align:center; font:700 13px var(--cond); color:var(--bc); letter-spacing:.5px; text-transform:uppercase}
+.cband{position:absolute; left:0; right:0; border-radius:12px; background:repeating-linear-gradient(135deg,rgba(255,255,255,.025) 0 8px,transparent 8px 16px); border:1px dashed #263750}
+.cband span{position:absolute; left:8px; top:6px; font:600 10.5px var(--mono); color:#7f93ad; background:#0f1826; padding:1px 7px; border-radius:6px; border:1px solid #263750}
+.cn{position:absolute; width:98px; margin-left:-49px; margin-top:-26px; display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:0; padding:0; cursor:pointer; color:#cfd9e8}
+.cnc{width:52px; height:52px; border-radius:50%; display:grid; place-items:center; font:700 12px var(--mono); color:#fff; background:#141f30; border:2px solid #2d3f5a; transition:transform .15s, box-shadow .15s}
+.cnn{font:600 11.5px var(--cond); line-height:1.15; text-align:center; max-width:98px; hyphens:auto; -webkit-hyphens:auto}
+.cnp{font:600 10px var(--mono); color:var(--vfd); margin-top:-2px}
+.cn:hover .cnc{transform:scale(1.08)}
+.cn.s-max .cnc{background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--bc) 85%,#fff),var(--bc)); border-color:#fff; color:#08101c; box-shadow:0 0 18px -2px var(--bc)}
+.cn.s-buy .cnc{border-color:var(--bc); box-shadow:0 0 0 4px color-mix(in srgb,var(--bc) 20%,transparent); animation:nodepulse 1.6s ease-in-out infinite}
+.cn.s-poor .cnc{border-color:color-mix(in srgb,var(--bc) 55%,#2d3f5a)}
+.cn.s-dim,.cn.s-lock{color:#5f7290} .cn.s-dim .cnc,.cn.s-lock .cnc{opacity:.55}
+.cn.ks .cnc{width:62px; height:62px; border-radius:16px; transform:rotate(45deg); font-size:20px}
+.cn.ks .cnc>*{transform:rotate(-45deg)}
+.cn.ks:hover .cnc{transform:rotate(45deg) scale(1.08)}
+.cn.inf .cnc{border-style:dashed}
+.cn.sel .cnc{outline:2px solid #fff; outline-offset:3px}
+.cn.bought .cnc{animation:nodebuy .6s ease-out}
+@keyframes nodepulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--bc) 8%,transparent)}}
+@keyframes nodebuy{0%{transform:scale(1.4); box-shadow:0 0 40px 10px var(--bc)}100%{transform:scale(1)}}
+.cbtabs{display:none}
+@media (max-width:900px){
+  .wbody.careerbody{display:block; overflow:visible}
+  .cprof{border-right:0; border-bottom:1px solid #22324a}
+  .cbtabs{display:flex; gap:6px; overflow-x:auto; padding:10px}
+  .ctree{overflow:visible}
+}
+@media (prefers-reduced-motion: reduce){ .cn .cnc{animation:none !important} }
 </style>
 </head>
 <body class="os" data-tab="home">
@@ -1009,6 +1070,17 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
           <div class="cq"><button class="chip" data-act="betQ" data-q="0.25">¼</button><button class="chip" data-act="betQ" data-q="0.5">½</button><button class="chip" data-act="betQ" data-q="1">Max</button><button class="chip" data-act="betClr">Wis</button></div>
         </div>
         <div id="cgame"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="win float" id="win-career" hidden aria-label="Carrière">
+    <div class="wbar"><svg class="ico"><use href="#g-cap"/></svg><span class="wt">carriere.app</span><span class="wmeta" id="careerMeta"></span><span class="wctl"><button data-act="minWin" data-w="career" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="career" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody careerbody">
+      <aside class="cprof" id="cprof"></aside>
+      <div class="ctreewrap">
+        <div class="cbtabs" id="cbtabs"></div>
+        <div class="ctree" id="ctree"></div>
       </div>
     </div>
   </section>
@@ -2708,7 +2780,9 @@ function buyNode(id) {
   ensureShop();
   SFX.upgrade();
   toast(`🎓 ${n.name}${n.max > 1 && n.max < Infinity ? ' ' + pn(id) + '/' + n.max : ''}: ${n.desc}`);
-  save(); renderAll(); showCareer();
+  careerSel = id;
+  save(); renderAll();
+  const nn = document.querySelector(`[data-node="${id}"]`); if (nn) { nn.classList.remove('bought'); void nn.offsetWidth; nn.classList.add('bought'); }
 }
 
 function graduate() {
@@ -2783,48 +2857,70 @@ function botnetOffline(awaySec) {
   return { n, bought, best };
 }
 
-/* Carrière-pop-up */
-function nodeHtml(n) {
-  const st = nodeState(n), l = pn(n.id);
-  const lvTxt = n.max === Infinity ? (l ? `niv. ${l}` : '') : n.max > 1 ? `${l}/${n.max}` : '';
-  const foot = st === 'max' ? '✓ gekocht' : st === 'lock' ? `🔒 vanaf ${rankForLayer(n.layer)}` : st === 'dim' ? '🔗 eerst de node erboven' : `${nodeCost(n)} ECTS`;
-  return `<button class="node n-${st} ${n.layer === 5 ? 'ks' : ''} ${n.layer === 6 ? 'inf' : ''}" data-act="pnode" data-id="${n.id}" ${st === 'buy' ? '' : 'aria-disabled="true"'}>
-    <span class="nn">${n.layer === 5 ? '🔑 ' : n.layer === 6 ? '♾️ ' : ''}${n.name}${lvTxt ? ` <i>${lvTxt}</i>` : ''}</span>
-    <span class="nd">${n.desc}</span><span class="nf">${foot}</span></button>`;
+/* Carrière-venster: profiel + boom */
+const BR_COL = { hw: '#4ea1ff', lk: '#3ddc97', nw: '#22d3ee', au: '#a78bfa', ec: '#ffb547' };
+let careerSel = null;
+const showCareer = () => openWin('career');
+function nodePos(n, colW, rowH, bi) {   // middelpunt van een node in de boom
+  const fx = n.layer <= 3 ? (n.col ? 0.75 : 0.25) : 0.5;
+  return { x: bi * colW + colW * fx, y: 120 + (n.layer - 1) * rowH };
 }
-function showCareer() {
-  const P = state.prestige, gain = ectsFor(state.runEarned), nx = nextRank();
-  const old = $('modal').querySelector('.tree');
-  const keep = old ? [old.scrollLeft, old.scrollTop, $('modal').querySelector('.box').scrollTop] : null;
-  const pct = Math.min(100, state.runEarned / GRAD_MIN * 100);
-  const grad = gain
-    ? `<button class="btn gradbtn" data-act="graduate">🎓 Afstuderen: +${gain} ECTS</button>
-       <div class="sub">Reset: geld, rack, items, verbinding en upgrades. Blijft: skill tree, ECTS, admin-items, skins.</div>`
-    : `<div class="gradbar"><div style="width:${pct}%"></div></div>
-       <div class="sub">Afstuderen kan vanaf ${fmt(GRAD_MIN)} verdiend in één run. Deze run: <b>${fmt(state.runEarned)}</b> (${pct.toFixed(1)}%).</div>`;
-  const rows = br => {
-    const ns = NODES.filter(n => n.br === br.id);
-    let h = '';
-    for (let L = 1; L <= 6; L++) {
-      const row = ns.filter(n => n.layer === L);
-      if (row.length) h += `<div class="trow ${row.length > 1 ? 'two' : ''}">${row.map(nodeHtml).join('')}</div>`;
+function renderCareer() {
+  const w = $('win-career'); if (!w || w.hidden) return;
+  const P = state.prestige, gain = ectsFor(state.runEarned), nx = nextRank(), pct = Math.min(100, state.runEarned / GRAD_MIN * 100);
+  const prevAt = (CAREER.filter(([n]) => n <= P.count).pop() || [0])[0], rp = Math.min(100, (P.count - prevAt) / Math.max(1, nx.at - prevAt) * 100);
+  const sel = careerSel && NODE[careerSel];
+  let det = '<div class="cdet empty">Klik op een node in de boom om te zien wat hij doet.</div>';
+  if (sel) {
+    const st = nodeState(sel), l = pn(sel.id), br = BRANCHES.find(b => b.id === sel.br);
+    const lv = sel.max === Infinity ? `niveau ${l} · oneindig` : sel.max > 1 ? `niveau ${l}/${sel.max}` : l ? 'gekocht' : 'eenmalig';
+    const why = { lock: `🔒 Vergrendeld tot je <b>${rankForLayer(sel.layer)}</b> bent (${LAYER_RANK[sel.layer]}× afgestudeerd).`, dim: '🔗 Koop eerst de node erboven.',
+                  poor: `Je hebt ${nodeCost(sel) - Math.floor(P.ects)} ECTS te weinig.`, max: '✓ Volledig gekocht.' }[st] || '';
+    det = `<div class="cdet" style="--bc:${BR_COL[sel.br]}">
+      <div class="cdh"><span class="cdb">${br.icon} ${br.name}</span><span class="cdl">${['', 'laag 1', 'laag 2', 'laag 3', 'laag 4', '🔑 keystone', '♾️ oneindig'][sel.layer]}</span></div>
+      <div class="cdn">${sel.name}</div><div class="cdlv">${lv}</div>
+      <div class="cdd">${sel.desc}</div>
+      ${why ? `<div class="cdw">${why}</div>` : ''}
+      ${st === 'max' ? '' : `<button class="btn cdbuy" data-act="buyNode" data-id="${sel.id}" ${st === 'buy' ? '' : 'disabled'}><span>Koop</span><b>${nodeCost(sel)} ECTS</b></button>`}
+    </div>`;
+  }
+  setHTML($('cprof'), `<div class="cbadge"><div class="cring" style="--p:${rp}">${ico('g-cap')}</div>
+      <div class="crk">${rankName()}</div><div class="sub">${P.count}× afgestudeerd</div>
+      <div class="cnext">volgende: <b>${nx.name}</b> bij ${nx.at}×</div></div>
+    <div class="cects2"><span>ECTS</span><b>${fmtNum(P.ects, 0)}</b><small>${fmtNum(P.ectsTotal, 0)} ooit verdiend</small></div>
+    <div class="cgrad2">${gain ? `<button class="btn gradbtn" data-act="graduate">🎓 Afstuderen <b>+${gain} ECTS</b></button>
+        <div class="sub">Reset geld, rack, items, verbinding, boosts en upgrades. Je boom, ECTS, admin-items en skins blijven.</div>`
+      : `<div class="cgl"><span>Naar je diploma</span><b>${pct.toFixed(1)}%</b></div><div class="gradbar"><div style="width:${pct}%"></div></div>
+        <div class="sub">Afstuderen vanaf ${fmt(GRAD_MIN)} verdiend in één run. Deze run: <b>${fmt(state.runEarned)}</b>.</div>`}</div>
+    <div class="cstats"><div><span>Beste run</span><b>${fmt(P.bestRun)}</b></div><div><span>Snelste run</span><b>${P.fastestRun ? fmtDur(P.fastestRun / 1000) : '–'}</b></div><div><span>Totaal verdiend</span><b>${fmt(P.totalEarned + state.runEarned)}</b></div></div>
+    ${det}`);
+  // boom
+  const mob = isMobile(), brs = mob ? BRANCHES.filter(b => b.id === careerBranch) : BRANCHES;
+  setHTML($('cbtabs'), mob ? BRANCHES.map(b => `<button class="chip ${careerBranch === b.id ? 'on' : ''}" data-act="cbranch" data-b="${b.id}">${b.icon} ${b.name}</button>`).join('') : '');
+  const cw = ($('ctree').clientWidth || 1000) - 20, colW = mob ? Math.max(260, cw) : Math.max(184, Math.floor(cw / 5)), rowH = 112, Wt = colW * brs.length, Ht = 120 + 5 * rowH + 70;
+  let lines = '', nodes = '', bands = '';
+  for (let L = 1; L <= 6; L++) if (!layerOpen(L)) {
+    const y = 120 + (L - 1) * rowH;
+    bands += `<div class="cband" style="top:${y - rowH / 2 + 6}px;height:${rowH - 12}px"><span>🔒 vanaf ${rankForLayer(L)} · ${LAYER_RANK[L]}× afgestudeerd</span></div>`;
+  }
+  brs.forEach((b, bi) => {
+    const col = BR_COL[b.id], ns = NODES.filter(n => n.br === b.id), cx = bi * colW + colW / 2;
+    nodes += `<div class="cbh" style="left:${bi * colW}px;width:${colW}px;--bc:${col}">${b.icon} ${b.name}</div>`;
+    
+    for (const n of ns) {
+      const p = nodePos(n, colW, rowH, bi), reqs = nodeReq(n);
+      const from = reqs.length ? reqs.map(r => nodePos(r, colW, rowH, bi)) : [{ x: cx, y: 44 }];
+      const lit = reqs.length ? reqs.every(r => pn(r.id)) && pn(n.id) : pn(n.id);
+      for (const f of from) lines += `<path d="M${f.x},${f.y + (reqs.length ? 26 : 0)} C${f.x},${(f.y + p.y) / 2} ${p.x},${(f.y + p.y) / 2} ${p.x},${p.y - 26}" fill="none" stroke="${lit ? col : '#2a3a52'}" stroke-width="${lit ? 3 : 2}" ${lit ? `filter="url(#cglow)"` : 'stroke-dasharray="4 4"'}/>`;
+      const st = nodeState(n), l = pn(n.id);
+      const inner = n.layer === 5 ? '🔑' : n.layer === 6 ? (l ? l : '∞') : n.max > 1 ? `${l}/${n.max}` : l ? '✓' : '';
+      nodes += `<button class="cn s-${st} ${n.layer === 5 ? 'ks' : ''} ${n.layer === 6 ? 'inf' : ''} ${careerSel === n.id ? 'sel' : ''}" data-act="pnode" data-id="${n.id}" data-node="${n.id}" style="left:${p.x}px;top:${p.y}px;--bc:${col}" title="${n.name}: ${n.desc}">
+        <span class="cnc">${inner}</span><span class="cnn">${n.name}</span>${st === 'buy' ? `<span class="cnp">${nodeCost(n)} ECTS</span>` : ''}</button>`;
     }
-    return h;
-  };
-  showModal(`<div class="career">
-    <div class="chead">
-      <div><div class="sub">Rang</div><div class="crank">🎓 ${rankName()}</div>
-        <div class="sub">${P.count}× afgestudeerd · volgende: ${nx.name} (${nx.at}×)</div></div>
-      <div class="cects"><div class="sub">ECTS</div><div class="big">${fmtNum(P.ects, 0)}</div><div class="sub">${fmtNum(P.ectsTotal, 0)} ooit verdiend</div></div>
-    </div>
-    <div class="cgrad">${grad}</div>
-    <div class="btabs">${BRANCHES.map(b => `<button class="chip ${careerBranch === b.id ? 'on' : ''}" data-act="cbranch" data-b="${b.id}">${b.icon} ${b.name}</button>`).join('')}</div>
-    <div class="tree"><div class="troot">🎓 Afgestudeerd</div>
-      <div class="branches">${BRANCHES.map(b => `<div class="branch ${careerBranch === b.id ? 'active' : ''}"><div class="bname">${b.icon} ${b.name}</div>${rows(b)}</div>`).join('')}</div>
-    </div>
-  </div>`);
-  const box = $('modal').querySelector('.box'); box.classList.add('wide');
-  if (keep) { const t = box.querySelector('.tree'); t.scrollLeft = keep[0]; t.scrollTop = keep[1]; box.scrollTop = keep[2]; }
+  });
+  setHTML($('ctree'), `<div class="ccanvas" style="width:${Wt}px;height:${Ht}px">${bands}
+    <svg class="clines" width="${Wt}" height="${Ht}"><defs><filter id="cglow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${lines}</svg>${nodes}</div>`);
+  $('careerMeta').textContent = `${fmtNum(P.ects, 0)} ECTS`;
 }
 function renderCareerBtn() {
   const b = $('careerBtn'); if (!b) return;
@@ -2857,9 +2953,9 @@ function itemIconId(it) {
 const itemIcon = (it, cls = 'iico') => ico(itemIconId(it), cls);
 
 /* Vensters */
-const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 820, h: 600 }, casino: { w: 940, h: 660 }, term: { w: 620, h: 420 } };
-const WIN_TITLE = { up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
-const WIN_ICON = { up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
+const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 820, h: 600 }, casino: { w: 940, h: 660 }, career: { w: 1260, h: 760 }, term: { w: 620, h: 420 } };
+const WIN_TITLE = { career: 'carriere.app', up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
+const WIN_ICON = { career: 'g-cap', up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
 const openWins = new Set();
 let zTop = 30, focusedWin = null;
 function openWin(id) {
@@ -2872,6 +2968,7 @@ function openWin(id) {
   openWins.add(id);
   focusWin(id);
   if (id === 'term') renderTerm(true);
+  if (id === 'career') renderCareer();
 }
 function placeWin(el, id) {
   const d = $('desktop').getBoundingClientRect(), n = openWins.size;
@@ -2926,6 +3023,7 @@ function setMobileTab(t) {
   Object.keys(WINS).forEach(id => { $('win-' + id).hidden = t !== id; });
   document.querySelectorAll('.mtabs [data-act=mtab]').forEach(b => b.classList.toggle('on', b.dataset.t === t));
   if (t === 'term') renderTerm(true);
+  if (t === 'career') renderCareer();
   closeStart();
   scrollTo(0, 0);
 }
@@ -3082,7 +3180,7 @@ if (ui.hum) document.addEventListener('pointerdown', function once() { setHum(tr
 
 // Titels van de dialoogvensters (als 'bestanden' in RackOS)
 const setModalTitle = t => { const e = $('modal').querySelector('.dbar span'); if (e) e.textContent = t; };
-for (const [fn, t] of [['showCareer', 'carriere.app'], ['ceremony', 'diploma.pdf'], ['showHelp', 'help.txt'], ['showAdmin', 'admin.sh'],
+for (const [fn, t] of [['ceremony', 'diploma.pdf'], ['showHelp', 'help.txt'], ['showAdmin', 'admin.sh'],
                        ['showRedeem', 'code.exe'], ['showSaveMenu', 'save.dat'], ['showBetaPanel', 'testtools.sh']]) {
   const f = window[fn]; if (typeof f !== 'function') continue;
   window[fn] = function (...a) { const r = f.apply(this, a); setModalTitle(t); return r; };
@@ -3464,7 +3562,7 @@ function updateAfford() {
 
 function renderAll() {
   incomeCache = totalIncome();
-  renderHeader(); renderRack(); renderConn(); renderUpgrades(); renderShop(); renderInv(); renderSel(); renderResult(); renderRollMeta(); renderOdds();
+  renderHeader(); renderRack(); renderConn(); renderUpgrades(); renderShop(); renderCareer(); renderInv(); renderSel(); renderResult(); renderRollMeta(); renderOdds();
   renderCasinoControls(); renderEvent(true);
   updateAfford();
 }
@@ -3574,9 +3672,10 @@ document.addEventListener('click', e => {
     case 'startMenu': toggleStart(); break;
     case 'toggleCine': ui.cine = !ui.cine; saveUi(); renderStart(); toast(`Filmische reveals ${ui.cine ? 'aan' : 'uit'}`); break;
     case 'toggleHum': ui.hum = !ui.hum; saveUi(); setHum(ui.hum); renderStart(); break;
-    case 'career': closeStart(); showCareer(); break;
-    case 'cbranch': careerBranch = el.dataset.b; showCareer(); break;
-    case 'pnode': buyNode(el.dataset.id); break;
+    case 'career': closeStart(); closeModal(); openWin('career'); break;
+    case 'cbranch': careerBranch = el.dataset.b; renderCareer(); break;
+    case 'pnode': careerSel = el.dataset.id; renderCareer(); break;
+    case 'buyNode': buyNode(el.dataset.id); break;
     case 'graduate': graduate(); break;
     case 'betaPanel': closeStart(); showBetaPanel(); break;
     case 'betaMoney': state.money += +el.dataset.v; save(); renderAll(); toast('🧪 +' + fmt(+el.dataset.v)); break;
