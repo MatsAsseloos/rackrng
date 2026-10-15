@@ -684,6 +684,28 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
 @media (max-width:540px){ .sico{display:none} .slot.filled{gap:0} }
 @media (prefers-reduced-motion: reduce){ [data-t]::after{animation:none !important} [data-t="6"]{animation:none} .win.float,.startmenu{animation:none} }
 
+/* Boost-shop v2 + gereedschapskist + coming soon */
+.bcat{grid-column:1/-1; display:flex; align-items:baseline; gap:10px; margin:6px 0 -2px; font:700 13px var(--cond); letter-spacing:.5px; text-transform:uppercase; color:#cfe0f7}
+.bcat:first-child{margin-top:0}
+.bcard{flex-wrap:wrap; row-gap:8px}
+.bcard .ub{flex:1 1 0; min-width:0}
+.bbtns{flex:1 1 100%; display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,.06)}
+.bbtns:has(.brow:only-child){justify-content:flex-end}
+.bprice{font:600 13px var(--mono); color:var(--vfd)}
+.brow{display:flex; gap:4px}
+.ghost.sm{padding:4px 7px; display:inline-grid; place-items:center}
+.ghost.sm .ico{width:15px; height:15px}
+#invViews{margin-top:0}
+#invViews .ico{width:14px; height:14px; vertical-align:-2px}
+.soon{text-align:center; padding:22px 18px}
+.soon h3{margin:6px 0 4px; font:700 20px var(--cond); color:#e6eefb}
+.soonart{width:64px; height:64px; color:#9cc8ff; filter:drop-shadow(0 0 14px rgba(78,161,255,.5))}
+.soonlist{display:flex; flex-direction:column; gap:8px; max-width:340px; margin:16px auto 0; text-align:left}
+.soonlist>div{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:9px 12px; border:1px solid #2b3d58; border-radius:8px; background:rgba(10,18,30,.6)}
+.redact{font-family:var(--mono); color:#33465f; letter-spacing:-1px}
+.blinkcur{display:inline-block; width:8px; height:13px; background:var(--vfd); vertical-align:-2px; animation:curblink 1s steps(1) infinite}
+@keyframes curblink{50%{opacity:0}}
+.soonicon .ico{color:var(--vfd)}
 </style>
 </head>
 <body class="os" data-tab="home">
@@ -732,6 +754,7 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
     <button class="dicon" data-act="openWin" data-w="casino"><svg class="ico"><use href="#g-dice"/></svg><span>Casino</span></button>
     <button class="dicon" data-act="career"><svg class="ico"><use href="#g-cap"/></svg><span>Carrière</span></button>
     <button class="dicon" data-act="openWin" data-w="term"><svg class="ico"><use href="#g-term"/></svg><span>Terminal</span></button>
+    <button class="dicon soonicon" data-act="openWin" data-w="soon"><svg class="ico"><use href="#g-home"/></svg><span>Binnenkort</span></button>
   </nav>
 
   <main class="tiles">
@@ -772,10 +795,14 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
   <section class="win float" id="win-inv" hidden aria-label="Opslag">
     <div class="wbar"><svg class="ico"><use href="#g-box"/></svg><span class="wt">opslag/</span><span class="wmeta" id="invCount"></span><span class="wctl"><button data-act="minWin" data-w="inv" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="inv" aria-label="Sluiten">✕</button></span></div>
     <div class="wbody">
+      <div class="filters" id="invViews"></div>
+      <div id="invHw">
       <div class="invtools"><span class="sub" title="Verkoopt automatisch wat Hot-Swap naar je opslag stuurt. Mutaties en admin-items worden nooit automatisch verkocht.">Auto-verkoop</span><select id="autoSell"><option value="-1">uit</option><option value="0">Common</option><option value="1">t/m Uncommon</option><option value="2">t/m Rare</option><option value="3">t/m Epic</option></select><span class="sub">Verkoop alles t/m</span><select id="bulkTier"></select><button class="btn sm sec" data-act="bulkSell" id="bulkBtn">Verkoop</button></div>
       <div class="sub" style="margin-top:8px">Klik een item en daarna een gemarkeerd slot in je rack om het te plaatsen of te wisselen.</div>
       <div class="filters" id="filters"></div>
       <div class="inv" id="inv"></div>
+      </div>
+      <div class="ups" id="kist" hidden></div>
     </div>
   </section>
 
@@ -800,6 +827,21 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
   <section class="win float" id="win-term" hidden aria-label="Terminal">
     <div class="wbar"><svg class="ico"><use href="#g-term"/></svg><span class="wt">terminal</span><span class="wmeta">systeemlog</span><span class="wctl"><button data-act="minWin" data-w="term" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="term" aria-label="Sluiten">✕</button></span></div>
     <div class="wbody term"><div id="termlog"></div></div>
+  </section>
+
+  <section class="win float" id="win-soon" hidden aria-label="Binnenkort">
+    <div class="wbar"><svg class="ico"><use href="#g-home"/></svg><span class="wt">coming_soon.txt</span><span class="wmeta">roadmap</span><span class="wctl"><button data-act="minWin" data-w="soon" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="soon" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody soon">
+      <svg class="soonart"><use href="#g-home"/></svg>
+      <h3>Binnenkort in RackOS</h3>
+      <p class="sub">Er wordt achter de schermen gebouwd. Hou deze map in de gaten.</p>
+      <div class="soonlist">
+        <div><span class="redact">████████████</span><span class="badge b-good">in ontwikkeling</span></div>
+        <div><span class="redact">█████████</span><span class="badge">gepland</span></div>
+        <div><span class="redact">██████████████</span><span class="badge">idee</span></div>
+      </div>
+      <p class="sub" style="margin-top:14px">&gt; toegang geweigerd_<span class="blinkcur"></span></p>
+    </div>
   </section>
 
   <div id="eventBar"></div>
@@ -834,6 +876,7 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
     <button data-act="career"><svg class="ico"><use href="#g-cap"/></svg>Carrière</button>
     <button data-act="openWin" data-w="term"><svg class="ico"><use href="#g-term"/></svg>Terminal</button>
     <button data-act="redeem"><svg class="ico"><use href="#g-gift"/></svg>Code inwisselen</button>
+    <button data-act="openWin" data-w="soon"><svg class="ico"><use href="#g-home"/></svg>Binnenkort</button>
   </div>
   <div class="smlist">
     <button data-act="toggleCine"><svg class="ico"><use href="#g-film"/></svg>Filmische reveals<span class="smstate" id="smCine"></span></button>
@@ -953,7 +996,7 @@ const UPGRADES = [
   { id: 'glitch',   icon: '👾', name: 'Glitch in de Matrix', base: 50000, growth: 2.8, max: 10,
     desc: 'Kans dat een gekocht item dubbel geleverd wordt.',    eff: l => `${fmtNum(l * 0.1, 1)}% kans op een gratis kopie` },
   { id: 'supplier', icon: '📦', name: 'Leverancierscontract', base: 5000, growth: 4, max: 6,
-    desc: 'Meer plekken en zeldzamere boosts in de boost-shop.', eff: l => `${shopSlots(l)} plekken · zeldzaamheid ×${fmtNum(shopLuck(l))}` },
+    desc: 'Zeldzamere boosts in de boost-shop en meer plek in je gereedschapskist.', eff: l => `zeldzaamheid ×${fmtNum(shopLuck(l))} · kist ${kistSlots(l)} plekken` },
 ];
 
 /* Admin-codes: plak hier je PUBLIC key uit het admin panel (open de game met ?admin achter de link).
@@ -1037,7 +1080,7 @@ const NODES = [
   { id: 'ec_kot',     br: 'ec', layer: 2, col: 1, max: 3, name: 'Kot met glasvezel', desc: 'Start op 4G → Wifi 6 → Ethernet 1 Gbit' },
   { id: 'ec_bulk',    br: 'ec', layer: 3, col: 0, max: 1, name: 'Groothandel',       desc: 'Itemprijzen −25%' },
   { id: 'ec_estate',  br: 'ec', layer: 3, col: 1, max: 1, name: 'Vastgoed',          desc: 'Nieuwe U wordt ×3,5 duurder in plaats van ×4' },
-  { id: 'ec_vip',     br: 'ec', layer: 4,         max: 1, name: 'VIP-klant',         desc: 'Boost-shop +2 plekken en zeldzamere boosts' },
+  { id: 'ec_vip',     br: 'ec', layer: 4,         max: 1, name: 'VIP-klant',         desc: 'Zeldzamere boosts en +2 plekken in je gereedschapskist' },
   { id: 'ks_mono',    br: 'ec', layer: 5,         max: 1, name: 'Monopolie',         desc: '+1% inkomen per ECTS die je ooit verdiend hebt' },
   { id: 'inf_ec',     br: 'ec', layer: 6,         max: Infinity, name: 'Erfenis',     desc: '+10% startgeld per niveau' },
 ];
@@ -1071,7 +1114,7 @@ const BOOSTS = {
   oc:     { icon: '🧊', label: 'OC-kans',  add: [0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.6],
             names: ['Thermal paste', 'Betere koeler', 'Extra fans', 'Waterkoeling', 'Peltier-element', 'Vloeibare stikstof', 'Absolute nulpunt'] },
 };
-const shopSlots = l => 3 + Math.floor((l + 1) / 2) + (typeof state !== 'undefined' && pn('ec_vip') ? 2 : 0);   // 3 → 6 plekken (+2 VIP-klant)
+const kistSlots = l => 6 + l + (typeof state !== 'undefined' && pn('ec_vip') ? 2 : 0);   // gereedschapskist: 6 → 12 plekken (+2 VIP-klant)
 const shopLuck  = l => 2 * (1 + 0.6 * l) * (typeof state !== 'undefined' && pn('ec_vip') ? 1.5 : 1);   // luck voor de rarity van shop-boosts
 
 /* Random events. kind: good / bad / mixed. w = hoe vaak (gewicht). dur = seconden.
@@ -1244,7 +1287,7 @@ function newState() {
            hotSwap: false, rollTiers: [false, false, false, true, true, true, true], autoSellTier: -1,
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
            skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
-           shop: null, boosts: {}, router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
+           shop: null, boosts: {}, kist: [], seenTiers: [], router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
            prestige: newPrestige(), runV: 1 };
 }
 // Blijft altijd bewaard bij afstuderen
@@ -1260,6 +1303,10 @@ function fromJSON(raw) {
   // (eenmalig, ook voor beta-saves die de teller al op €0 hadden gezet)
   if (raw.runV !== 1) { s.runEarned = Math.max(+raw.runEarned || 0, +raw.money || 0); s.runV = 1; }
   if (!s.prestige.nodes || typeof s.prestige.nodes !== 'object') s.prestige.nodes = {};
+  s.kist = (Array.isArray(raw.kist) ? raw.kist : []).filter(x => x && BOOSTS[x.kind] && x.tier >= 0 && x.tier < 7);
+  // tiers die je al eens vond (voor de filmische reveal): oude saves vullen we aan met wat je al bezit
+  if (!Array.isArray(raw.seenTiers)) s.seenTiers = [...new Set([...(raw.inv || []), ...(raw.rack || []).flatMap(u => u ? COMP.map(k => u[k]) : [])]
+    .map(hyd).filter(Boolean).map(x => x.tier))];
   s.switches = (Array.isArray(raw.switches) ? raw.switches : [null]).map(hyd);
   s.inv = (Array.isArray(raw.inv) ? raw.inv : []).map(hyd).filter(Boolean);
   s.current = hyd(raw.current);
@@ -2161,65 +2208,100 @@ function renderGame() {
    BOOST-SHOP
    ===================================================================== */
 const HOUR = 3600e3;
+const KIST_TTL = 24 * HOUR;   // bewaarde boosts vervallen na 24u ("koffie wordt koud")
+const PER_CAT = 3;            // items per categorie per uur
 const curHour = () => Math.floor(Date.now() / HOUR);
-function makeOffer() {
-  const kinds = Object.keys(BOOSTS);
-  return { kind: kinds[Math.floor(Math.random() * kinds.length)], tier: rollTier(shopLuck(lvl('supplier'))), sold: false };
+// prijs wordt vastgezet bij de restock: het hele uur dezelfde prijs
+const calcBoostPrice = tier => Math.round(Math.max(BOOST_FLOOR[tier], steadyIncome() * 60 * BOOST_PRICE[tier]));
+function makeOffer(kind) {
+  const tier = rollTier(shopLuck(lvl('supplier')));
+  return { kind, tier, price: calcBoostPrice(tier), sold: false };
 }
-// Nieuwe voorraad bij elk vol uur; extra plekken (upgrade) worden meteen bijgevuld
+// Nieuwe voorraad bij elk vol uur: per categorie 3 items
 function ensureShop() {
-  const h = curHour(), n = shopSlots(lvl('supplier'));
-  let changed = false;
-  if (!state.shop || state.shop.hour !== h) {
-    const restock = !!state.shop;
-    state.shop = { hour: h, offers: Array.from({ length: n }, makeOffer) };
-    changed = true;
-    if (restock) toast('⚡ Boost-shop heeft nieuwe voorraad!');
-  }
-  while (state.shop.offers.length < n) { state.shop.offers.push(makeOffer()); changed = true; }
-  return changed;
+  const h = curHour();
+  if (state.shop && state.shop.hour === h && state.shop.cats) return false;
+  const restock = !!state.shop && state.shop.hour !== h;
+  state.shop = { hour: h, cats: Object.fromEntries(Object.keys(BOOSTS).map(k => [k, Array.from({ length: PER_CAT }, () => makeOffer(k))])) };
+  if (restock) toast('⚡ Boost-shop heeft nieuwe voorraad!');
+  return true;
 }
+const offerAt = (k, i) => state.shop && state.shop.cats && state.shop.cats[k] ? state.shop.cats[k][i] : null;
 const boostName = o => BOOSTS[o.kind].names[o.tier];
 const boostVal  = o => BOOSTS[o.kind].add ? BOOSTS[o.kind].add[o.tier] : BOOSTS[o.kind].mult[o.tier];
 function boostEffTxt(kind, val) {
   const b = BOOSTS[kind];
   return b.add ? `${b.label} +${Math.round(val * 100)}%` : `${b.label} ×${fmtNum(val)}`;
 }
-const boostPrice = o => Math.round(Math.max(BOOST_FLOOR[o.tier], steadyIncome() * 60 * BOOST_PRICE[o.tier]));
 const better = (kind, a, b) => kind === 'speed' ? a < b : a > b;   // bij cooldown is lager beter
-function buyBoost(i) {
-  const o = state.shop && state.shop.offers[i];
-  if (!o || o.sold) return;
-  const p = boostPrice(o);
-  if (state.money < p) return;
-  state.money -= p;
-  o.sold = true;
-  const val = boostVal(o), dur = BOOST_MIN[o.tier] * 60e3, now = Date.now();
-  const cur = activeBoost(o.kind);
-  // zelfde soort: sterkere boost vervangt de zwakkere (langste tijd blijft), even sterk of zwakker = tijd erbij
-  if (!cur) state.boosts[o.kind] = { val, until: now + dur, tier: o.tier, name: boostName(o) };
-  else if (better(o.kind, val, cur.val)) state.boosts[o.kind] = { val, until: Math.max(cur.until, now + dur), tier: o.tier, name: boostName(o) };
+// een zwakkere boost kan niet aan zolang een sterkere van dezelfde soort loopt
+const canUse = o => { const cur = activeBoost(o.kind); return !cur || !better(o.kind, cur.val, boostVal(o)); };
+const kistFull = () => state.kist.length >= kistSlots(lvl('supplier'));
+function activate(o) {
+  const val = boostVal(o), dur = BOOST_MIN[o.tier] * 60e3, now = Date.now(), cur = activeBoost(o.kind);
+  // sterker = vervangt (langste tijd blijft) · even sterk = tijd erbij
+  if (!cur || better(o.kind, val, cur.val)) state.boosts[o.kind] = { val, until: Math.max(cur ? cur.until : 0, now + dur), tier: o.tier, name: boostName(o) };
   else cur.until += dur;
   toast(`${BOOSTS[o.kind].icon} ${boostName(o)} actief: ${boostEffTxt(o.kind, val)}`);
   if (o.tier >= 3) flash(o.tier);
   SFX.upgrade();
+}
+function buyBoost(k, i, mode) {
+  const o = offerAt(k, i);
+  if (!o || o.sold || state.money < o.price) return;
+  if (mode === 'store' ? kistFull() : !canUse(o)) return;
+  state.money -= o.price;
+  o.sold = true;
+  if (mode === 'store') {
+    state.kist.push({ id: state.nextId++, kind: o.kind, tier: o.tier, exp: Date.now() + KIST_TTL });
+    toast(`🧰 ${boostName(o)} bewaard in je gereedschapskist`);
+    SFX.upgrade();
+  } else activate(o);
   save(); renderAll();
 }
+function useKist(id) {
+  const j = state.kist.findIndex(x => x.id === id), o = state.kist[j];
+  if (!o || o.exp <= Date.now() || !canUse(o)) return;
+  state.kist.splice(j, 1);
+  activate(o);
+  save(); renderAll();
+}
+function tossKist(id) {
+  state.kist = state.kist.filter(x => x.id !== id);
+  save(); renderAll();
+}
+function pruneKist() {
+  const n = state.kist.length, now = Date.now();
+  state.kist = state.kist.filter(x => x.exp > now);
+  const gone = n - state.kist.length;
+  if (gone) toast(`☕ ${gone} bewaarde boost${gone > 1 ? 's zijn' : ' is'} koud geworden en vervallen`);
+  return gone > 0;
+}
 const mmss = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
+const hhmm = ms => { const m = Math.max(0, Math.ceil(ms / 60e3)); return m >= 60 ? `${Math.floor(m / 60)}u ${m % 60}m` : `${m}m`; };
 const shopTimerTxt = () => mmss((curHour() + 1) * HOUR - Date.now());
+const boostCard = (o, right) => `<div class="up tiered bcard ${o.sold ? 'maxed' : ''} ${o.tier === 6 ? 'qtm' : ''}" style="--tc:var(--c${o.tier})">
+      <div class="ic">${BOOSTS[o.kind].icon}</div>
+      <div class="ub"><div class="un">${boostName(o)} <span class="tbadge">${TIERS[o.tier].name}</span></div>
+        <div class="ue">${boostEffTxt(o.kind, boostVal(o))} · ${BOOST_MIN[o.tier]} min</div>${right.sub || ''}</div>
+      <div class="bbtns">${right.btns}</div></div>`;
 function renderBoostShop() {
   ensureShop();
-  setHTML($('ups'), state.shop.offers.map((o, i) => {
-    const b = BOOSTS[o.kind];
-    const btn = o.sold ? '<span class="badge">Uitverkocht</span>'
-      : `<button class="btn sm" data-act="buyBoost" data-i="${i}">${fmt(boostPrice(o))}</button>`;
-    return `<div class="up tiered ${o.sold ? 'maxed' : ''} ${o.tier === 6 ? 'qtm' : ''}" style="--tc:var(--c${o.tier})">
-      <div class="ic">${b.icon}</div>
-      <div class="ub"><div class="un">${boostName(o)} <span class="tbadge">${TIERS[o.tier].name}</span></div>
-        <div class="ue">${boostEffTxt(o.kind, boostVal(o))} · ${BOOST_MIN[o.tier]} min</div></div>
-      ${btn}</div>`;
-  }).join('') + `<div class="sub" style="grid-column:1/-1">Nieuwe voorraad elk vol uur. Dezelfde soort stapelt niet: een sterkere boost vervangt de zwakkere, anders komt de tijd erbij.</div>`);
+  setHTML($('ups'), Object.keys(BOOSTS).map(k => `<div class="bcat"><span>${BOOSTS[k].icon} ${BOOSTS[k].label}</span>${activeBoost(k) ? `<span class="sub">actief: ${esc(state.boosts[k].name)}</span>` : ''}</div>` +
+    state.shop.cats[k].map((o, i) => boostCard(o, o.sold ? { btns: '<span class="badge">Uitverkocht</span>' } : {
+      btns: `<span class="bprice">${fmt(o.price)}</span>
+        <span class="brow"><button class="btn sm" data-act="buyBoost" data-k="${k}" data-i="${i}" data-m="use">Gebruik</button><button class="btn sm sec" data-act="buyBoost" data-k="${k}" data-i="${i}" data-m="store" title="Bewaar in je gereedschapskist (Opslag), 24u houdbaar">Bewaar</button></span>` })).join('')).join('') +
+    `<div class="sub" style="grid-column:1/-1">Elk vol uur nieuwe voorraad, 3 per categorie. De prijs staat vast tot de volgende restock. <b>Gebruik</b> zet de boost meteen aan, <b>Bewaar</b> legt hem in je gereedschapskist (Opslag) voor later, 24u houdbaar. Dezelfde soort stapelt niet: een sterkere vervangt de zwakkere, een even sterke verlengt de tijd.</div>`);
   $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
+}
+function renderKist() {
+  const max = kistSlots(lvl('supplier'));
+  const list = state.kist.slice().sort((a, b) => a.exp - b.exp);
+  setHTML($('kist'), (list.length ? list.map(o => boostCard(o, {
+    sub: `<div class="sub">houdbaar nog <b data-exp="${o.exp}">${hhmm(o.exp - Date.now())}</b></div>`,
+    btns: `<span class="brow"><button class="btn sm" data-act="useKist" data-id="${o.id}">Gebruik</button><button class="ghost sm" data-act="tossKist" data-id="${o.id}" title="Weggooien">${ico('g-trash')}</button></span>` })).join('')
+    : `<div class="sub" style="grid-column:1/-1">Je kist is leeg. Koop een boost in de shop en kies <b>Bewaar</b> om hem hier op te slaan, bijvoorbeeld voor als Patch Tuesday komt.</div>`) +
+    `<div class="sub" style="grid-column:1/-1">${state.kist.length}/${max} plekken · bewaarde boosts vervallen na 24u · meer plek met het Leverancierscontract</div>`);
 }
 let boostKey = '';
 function renderBoostBar() {
@@ -2414,14 +2496,14 @@ function buyNode(id) {
 function graduate() {
   const gain = ectsFor(state.runEarned);
   if (!gain) return;
-  if (!confirm(`Afstuderen? Je krijgt ${gain} ECTS.\n\nJe geld, rack, items, verbinding en gewone upgrades worden gereset.\nJe skill tree, ECTS, admin-items en skins blijven.`)) return;
+  if (!confirm(`Afstuderen? Je krijgt ${gain} ECTS.\n\nJe geld, rack, items, verbinding, boosts en gewone upgrades worden gereset.\nJe skill tree, ECTS, admin-items en skins blijven.`)) return;
   const P = state.prestige, old = state, runMs = Date.now() - (old.runStart || Date.now());
   P.count++; P.ects += gain; P.ectsTotal += gain;
   P.totalEarned += old.runEarned;
   P.bestRun = Math.max(P.bestRun, old.runEarned);
   P.fastestRun = P.fastestRun ? Math.min(P.fastestRun, runMs) : runMs;
   const keep = { prestige: P, skins: old.skins, skin: old.skin, playerId: old.playerId, redeemed: old.redeemed, muted: old.muted,
-                 seenHelp: true, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
+                 seenHelp: true, seenTiers: old.seenTiers, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
   const admin = permanentItems(), oldUp = old.up;
   state = newState();
   Object.assign(state, keep);
@@ -2557,9 +2639,9 @@ function itemIconId(it) {
 const itemIcon = (it, cls = 'iico') => ico(itemIconId(it), cls);
 
 /* Vensters */
-const WINS = { shop: { w: 860, h: 620 }, inv: { w: 820, h: 600 }, casino: { w: 760, h: 600 }, term: { w: 620, h: 420 } };
-const WIN_TITLE = { shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
-const WIN_ICON = { shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
+const WINS = { shop: { w: 860, h: 620 }, inv: { w: 820, h: 600 }, casino: { w: 760, h: 600 }, term: { w: 620, h: 420 }, soon: { w: 460, h: 420 } };
+const WIN_TITLE = { shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal', soon: 'coming_soon.txt' };
+const WIN_ICON = { shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term', soon: 'g-home' };
 const openWins = new Set();
 let zTop = 30, focusedWin = null;
 function openWin(id) {
@@ -2683,7 +2765,10 @@ function renderTerm(full) {
 /* Cinematics bij een zeldzame roll */
 let cineActive = false, cineTimer = null;
 function cinematic(it) {
-  if (!ui.cine || reduceMotion() || it.tier < 4) return;
+  // eerste vondst van een tier: altijd filmisch (vanaf Legendary) · daarna enkel nog Mythic en hoger
+  const first = !state.seenTiers.includes(it.tier);
+  if (first) state.seenTiers.push(it.tier);
+  if (!ui.cine || reduceMotion() || it.tier < 4 || (it.tier < 5 && !first)) return;
   const box = $('cine');
   cineActive = true;
   const lines = [
@@ -2703,10 +2788,10 @@ function cinematic(it) {
     </div>
     <div class="cskip">klik om verder te gaan</div>`;
   const pre = $('cineTxt');
-  lines.forEach((l, i) => setTimeout(() => { if (pre.isConnected) pre.textContent += l + '\n'; }, 140 * i));
-  setTimeout(() => { if (box.classList.contains('on')) { box.classList.add('show'); flash(it.tier); if (it.tier >= 5) shake(); } }, 140 * lines.length + 120);
+  lines.forEach((l, i) => setTimeout(() => { if (pre.isConnected) pre.textContent += l + '\n'; }, 70 * i));
+  setTimeout(() => { if (box.classList.contains('on')) { box.classList.add('show'); flash(it.tier); if (it.tier >= 5) shake(); } }, 70 * lines.length + 80);
   clearTimeout(cineTimer);
-  cineTimer = setTimeout(endCine, 140 * lines.length + 2900);
+  cineTimer = setTimeout(endCine, 70 * lines.length + 1500);
 }
 function endCine() { const b = $('cine'); b.className = ''; b.innerHTML = ''; cineActive = false; clearTimeout(cineTimer); }
 
@@ -2729,7 +2814,8 @@ function floatText(x, y, txt, cls = '') {
 }
 function rackFloats() {
   if (document.hidden || isMobile() && document.body.dataset.tab !== 'home') return;
-  const rows = [...document.querySelectorAll('#rack .u.live')];
+  // alleen boven je 3 best verdienende U's
+  const rows = [...document.querySelectorAll('#rack .u.live')].sort((a, b) => b.dataset.inc - a.dataset.inc).slice(0, 3);
   if (!rows.length) return;
   const row = rows[Math.floor(Math.random() * rows.length)], m = row.querySelector('.uinc');
   const r = m.getBoundingClientRect();
@@ -2855,7 +2941,7 @@ function spinReels(cands, win, dur, done) {
   reels.forEach((reel, k) => {
     const strip = reel.querySelector('.strip');
     let html = '';
-    const tease = dur > 0 && cands[k] && cands[k].tier <= 2 && Math.random() < 0.18 ? (Math.random() < .5 ? T - 1 : T + 1) : -1;
+    const tease = dur > 0 && cands[k] && cands[k].tier <= 2 && Math.random() < 0.08 ? (Math.random() < .5 ? T - 1 : T + 1) : -1;
     const teaseItem = () => { const ty = COMP[Math.floor(Math.random() * 3)], tr = Math.random() < .3 ? 5 : 4, refs = DEFS_BY[ty][tr]; return new Item(refs[Math.floor(Math.random() * refs.length)]); };
     for (let i = 0; i < C; i++) html += reelCard(i === T ? cands[k] : i === tease ? teaseItem() : rollOne(luck(), 0, false));
     strip.innerHTML = html;
@@ -2924,7 +3010,7 @@ function renderRack() {
     const inc = uBase(u) * nm;
     // status-LED's: knipperen sneller naarmate deze U meer verdient
     const blink = inc > 0 ? Math.max(0.16, Math.min(1.8, 1.8 - Math.log10(inc + 1) * 0.22)).toFixed(2) : 0;
-    h += `<div class="u ${m.perfect ? 'perfect' : ''} ${inc > 0 ? 'live' : ''} ${celebrate.has(i) ? 'celebrate' : ''} ${newU === i ? 'slidein' : ''}" style="--blink:${blink}s">
+    h += `<div class="u ${m.perfect ? 'perfect' : ''} ${inc > 0 ? 'live' : ''} ${celebrate.has(i) ? 'celebrate' : ''} ${newU === i ? 'slidein' : ''}" data-inc="${inc}" style="--blink:${blink}s">
       <div class="unum">U${i + 1}</div>
       ${COMP.map(k => slotHtml({ kind: 'u', u: i, slot: k }, u[k], TYPES[k].label)).join('')}
       <div class="umeta"><span class="leds"><i></i><i></i><i></i></span><span class="badge ${m.cls}">${m.label}</span><span class="uinc">${fmt(inc)}/s</span></div>
@@ -3066,7 +3152,13 @@ function useSkin(id) {
   state.skin = id; save(); renderAll();
 }
 
+let invView = 'hw';
 function renderInv() {
+  setHTML($('invViews'), [['hw', `${ico('g-box')} Hardware (${state.inv.length})`], ['kist', `${ico('g-wrench')} Gereedschapskist (${state.kist.length}/${kistSlots(lvl('supplier'))})`]]
+    .map(([k, n]) => `<button class="chip ${invView === k ? 'on' : ''}" data-act="invView" data-v="${k}">${n}</button>`).join(''));
+  $('invHw').hidden = invView !== 'hw';
+  $('kist').hidden = invView !== 'kist';
+  renderKist();
   const keys = ['all', ...Object.keys(TYPES)];
   setHTML($('filters'), keys.map(k => {
     const n = k === 'all' ? state.inv.length : state.inv.filter(x => x.type === k).length;
@@ -3108,7 +3200,14 @@ function updateAfford() {
   if (cb && nx) cb.disabled = state.money < nx.cost;
   document.querySelectorAll('[data-act="up"]').forEach(b => { b.disabled = state.money < upCost(upDef(b.dataset.id)); });
   document.querySelectorAll('[data-act="buySkin"]').forEach(b => { b.disabled = state.money < SKINS.find(x => x.id === b.dataset.id).price; });
-  document.querySelectorAll('[data-act="buyBoost"]').forEach(b => { const o = state.shop.offers[+b.dataset.i]; b.disabled = state.money < boostPrice(o); });
+  document.querySelectorAll('[data-act="buyBoost"]').forEach(b => {
+    const o = offerAt(b.dataset.k, +b.dataset.i), st = b.dataset.m === 'store';
+    if (!o) return;
+    const block = st ? kistFull() : !canUse(o);
+    b.disabled = state.money < o.price || block;
+    b.title = block ? (st ? 'Je gereedschapskist is vol' : 'Er loopt al een sterkere boost van deze soort') : st ? 'Bewaar in je gereedschapskist (Opslag), 24u houdbaar' : '';
+  });
+  document.querySelectorAll('[data-act="useKist"]').forEach(b => { const o = state.kist.find(x => x.id === +b.dataset.id); b.disabled = !o || !canUse(o); b.title = b.disabled ? 'Er loopt al een sterkere boost van deze soort' : ''; });
 }
 
 function renderAll() {
@@ -3151,12 +3250,14 @@ setInterval(() => {
   renderClock();
   if (ensureShop()) { save(); if (shopTab === 'boosts') renderShop(); }
   renderBoostBar();
+  if (state.kist.length && pruneKist()) { save(); renderAll(); }
+  if (invView === 'kist') document.querySelectorAll('[data-exp]').forEach(el => { el.textContent = hhmm(+el.dataset.exp - now); });
   { const t = $('shopTimer'); if (t) t.textContent = shopTimerTxt(); }
   if (shopTab === 'boosts') $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
   crTick();
 }, 200);
 setInterval(save, 5000);
-setInterval(rackFloats, 1700);
+setInterval(rackFloats, 2600);
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 window.addEventListener('pagehide', save);
 
@@ -3189,7 +3290,10 @@ document.addEventListener('click', e => {
     case 'shopTab': shopTab = el.dataset.t; renderShop(); updateAfford(); break;
     case 'buySkin': buySkin(el.dataset.id); break;
     case 'useSkin': useSkin(el.dataset.id); break;
-    case 'buyBoost': buyBoost(+el.dataset.i); break;
+    case 'buyBoost': buyBoost(el.dataset.k, +el.dataset.i, el.dataset.m); break;
+    case 'useKist': useKist(+el.dataset.id); break;
+    case 'tossKist': tossKist(+el.dataset.id); break;
+    case 'invView': invView = el.dataset.v; renderInv(); updateAfford(); break;
     case 'togHot': state.hotSwap = !state.hotSwap; save(); renderRollMeta(); break;
     case 'rollTier': state.rollTiers[+el.dataset.i] = !state.rollTiers[+el.dataset.i]; save(); renderRollMeta(); break;
     case 'slot': clickSlot(locFromEl(el)); break;
