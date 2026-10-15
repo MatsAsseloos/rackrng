@@ -859,8 +859,8 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
 .mon{position:relative; border-radius:10px; border:1px solid #2a1d3d; background:#07050c; overflow:hidden}
 .monbar{display:flex; align-items:center; gap:8px; padding:6px 10px; font:500 11px var(--mono); color:#8e7fab; border-bottom:1px solid #1d1430}
 .monbar .mright{margin-left:auto; letter-spacing:1px}
-.live{width:8px; height:8px; border-radius:50%; background:#4b3d63}
-.live.on{background:var(--bad); box-shadow:0 0 8px var(--bad); animation:curblink 1s steps(1) infinite}
+.livedot{width:8px; height:8px; border-radius:50%; background:#4b3d63}
+.livedot.on{background:var(--bad); box-shadow:0 0 8px var(--bad); animation:curblink 1s steps(1) infinite}
 .crsvg{display:block; width:100%; height:220px}
 .crsvg .gl{stroke:#1d1430; stroke-width:1; vector-effect:non-scaling-stroke}
 .crsvg .gt{fill:#5b4c75; font:10px var(--mono)}
@@ -940,6 +940,125 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
   .ctree{overflow:visible}
 }
 @media (prefers-reduced-motion: reduce){ .cn .cnc{animation:none !important} }
+/* Instellingen */
+#win-set .wbar .ico{color:#9cc8ff}
+.setbody{padding:14px 16px 18px; display:flex; flex-direction:column; gap:14px}
+.sgrp{padding:12px 14px; border-radius:12px; border:1px solid #22324a; background:linear-gradient(180deg,#141f30,#101927)}
+.sgrp h4{display:flex; align-items:center; gap:8px; margin:0 0 10px; font:700 14px var(--cond); letter-spacing:.5px; text-transform:uppercase; color:#cfe0f7}
+.sgrp h4 .ico{width:17px; height:17px; color:#9cc8ff}
+.srow{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:8px 0; border-top:1px solid rgba(255,255,255,.04); cursor:pointer}
+.srow:first-of-type{border-top:0}
+.srow b{display:block; font:600 13.5px var(--cond); color:#e6eefb}
+.srow small{display:block; font-size:11.5px; color:#7f93ad; margin-top:1px}
+.sw{position:relative; width:40px; height:22px; flex:none; border-radius:20px; border:1px solid #33465f; background:#0c1420; cursor:pointer; padding:0; transition:background .15s}
+.sw i{position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#5d7090; transition:transform .15s, background .15s}
+.sw.on{background:rgba(61,220,151,.25); border-color:rgba(61,220,151,.6)}
+.sw.on i{transform:translateX(18px); background:var(--good)}
+.seg{display:flex; flex:none; border:1px solid #33465f; border-radius:8px; overflow:hidden}
+.seg button{padding:5px 10px; border:0; background:#0c1420; color:#9fb0c7; font:600 12px var(--cond); cursor:pointer; border-left:1px solid #22324a}
+.seg button:first-child{border-left:0}
+.seg button.on{background:#2f86ee; color:#fff}
+/* toasts */
+.toast{display:flex; align-items:baseline; gap:8px}
+.toast .tm{flex:1}
+.toast .tc{font:700 11px var(--mono); color:var(--vfd)}
+.toast .tc:empty{display:none}
+.toast.bump{animation:tbump .25s ease}
+@keyframes tbump{50%{transform:scale(1.04)}}
+/* rack: spook-U's */
+.rack .u.ghostu{display:flex; align-items:center; gap:10px; min-height:44px; border:1px dashed #2b3d58 !important; background:repeating-linear-gradient(135deg,rgba(255,255,255,.02) 0 6px,transparent 6px 12px) !important; box-shadow:none !important; color:#5e6f87; font:600 12.5px var(--cond); cursor:pointer; width:100%; text-align:left}
+.rack .u.ghostu:not(:disabled):hover{color:#cfe0f7; border-color:#4a6080 !important}
+.rack .u.ghostu:disabled{opacity:.55; cursor:default}
+/* roll: lege staat */
+.rempty{display:flex; flex-direction:column; align-items:center; gap:6px}
+.rempty b{font:700 16px var(--cond); color:#cfe0f7}
+.rempty span{font-size:12.5px}
+.reico{width:38px; height:38px; color:#4ea1ff; opacity:.8; margin-bottom:2px; animation:spinslow 6s linear infinite}
+@keyframes spinslow{to{transform:rotate(360deg)}}
+kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px solid #3a5070; background:#0c1420; color:#cfe0f7}
+.rempty.scanning .scanbar{display:block; width:160px; height:4px; border-radius:3px; background:linear-gradient(90deg,transparent,#4ea1ff,transparent) -160px 0/160px 100% no-repeat #17243a; animation:scan 0.9s linear infinite}
+@keyframes scan{to{background-position:160px 0}}
+/* opslag */
+#win-inv{--shop:#22d3ee}
+#win-inv .wbar .ico{color:var(--shop)}
+#win-inv .sbrand b{color:var(--shop)}
+.invbody .stab em{margin-left:auto; font:500 11px var(--mono); font-style:normal; color:#7f93ad}
+.invbody .stab .ico{width:16px; height:16px}
+.cleanup{display:flex; flex-direction:column; gap:8px; padding:4px 6px}
+.cleanup label{display:flex; flex-direction:column; gap:4px; font:600 11.5px var(--cond); color:#9fb0c7}
+.cleanup select{width:100%}
+.invbar{position:sticky; top:0; z-index:2; display:flex; gap:8px; margin:0 -16px; padding:12px 16px 10px; background:linear-gradient(180deg,#131f31 75%,rgba(19,31,49,.85)); border-bottom:1px solid #22324a}
+.isearch{flex:1; display:flex; align-items:center; gap:8px; padding:0 10px; border-radius:8px; border:1px solid #33465f; background:#0c1420}
+.isearch .ico{width:16px; height:16px; color:#7f93ad}
+.isearch input{flex:1; border:0; background:transparent; color:#e6eefb; font:13px var(--sans,inherit); padding:8px 0; outline:0}
+.ihint{margin:10px 0}
+.it.locked{box-shadow:inset 0 0 0 1px rgba(255,181,71,.35)}
+.lockico{width:13px; height:13px; color:var(--vfd); margin-left:auto}
+.it .lockico + .tr{margin-left:6px}
+@media (max-width:900px){
+  #boostBar.show{display:flex; flex-wrap:nowrap; gap:4px; overflow:hidden; max-width:34vw}
+  #boostBar .bchip{white-space:nowrap; padding:3px 7px}
+  #boostBar .bcn{display:none}
+  .invbody .snav{flex-wrap:wrap}
+  .invbody #invViews,.invbody #filters{display:flex; gap:6px; overflow-x:auto; width:100%}
+  .invbody .cleanup{flex-direction:row; flex-wrap:wrap; align-items:flex-end}
+  .invbar{margin:0 -12px; padding:10px 12px; flex-wrap:wrap}
+  .invbar select{flex:1}
+  .isearch{flex:1 1 100%}
+}
+/* QOL */
+.hasdot,.hasnew{position:relative}
+.hasdot::after{content:""; position:absolute; top:4px; right:12px; width:9px; height:9px; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); border:2px solid #0b1220}
+.hasnew::after{content:"NIEUW"; position:absolute; top:2px; right:2px; font:700 8.5px var(--mono); letter-spacing:.5px; padding:1px 4px; border-radius:4px; background:var(--vfd); color:#1a1000}
+.task.hasdot::after{top:2px; right:4px} .smgrid .hasdot::after{right:18px}
+.undobar[hidden],.tip[hidden]{display:none}
+#kist[hidden],#invHw[hidden],#invSide[hidden]{display:none !important}
+.undobar{position:fixed; left:50%; bottom:calc(var(--tb) + 14px); transform:translateX(-50%); z-index:85; display:flex; align-items:center; gap:12px; padding:9px 12px 9px 16px; border-radius:10px; overflow:hidden;
+  background:rgba(22,33,52,.98); border:1px solid #34486a; box-shadow:0 14px 34px -10px rgba(0,0,0,.85); font-size:13px; animation:tin .2s ease}
+.undobar .ubar{position:absolute; left:0; bottom:0; height:2px; background:var(--accent); animation:ubar 6s linear forwards}
+@keyframes ubar{from{width:100%}to{width:0}}
+.lockbtn{display:inline-flex; align-items:center; gap:6px} .lockbtn .ico{width:15px; height:15px} .lockbtn.on{border-color:rgba(255,181,71,.5); color:var(--vfd)}
+.tip{position:fixed; z-index:95; width:260px; pointer-events:none; padding:10px 12px; border-radius:10px; background:rgba(14,22,36,.98); border:1px solid color-mix(in srgb,var(--tc) 55%,#34486a); box-shadow:0 16px 36px -12px rgba(0,0,0,.9), 0 0 18px -8px var(--tc); font-size:12px}
+.tph{display:flex; gap:10px; align-items:center; margin-bottom:6px}
+.tpico{width:34px; height:34px; color:var(--tc); flex:none}
+.tpt{font:600 10.5px var(--mono); color:var(--tc); text-transform:uppercase; letter-spacing:.5px}
+.tpn{font:700 14px var(--cond); color:#f1f5fb}
+.tps{color:#8ea2bd} .tpv{font:600 12px var(--mono); color:var(--good); margin-top:2px}
+.tpm{margin-top:4px} .tpc{margin-top:6px; font-weight:600} .tpc.up{color:var(--good)} .tpc.down{color:#8ea2bd}
+.tpf{display:flex; gap:10px; flex-wrap:wrap; margin-top:7px; padding-top:6px; border-top:1px solid rgba(255,255,255,.07); font:500 10.5px var(--mono); color:#7f93ad}
+.tpf .lockico{width:11px; height:11px; vertical-align:-1px}
+.help.keys{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12.5px; color:#b9c7da}
+.help.keys b{width:100%}
+/* stats */
+#win-stats .wbar .ico,#win-cat .wbar .ico{color:var(--good)}
+.statsbody{padding:14px 16px 18px; display:flex; flex-direction:column; gap:14px}
+.kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.kpis div{padding:10px 12px; border-radius:12px; border:1px solid #22324a; background:linear-gradient(180deg,#141f30,#101927)}
+.kpis span{display:block; font:600 10.5px var(--mono); letter-spacing:1px; text-transform:uppercase; color:#7f93ad}
+.kpis b{font:700 18px var(--mono); color:#f1f5fb}
+.incsvg{display:block; width:100%; height:120px; border-radius:8px; background:#0a111c; margin-bottom:6px}
+.tbar{display:grid; grid-template-columns:90px 1fr 70px 50px; align-items:center; gap:10px; padding:3px 0; font-size:12.5px}
+.tbar span{color:var(--tc); font-weight:600}
+.tbar i{height:8px; border-radius:5px; background:#1a2638; overflow:hidden} .tbar i b{display:block; height:100%; background:var(--tc); border-radius:5px}
+.tbar em{font:600 12px var(--mono); font-style:normal; text-align:right; color:#e6eefb} .tbar small{font:500 11px var(--mono); color:#7f93ad; text-align:right}
+.kv{display:flex; justify-content:space-between; gap:10px; padding:5px 0; font-size:12.5px; color:#8ea2bd; border-top:1px solid rgba(255,255,255,.04)}
+.kv:first-of-type{border-top:0} .kv b{font:600 12.5px var(--mono); color:#e6eefb; text-align:right} .kv .pos{color:var(--good)} .kv .neg{color:var(--bad)}
+/* catalogus */
+.catbody{padding:14px 16px 18px}
+.cathead{display:flex; align-items:center; gap:12px; margin-bottom:10px; font-size:13px; color:#9fb0c7} .cathead b{font:700 18px var(--mono); color:#f1f5fb}
+.catbar{flex:1; height:8px; border-radius:5px; background:#1a2638; overflow:hidden} .catbar i{display:block; height:100%; background:linear-gradient(90deg,#4ea1ff,#3ddc97)}
+.cathead span{font:600 13px var(--mono); color:var(--good)}
+.cattabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px} .cattabs em{font-style:normal; opacity:.65; margin-left:4px}
+.catsec{margin-bottom:16px} .catsec h4{display:flex; align-items:center; gap:8px; margin:0 0 8px; font:700 13px var(--cond); letter-spacing:.5px; text-transform:uppercase; color:#cfe0f7} .catsec h4 .ico{width:18px; height:18px; color:#9cc8ff}
+.catgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:6px}
+.catit{display:flex; flex-direction:column; gap:1px; padding:7px 9px; border-radius:8px; border:1px dashed #263750; background:#0d1520; min-height:50px}
+.catit .ct{font:600 9.5px var(--mono); text-transform:uppercase; letter-spacing:.5px; color:#4b5d78}
+.catit .cn2{font:600 12.5px var(--cond); color:#4b5d78}
+.catit .cs{font-size:10.5px; color:#7f93ad}
+.catit.ok{border:1px solid color-mix(in srgb,var(--tc) 40%,#22324a); border-left:3px solid var(--tc); background:linear-gradient(180deg,#152134,#101a29)}
+.catit.ok .ct{color:var(--tc)} .catit.ok .cn2{color:#eef3fa}
+.kpis.small{grid-template-columns:repeat(3,1fr); text-align:left} .kpis.small b{font-size:14px}
+@media (max-width:900px){ .srow:has(.seg){flex-wrap:wrap} .srow .seg{width:100%} .srow .seg button{flex:1} .kpis{grid-template-columns:repeat(2,1fr)} .tbar{grid-template-columns:80px 1fr 56px 44px} }
 </style>
 </head>
 <body class="os" data-tab="home">
@@ -980,6 +1099,11 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
     <symbol id="g-up" viewBox="0 0 24 24"><path d="M12 19V6M6.5 11.5 12 6l5.5 5.5M5 21h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></symbol>
     <symbol id="g-bolt" viewBox="0 0 24 24"><path d="M13.5 3 5.5 13.5H12L10.5 21l8-10.5H12z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
     <symbol id="g-brush" viewBox="0 0 24 24"><path d="M14 4.5 19.5 10 11 18.5 5.5 13zM5.5 13 3.5 20.5 11 18.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="g-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.8v2.6M12 18.6v2.6M21.2 12h-2.6M5.4 12H2.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8M18.5 18.5l-1.8-1.8M7.3 7.3 5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="12" r="6.6" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="g-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="g-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m15 15 5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="g-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M7.5 15l4-4.5 3 3L20 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="g-book" viewBox="0 0 24 24"><path d="M5 4.5h10.5a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
     <symbol id="g-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
   </defs>
 </svg>
@@ -992,6 +1116,9 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
     <button class="dicon" data-act="openWin" data-w="casino"><svg class="ico"><use href="#g-dice"/></svg><span>Casino</span></button>
     <button class="dicon" data-act="career"><svg class="ico"><use href="#g-cap"/></svg><span>Carrière</span></button>
     <button class="dicon" data-act="openWin" data-w="term"><svg class="ico"><use href="#g-term"/></svg><span>Terminal</span></button>
+    <button class="dicon" data-act="openWin" data-w="stats"><svg class="ico"><use href="#g-chart"/></svg><span>Stats</span></button>
+    <button class="dicon" data-act="openWin" data-w="cat"><svg class="ico"><use href="#g-book"/></svg><span>Catalogus</span></button>
+    <button class="dicon" data-act="openWin" data-w="set"><svg class="ico"><use href="#g-gear"/></svg><span>Instellingen</span></button>
   </nav>
 
   <main class="tiles">
@@ -1039,15 +1166,32 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
 
   <section class="win float" id="win-inv" hidden aria-label="Opslag">
     <div class="wbar"><svg class="ico"><use href="#g-box"/></svg><span class="wt">opslag/</span><span class="wmeta" id="invCount"></span><span class="wctl"><button data-act="minWin" data-w="inv" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="inv" aria-label="Sluiten">✕</button></span></div>
-    <div class="wbody">
-      <div class="filters" id="invViews"></div>
-      <div id="invHw">
-      <div class="invtools"><span class="sub" title="Verkoopt automatisch wat Hot-Swap naar je opslag stuurt. Mutaties en admin-items worden nooit automatisch verkocht.">Auto-verkoop</span><select id="autoSell"><option value="-1">uit</option><option value="0">Common</option><option value="1">t/m Uncommon</option><option value="2">t/m Rare</option><option value="3">t/m Epic</option></select><span class="sub">Verkoop alles t/m</span><select id="bulkTier"></select><button class="btn sm sec" data-act="bulkSell" id="bulkBtn">Verkoop</button></div>
-      <div class="sub" style="margin-top:8px">Klik een item en daarna een gemarkeerd slot in je rack om het te plaatsen of te wisselen.</div>
-      <div class="filters" id="filters"></div>
-      <div class="inv" id="inv"></div>
+    <div class="wbody shopbody invbody">
+      <nav class="snav">
+        <div class="sbrand"><svg class="ico"><use href="#g-box"/></svg><span>Op<b>slag</b></span></div>
+        <div id="invViews"></div>
+        <div id="invSide">
+          <div class="slbl">Type</div>
+          <div id="filters"></div>
+          <div class="slbl">Opruimen</div>
+          <div class="cleanup">
+            <label title="Verkoopt automatisch wat Hot-Swap naar je opslag stuurt. Mutaties, admin-items en vergrendelde items worden nooit automatisch verkocht.">Auto-verkoop<select id="autoSell"><option value="-1">uit</option><option value="0">Common</option><option value="1">t/m Uncommon</option><option value="2">t/m Rare</option><option value="3">t/m Epic</option></select></label>
+            <label>Verkoop alles t/m<select id="bulkTier"></select></label>
+            <button class="btn sm sec" data-act="bulkSell" id="bulkBtn">Verkoop</button>
+          </div>
+        </div>
+      </nav>
+      <div class="smain">
+        <div id="invHw">
+          <div class="invbar">
+            <label class="isearch"><svg class="ico"><use href="#g-search"/></svg><input id="invQ" type="search" placeholder="Zoek een item…" autocomplete="off"></label>
+            <select id="invSort"><option value="tier">Sorteer: rarity</option><option value="val">Sorteer: waarde</option><option value="new">Sorteer: nieuwste</option><option value="type">Sorteer: type</option></select>
+          </div>
+          <div class="sub ihint">Klik een item en daarna een gemarkeerd slot om het te plaatsen. <b>Shift+klik</b> zet het meteen op de beste plek.</div>
+          <div class="inv" id="inv"></div>
+        </div>
+        <div class="ups" id="kist" hidden></div>
       </div>
-      <div class="ups" id="kist" hidden></div>
     </div>
   </section>
 
@@ -1083,6 +1227,21 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
         <div class="ctree" id="ctree"></div>
       </div>
     </div>
+  </section>
+
+  <section class="win float" id="win-set" hidden aria-label="Instellingen">
+    <div class="wbar"><svg class="ico"><use href="#g-gear"/></svg><span class="wt">instellingen</span><span class="wmeta">per toestel</span><span class="wctl"><button data-act="minWin" data-w="set" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="set" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody setbody" id="setBody"></div>
+  </section>
+
+  <section class="win float" id="win-stats" hidden aria-label="Statistieken">
+    <div class="wbar"><svg class="ico"><use href="#g-chart"/></svg><span class="wt">stats.exe</span><span class="wmeta" id="statsMeta"></span><span class="wctl"><button data-act="minWin" data-w="stats" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="stats" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody statsbody" id="statsBody"></div>
+  </section>
+
+  <section class="win float" id="win-cat" hidden aria-label="Catalogus">
+    <div class="wbar"><svg class="ico"><use href="#g-book"/></svg><span class="wt">catalogus.db</span><span class="wmeta" id="catMeta"></span><span class="wctl"><button data-act="minWin" data-w="cat" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="cat" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody catbody" id="catBody"></div>
   </section>
 
   <section class="win float" id="win-term" hidden aria-label="Terminal">
@@ -1123,9 +1282,12 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
     <button data-act="openWin" data-w="casino"><svg class="ico"><use href="#g-dice"/></svg>Casino</button>
     <button data-act="career"><svg class="ico"><use href="#g-cap"/></svg>Carrière</button>
     <button data-act="openWin" data-w="term"><svg class="ico"><use href="#g-term"/></svg>Terminal</button>
-    <button data-act="redeem"><svg class="ico"><use href="#g-gift"/></svg>Code inwisselen</button>
+    <button data-act="openWin" data-w="stats"><svg class="ico"><use href="#g-chart"/></svg>Stats</button>
+    <button data-act="openWin" data-w="cat"><svg class="ico"><use href="#g-book"/></svg>Catalogus</button>
+    <button data-act="redeem"><svg class="ico"><use href="#g-gift"/></svg>Code</button>
   </div>
   <div class="smlist">
+    <button data-act="openWin" data-w="set"><svg class="ico"><use href="#g-gear"/></svg>Instellingen</button>
     <button data-act="toggleCine"><svg class="ico"><use href="#g-film"/></svg>Filmische reveals<span class="smstate" id="smCine"></span></button>
     <button data-act="toggleHum"><svg class="ico"><use href="#g-wave"/></svg>Server-gezoem<span class="smstate" id="smHum"></span></button>
     <button data-act="mute"><svg class="ico"><use href="#g-sound"/></svg>Geluidseffecten<span class="smstate" id="smSnd"></span></button>
@@ -1140,6 +1302,8 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
 
 <div id="cine" aria-live="polite"></div>
 <div class="selbar" id="selbar" hidden></div>
+<div class="undobar" id="undoBar" hidden></div>
+<div class="tip" id="tip" hidden></div>
 <div id="toasts"></div>
 <div id="flash"></div>
 <div id="glitch"><div class="bar"></div><div class="gt" id="glitchT" data-t="DUPLICATE">DUPLICATE</div><div class="gs" id="glitchS"></div></div>
@@ -1453,6 +1617,22 @@ const IS_BETA = true;
 const SAVE_VERSION = 2;
 const $ = id => document.getElementById(id);
 // Alleen vervangen als de inhoud echt verandert: zo gaan klikken niet verloren als er tijdens een animatie opnieuw getekend wordt
+/* Instellingen (per toestel, los van de save) */
+const UI_KEY = 'rackrng-ui-beta';
+const NCATS = [
+  ['roll',   'Zeldzame rolls',      'Epic+, OC, mutaties, gouden rolls'],
+  ['auto',   'Auto-roll & Hot-Swap','Wat automatisch gekocht of gestopt wordt'],
+  ['buy',    'Aankopen & verkopen', 'Upgrades, U\'s, verkopen, beste uitrusting'],
+  ['rack',   'Perfect match',       'Als een U alle drie dezelfde tier heeft'],
+  ['event',  'Random events',       'Start en einde van events'],
+  ['boost',  'Boosts & shop',       'Restock, boost actief, kist'],
+  ['casino', 'Casino',              'Meldingen uit het casino'],
+];
+const UI_DEF = { cine: true, hum: false, n: Object.fromEntries(NCATS.map(([k]) => [k, true])), nTier: 3, nDur: 2600, nMax: 3, stack: true,
+                 floats: true, coins: true, flash: true, shake: true, nearMiss: true, buzz: true, num: 'short', wins: {} };
+let ui = JSON.parse(JSON.stringify(UI_DEF));
+try { const st = JSON.parse(localStorage.getItem(UI_KEY) || '{}'); Object.assign(ui, st, { n: Object.assign({}, UI_DEF.n, st.n || {}) }); } catch (e) {}
+const saveUi = () => { try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (e) {} };
 const setHTML = (el, h) => { if (el._h !== h) { el.innerHTML = h; el._h = h; } };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const SUF = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc'];
@@ -1463,6 +1643,7 @@ function fmt(n) {
   if (!isFinite(n)) return '€∞';
   if (n < 0) return '-' + fmt(-n);
   if (n < 1000) { const d = n < 10 ? 2 : n < 100 ? 1 : 0; return '€' + fmtNum(floorTo(n, d), d); }
+  if (ui.num === 'sci' && n >= 1e6) { const x = Math.floor(Math.log10(n)); return '€' + fmtNum(floorTo(n / 10 ** x, 2), 2) + 'e' + x; }
   const e = Math.min(Math.floor(Math.log10(n) / 3), SUF.length - 1);
   const v = n / 10 ** (3 * e);
   const d = v < 10 ? 2 : v < 100 ? 1 : 0;
@@ -1534,9 +1715,10 @@ function newState() {
            hotSwap: false, rollTiers: [false, false, false, true, true, true, true], autoSellTier: -1,
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
            skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
-           shop: null, boosts: {}, kist: [], seenTiers: [], router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
+           shop: null, boosts: {}, kist: [], seenTiers: [], locked: [], found: [], stats: newStats(), router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
            prestige: newPrestige(), runV: 1 };
 }
+const newStats = () => ({ tiers: [0, 0, 0, 0, 0, 0, 0, 0], best: null, bought: 0, sold: 0, playMs: 0 });
 // Blijft altijd bewaard bij afstuderen
 const newPrestige = () => ({ count: 0, ects: 0, ectsTotal: 0, nodes: {}, bestRun: 0, fastestRun: 0, totalEarned: 0 });
 function fromJSON(raw) {
@@ -1550,6 +1732,10 @@ function fromJSON(raw) {
   // (eenmalig, ook voor beta-saves die de teller al op €0 hadden gezet)
   if (raw.runV !== 1) { s.runEarned = Math.max(+raw.runEarned || 0, +raw.money || 0); s.runV = 1; }
   if (!s.prestige.nodes || typeof s.prestige.nodes !== 'object') s.prestige.nodes = {};
+  s.stats = Object.assign(newStats(), raw.stats || {});
+  s.found = Array.isArray(raw.found) ? raw.found.filter(r => DEFS[r]) : [...new Set([...(raw.inv || []), ...(raw.rack || []).flatMap(u => u ? COMP.map(k => u[k]) : []), raw.router, ...(raw.switches || [])]
+    .map(hyd).filter(x => x && x.ref && DEFS[x.ref]).map(x => x.ref))];
+  s.locked = Array.isArray(raw.locked) ? raw.locked.filter(x => typeof x === 'number') : [];
   s.kist = (Array.isArray(raw.kist) ? raw.kist : []).filter(x => x && BOOSTS[x.kind] && x.tier >= 0 && x.tier < 7);
   // tiers die je al eens vond (voor de filmische reveal): oude saves vullen we aan met wat je al bezit
   if (!Array.isArray(raw.seenTiers)) s.seenTiers = [...new Set([...(raw.inv || []), ...(raw.rack || []).flatMap(u => u ? COMP.map(k => u[k]) : [])]
@@ -1854,16 +2040,29 @@ const SFX = {
            : t === 2 ? beep([700, 900, 1100], 0.07)
            : t === 1 ? beep([700, 900], 0.06) : null,
 };
-function toast(msg) {
+function toast(msg, cat = 'sys') {
+  termLog(msg);   // de terminal logt altijd alles
+  if (cat !== 'sys' && ui.n[cat] === false) return;
   const box = $('toasts');
-  while (box.children.length > 3) box.firstChild.remove();
+  const hide = t => setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, ui.nDur);
+  const same = ui.stack && [...box.children].find(x => x.dataset.msg === msg && x.style.opacity !== '0');
+  if (same) {   // dezelfde melding: teller ophogen in plaats van een nieuwe
+    const c = (+same.dataset.c || 1) + 1; same.dataset.c = c;
+    same.querySelector('.tc').textContent = '×' + c;
+    same.classList.remove('bump'); void same.offsetWidth; same.classList.add('bump');
+    clearTimeout(same._t); same._t = hide(same);
+    return;
+  }
+  while (box.children.length >= ui.nMax) box.firstChild.remove();
   const t = document.createElement('div');
-  t.className = 'toast'; t.textContent = msg;
+  t.className = 'toast'; t.dataset.msg = msg;
+  t.innerHTML = '<span class="tm"></span><span class="tc"></span>';
+  t.firstChild.textContent = msg;
   box.appendChild(t);
-  termLog(msg);
-  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2600);
+  t._t = hide(t);
 }
 function flash(tier) {
+  if (!ui.flash) return;
   const f = $('flash');
   const c = getComputedStyle(document.documentElement).getPropertyValue('--c' + tier).trim();
   f.style.setProperty('--fc', c + '99');
@@ -1876,7 +2075,7 @@ function glitchFx(it) {
   document.body.classList.add('glitching');
   setTimeout(() => document.body.classList.remove('glitching'), 650);
   setTimeout(() => g.classList.remove('on'), 1500);
-  toast(`👾 Glitch in de Matrix! Gratis kopie van ${it.name}`);
+  toast(`👾 Glitch in de Matrix! Gratis kopie van ${it.name}`, 'roll');
   if (!state.muted) try { // ruis + kapotte piepjes
     actx = actx || new (window.AudioContext || window.webkitAudioContext)();
     const n = actx.sampleRate * 0.45, buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
@@ -1887,10 +2086,12 @@ function glitchFx(it) {
   beep([1800, 200, 1400, 90, 2200], 0.05, 'square');
 }
 function flashColor(c) {
+  if (!ui.flash) return;
   const f = $('flash'); f.style.setProperty('--fc', c + '99');
   f.classList.remove('on'); void f.offsetWidth; f.classList.add('on');
 }
 function shake() {
+  if (!ui.shake) return;
   document.body.classList.remove('shake'); void document.body.offsetWidth;
   document.body.classList.add('shake');
   setTimeout(() => document.body.classList.remove('shake'), 600);
@@ -1909,12 +2110,18 @@ const perfectSet = () => new Set(state.rack.map((u, i) => matchInfo(u).perfect ?
 function afterChange(before) {
   for (const i of perfectSet()) if (!before.has(i)) {
     celebrate.add(i);
-    toast(`✨ Perfect match op U${i + 1}! Inkomen ×${fmtNum(matchTab()[0])}`);
+    toast(`✨ Perfect match op U${i + 1}! Inkomen ×${fmtNum(matchTab()[0])}`, 'rack');
     SFX.perfect();
   }
   save(); renderAll();
 }
 
+function trackRoll(it) {   // statistieken + catalogus
+  const S = state.stats;
+  S.tiers[it.tier] = (S.tiers[it.tier] || 0) + 1;
+  if (!S.best || it.tier > S.best.tier || (it.tier === S.best.tier && basePrice(it) > S.best.v)) S.best = { name: it.name, tier: it.tier, type: it.type, v: basePrice(it), mut: it.mut || null };
+  if (it.ref && !state.found.includes(it.ref)) { state.found.push(it.ref); if (it.tier >= 2) toast(`📖 Nieuw in je catalogus: ${it.name}`, 'roll'); }
+}
 function roll() {
   const now = Date.now();
   if (rolling || now < state.rollReadyAt) return;
@@ -1923,6 +2130,7 @@ function roll() {
   state.current = item;
   state.currentBought = false;
   state.rolls++;
+  trackRoll(item);
   state.pity = item.tier >= 2 ? 0 : state.pity + 1;
   if (pn('lk_streak')) { if (state.streak > 0) state.streak--; if (item.tier >= 3) state.streak = 10; }
   state.rollReadyAt = now + cooldown() * 1000;
@@ -1932,9 +2140,9 @@ function roll() {
   renderResult(); renderRollMeta();
   spinReels(cands, win, dur, () => {
     rolling = false;
-    if (golden) toast(`🪙 Gouden roll! (luck ×${fmtNum(luck() * goldenMult())})`);
-    if (pityHit) toast('📜 Garantiecontract: gegarandeerde Rare+!');
-    if (fwHit) toast('📈 Firmware-update: deze roll is een tier hoger uitgevallen!');
+    if (golden) toast(`🪙 Gouden roll! (luck ×${fmtNum(luck() * goldenMult())})`, 'roll');
+    if (pityHit) toast('📜 Garantiecontract: gegarandeerde Rare+!', 'roll');
+    if (fwHit) toast('📈 Firmware-update: deze roll is een tier hoger uitgevallen!', 'roll');
     reveal(item);
     autoAfterRoll(item);
     renderResult(); renderRollMeta(); save();
@@ -1944,7 +2152,8 @@ function roll() {
    Beter voor je rack → meteen op de beste plek (en het hele rack opnieuw optimaal). Anders → opslag.
    Een item dat de auto-verkoop toch meteen zou verkopen, koopt hij niet (anders verlies je geld). */
 const HOT_CAP = 2000;   // max items in de opslag via Hot-Swap, zodat je save niet ontploft
-const shouldAutoSell = it => state.autoSellTier >= 0 && it.tier <= state.autoSellTier && !isAdminItem(it) && !it.mut;
+const isLocked = it => !!it && state.locked.includes(it.id);
+const shouldAutoSell = it => state.autoSellTier >= 0 && it.tier <= state.autoSellTier && !isAdminItem(it) && !it.mut && !isLocked(it);
 function toStorage(it, auto) {
   if (auto && (shouldAutoSell(it) || state.inv.length >= HOT_CAP)) { state.money += sellPrice(it); return false; }
   state.inv.push(it); return true;
@@ -1960,7 +2169,7 @@ function autoAfterRoll(item) {
     if (state.autoRoll) { state.autoRoll = false; toast(`⏱️ Auto-roll gestopt: niet genoeg geld voor ${TIERS[item.tier].name} ${item.name} (${fmt(price(item))})`); }
     return;
   }
-  if (state.autoRoll) { state.autoRoll = false; toast(`⏱️ Auto-roll gestopt: ${TIERS[item.tier].name} gevonden!`); }
+  if (state.autoRoll) { state.autoRoll = false; toast(`⏱️ Auto-roll gestopt: ${TIERS[item.tier].name} gevonden!`, 'auto'); }
 }
 function hotSwapTry(item) {
   if (!hotActive() || !state.rollTiers[item.tier] || state.money < price(item)) return;
@@ -1977,9 +2186,10 @@ function reveal(it) {
   setTimeout(() => { resultFx = ''; }, 1400);
   if (it.tier >= 3) buzz(it.tier >= 5 ? [60, 40, 140] : 40);
   cinematic(it);
-  if (it.tier >= 3) { flash(it.tier); toast(`🎉 ${TIERS[it.tier].name}! ${it.oc ? '⚡OC ' : ''}${it.name}`); }
-  else if (it.oc) toast(`⚡ Overclocked ${it.name}!`);
-  if (it.mut) { const m = MUTATIONS[it.mut]; toast(`${m.icon} Mutatie: ${mutLabel(it)}! ${m.desc}`); flashColor(m.color); }
+  if (it.tier >= 3) flash(it.tier);
+  if (it.tier >= ui.nTier) toast(`🎉 ${TIERS[it.tier].name}! ${it.oc ? '⚡OC ' : ''}${it.name}`, 'roll');
+  else if (it.oc) toast(`⚡ Overclocked ${it.name}!`, 'roll');
+  if (it.mut) { const m = MUTATIONS[it.mut]; toast(`${m.icon} Mutatie: ${mutLabel(it)}! ${m.desc}`, 'roll'); flashColor(m.color); }
   if (it.tier >= 5) shake();
 }
 
@@ -1999,10 +2209,10 @@ function buyCurrent(mode, auto = false) {
     if (old) note = toStorage(old, auto) ? ` · ${old.name} → opslag` : ` · ${old.name} verkocht`;
     setAt(b.loc, it);
     if (auto) optimizeRack(); // ook items uit je opslag op de beste plek
-    toast((auto ? '🔥 Hot-Swap: ' : '') + `${it.name} geplaatst` + note);
+    toast((auto ? '🔥 Hot-Swap: ' : '') + `${it.name} geplaatst` + note, auto ? 'auto' : 'buy');
   } else {
     toStorage(it, auto);
-    if (!auto) toast('Gekocht, staat in je opslag'); // Hot-Swap meldt opslag-aankopen niet (geen spam)
+    if (!auto) toast('Gekocht, staat in je opslag', 'buy'); // Hot-Swap meldt opslag-aankopen niet (geen spam)
   }
   // Glitch in de Matrix: gratis kopie
   if (Math.random() < 0.001 * lvl('glitch')) {   // 0,1% per niveau → max 1%
@@ -2068,7 +2278,7 @@ function equipBest() {
   const before = perfectSet();
   sel = null;
   const d = optimizeRack();
-  toast(d > 1e-9 ? `⚡ Beste uitrusting: +${fmt(d)}/s` : 'Je rack staat al optimaal');
+  toast(d > 1e-9 ? `⚡ Beste uitrusting: +${fmt(d)}/s` : 'Je rack staat al optimaal', 'buy');
   if (d > 1e-9) SFX.place();
   afterChange(before);
 }
@@ -2082,7 +2292,7 @@ function buyUnit() {
   state.rack.push(emptyU());
   newU = state.rack.length - 1;
   ensureSwitchSlots();
-  toast(`U${state.rack.length} toegevoegd aan je rack` + (state.switches.length > oldSw ? ' + nieuw switch-slot!' : ''));
+  toast(`U${state.rack.length} toegevoegd aan je rack` + (state.switches.length > oldSw ? ' + nieuw switch-slot!' : ''), 'buy');
   SFX.upgrade();
   save(); renderAll();
 }
@@ -2093,21 +2303,22 @@ function upgradeConn() {
   state.money -= nx.cost;
   state.conn++;
   state.rollReadyAt = Math.min(state.rollReadyAt, Date.now() + cooldown() * 1000);
-  toast(`📶 Verbinding geüpgraded naar ${nx.name}`);
+  toast(`📶 Verbinding geüpgraded naar ${nx.name}`, 'buy');
   SFX.upgrade();
   save(); renderAll();
 }
 
-function buyUpgrade(id) {
+function buyUpgrade(id) {   // Shift+klik op de knop koopt zoveel niveaus als je kunt betalen
   const u = upDef(id);
   if (!u || lvl(id) >= u.max) return;
   const cost = upCost(u);
   if (state.money < cost) return;
   state.money -= cost;
   state.up[id] = lvl(id) + 1;
+  state.stats.bought++;
   if (id === 'autoroll' && lvl(id) === 2) { state.rollTiers = [false, true, true, true, true, true, true]; state.hotSwap = true; }
   if (id === 'cache') state.rollReadyAt = Math.min(state.rollReadyAt, Date.now() + cooldown() * 1000);
-  toast(`${u.icon} ${u.name} → ${u.eff(lvl(id))}`);
+  toast(`${u.icon} ${u.name} → ${u.eff(lvl(id))}`, 'buy');
   SFX.upgrade();
   save(); renderAll();
 }
@@ -2147,12 +2358,16 @@ function clickSlot(loc) {
 function sellSel() {
   const it = selItem(); if (!it) return;
   if (isAdminItem(it)) return toast('Admin-items kun je niet verkopen');
+  if (isLocked(it)) return toast('🔒 Dit item is vergrendeld. Ontgrendel het eerst.');
+  if (it.tier >= 4 && !confirm(`${TIERS[it.tier].name} ${it.name} verkopen voor ${fmt(sellPrice(it))}?`)) return;
+  setUndo([{ it, loc: sel.src === 'inv' ? null : sel.loc }], sellPrice(it));
+  state.stats.sold++;
   flyCoins($('selbar'), 6);
   const before = perfectSet();
   if (sel.src === 'inv') state.inv = state.inv.filter(x => x.id !== it.id);
   else setAt(sel.loc, null);
   state.money += sellPrice(it);
-  toast(`${it.name} verkocht voor ${fmt(sellPrice(it))}`);
+  toast(`${it.name} verkocht voor ${fmt(sellPrice(it))}`, 'buy');
   sel = null; SFX.sell();
   afterChange(before);
 }
@@ -2163,17 +2378,53 @@ function toInvSel() {
   sel = null;
   afterChange(before);
 }
+let undoBuf = null, undoT = null;
+function setUndo(items, money) {
+  undoBuf = { items, money, until: Date.now() + 6000 };
+  clearTimeout(undoT); undoT = setTimeout(() => { undoBuf = null; renderUndo(); }, 6000);
+  renderUndo();
+}
+function renderUndo() {
+  const b = $('undoBar'); if (!b) return;
+  if (!undoBuf) { b.hidden = true; return; }
+  b.hidden = false;
+  b.innerHTML = `<span>${undoBuf.items.length === 1 ? esc(undoBuf.items[0].it.name) : undoBuf.items.length + ' items'} verkocht</span><button class="btn sm" data-act="undo">Ongedaan maken</button><i class="ubar"></i>`;
+}
+function undoSell() {
+  if (!undoBuf) return;
+  const u = undoBuf; undoBuf = null; clearTimeout(undoT);
+  const before = perfectSet();
+  state.money = Math.max(0, state.money - u.money);
+  for (const { it, loc } of u.items) { if (loc && !getAt(loc)) setAt(loc, it); else state.inv.push(it); }
+  state.stats.sold = Math.max(0, state.stats.sold - u.items.length);
+  toast('↩️ Verkoop ongedaan gemaakt');
+  renderUndo(); afterChange(before);
+}
+function placeBest(it) {   // Shift+klik in de opslag
+  const b = bestPlacement(it);
+  if (!b || !(b.gain > 1e-9 || b.empty)) return toast('Geen betere plek voor dit item in je rack');
+  const before = perfectSet(), old = getAt(b.loc);
+  state.inv = state.inv.filter(x => x.id !== it.id);
+  setAt(b.loc, it);
+  if (old) state.inv.push(old);
+  toast(`${it.name} geplaatst in ${locName(b.loc)}${b.gain > 1e-9 ? ` (+${fmt(b.gain)}/s)` : ''}`, 'buy');
+  SFX.upgrade && SFX.upgrade();
+  sel = null; afterChange(before);
+}
 function bulkSell() {
   const max = +$('bulkTier').value;
-  const list = state.inv.filter(x => x.tier <= max);
+  const list = state.inv.filter(x => x.tier <= max && !isLocked(x));
   if (!list.length) return toast('Niks om te verkopen');
   const total = list.reduce((a, x) => a + sellPrice(x), 0);
   if (!confirm(`${list.length} items verkopen voor ${fmt(total)}?`)) return;
   flyCoins($('bulkBtn'), Math.min(12, 4 + list.length));
-  state.inv = state.inv.filter(x => x.tier > max);
+  const ids = new Set(list.map(x => x.id));
+  state.inv = state.inv.filter(x => !ids.has(x.id));
   state.money += total;
+  setUndo(list.map(it => ({ it, loc: null })), total);
+  state.stats.sold += list.length;
   if (sel && sel.src === 'inv' && !selItem()) sel = null;
-  toast(`${list.length} items verkocht voor ${fmt(total)}`);
+  toast(`${list.length} items verkocht voor ${fmt(total)}`, 'buy');
   SFX.sell();
   save(); renderAll();
 }
@@ -2211,8 +2462,8 @@ function startEvent(def) {
   if (def.instant) {
     const gift = Math.max(100, steadyIncome() * 300);
     state.money += gift;
-    toast(`${def.icon} ${def.name}: +${fmt(gift)}`);
-  } else toast(`${def.icon} ${def.name}: ${def.desc}`);
+    toast(`${def.icon} ${def.name}: +${fmt(gift)}`, 'event');
+  } else toast(`${def.icon} ${def.name}: ${def.desc}`, 'event');
   const col = { good: 1, mixed: 4, bad: 5 }[def.kind];
   flash(col);
   if (def.kind === 'bad') beep([400, 300, 220], 0.09, 'square'); else beep([523, 784, 1047], 0.08);
@@ -2221,7 +2472,7 @@ function startEvent(def) {
 function endEvent(msg) {
   state.event = null;
   state.nextEventAt = Date.now() + randGap();
-  if (msg) toast(msg);
+  if (msg) toast(msg, 'event');
   save(); renderAll();
 }
 function tickEvents() {
@@ -2376,7 +2627,7 @@ function crTick() {
   if (!cr || cr.over) return;
   const m = crM((Date.now() - cr.start) / 1000);
   if (cr.auto && cr.auto <= cr.at && m >= cr.auto) return crCash(cr.auto);
-  if (m >= cr.at && cr.at >= CRASH_MAX) { toast(`🏆 Server op max capaciteit! Automatisch uitbetaald bij ×${CRASH_MAX}`); return crCash(CRASH_MAX); }
+  if (m >= cr.at && cr.at >= CRASH_MAX) { toast(`🏆 Server op max capaciteit! Automatisch uitbetaald bij ×${CRASH_MAX}`, 'casino'); return crCash(CRASH_MAX); }
   if (m >= cr.at) {
     cr.m = cr.at; cr.over = true; cr.res = { win: false };
     cr.pts.push([(Date.now() - cr.start) / 1000, cr.at]);
@@ -2456,7 +2707,7 @@ function renderGame() {
     let h = `<div class="felt crfelt">
       <div class="crhist">${crHist.length ? crHist.map(x => `<span class="${x >= 2 ? 'hi' : 'lo'}">×${x.toFixed(2)}</span>`).join('') : '<span class="none">nog geen rondes</span>'}</div>
       <div class="mon ${cls}">
-        <div class="monbar"><span class="live ${live ? 'on' : ''}"></span>server-load · rack-01<span class="mright">${live ? 'LIVE' : cr ? 'OFFLINE' : 'IDLE'}</span></div>
+        <div class="monbar"><span class="livedot ${live ? 'on' : ''}"></span>server-load · rack-01<span class="mright">${live ? 'LIVE' : cr ? 'OFFLINE' : 'IDLE'}</span></div>
         <svg class="crsvg" id="crSvg" viewBox="0 0 400 190" preserveAspectRatio="none"></svg>
         <div class="crash-m ${cls}" id="crM">${label}</div>
         ${cls === 'boom' ? `<div class="e502">502 BAD GATEWAY<small>server crashte bij ×${cr.at.toFixed(2)}</small></div>` : ''}
@@ -2505,7 +2756,7 @@ function ensureShop() {
   if (state.shop && state.shop.hour === h && state.shop.v === 3) return false;
   const restock = !!state.shop && state.shop.hour !== h;
   state.shop = { v: 3, hour: h, offers: Array.from({ length: SHOP_OFFERS }, makeOffer) };
-  if (restock) toast('⚡ Boost-shop heeft nieuwe voorraad!');
+  if (restock) toast('⚡ Boost-shop heeft nieuwe voorraad!', 'boost');
   return true;
 }
 const offerAt = i => state.shop && state.shop.offers ? state.shop.offers[i] : null;
@@ -2524,7 +2775,7 @@ function activate(o) {
   // sterker = vervangt (langste tijd blijft) · even sterk = tijd erbij
   if (!cur || better(o.kind, val, cur.val)) state.boosts[o.kind] = { val, until: Math.max(cur ? cur.until : 0, now + dur), tier: o.tier, name: boostName(o) };
   else cur.until += dur;
-  toast(`${BOOSTS[o.kind].icon} ${boostName(o)} actief: ${boostEffTxt(o.kind, val)}`);
+  toast(`${BOOSTS[o.kind].icon} ${boostName(o)} actief: ${boostEffTxt(o.kind, val)}`, 'boost');
   if (o.tier >= 3) flash(o.tier);
   SFX.upgrade();
 }
@@ -2536,7 +2787,7 @@ function buyBoost(i, mode) {
   o.sold = true;
   if (mode === 'store') {
     state.kist.push({ id: state.nextId++, kind: o.kind, tier: o.tier, exp: Date.now() + KIST_TTL });
-    toast(`🧰 ${boostName(o)} bewaard in je gereedschapskist`);
+    toast(`🧰 ${boostName(o)} bewaard in je gereedschapskist`, 'boost');
     SFX.upgrade();
   } else activate(o);
   save(); renderAll();
@@ -2556,7 +2807,7 @@ function pruneKist() {
   const n = state.kist.length, now = Date.now();
   state.kist = state.kist.filter(x => x.exp > now);
   const gone = n - state.kist.length;
-  if (gone) toast(`☕ ${gone} bewaarde boost${gone > 1 ? 's zijn' : ' is'} koud geworden en vervallen`);
+  if (gone) toast(`☕ ${gone} bewaarde boost${gone > 1 ? 's zijn' : ' is'} koud geworden en vervallen`, 'boost');
   return gone > 0;
 }
 const mmss = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`; };
@@ -2594,6 +2845,12 @@ function renderKist() {
     `<div class="sub" style="grid-column:1/-1">${state.kist.length}/${max} plekken · bewaarde boosts vervallen na 24u · meer plek met het Leverancierscontract</div>`);
 }
 let boostKey = '';
+function renderBadges() {
+  const upOk = UPGRADES.some(u => lvl(u.id) < u.max && state.money >= upCost(u));
+  const shopNew = state.shop && ui.shopSeen !== state.shop.hour && $('win-shop').hidden;
+  document.querySelectorAll('[data-w="up"], .mtabs [data-t="up"]').forEach(x => x.classList.toggle('hasdot', upOk));
+  document.querySelectorAll('[data-w="shop"], .mtabs [data-t="shop"]').forEach(x => x.classList.toggle('hasnew', !!shopNew));
+}
 function renderBoostBar() {
   const now = Date.now(), act = Object.keys(BOOSTS).filter(k => activeBoost(k));
   // verlopen boosts opruimen
@@ -2606,9 +2863,11 @@ function renderBoostBar() {
     boostKey = key;
     bar.className = act.length ? 'show' : '';
     bar.innerHTML = act.map(k => { const b = state.boosts[k];
-      return `<span class="bchip" style="--tc:var(--c${b.tier})">${BOOSTS[k].icon} ${esc(b.name)} · ${boostEffTxt(k, b.val)} · <b data-bt="${k}"></b></span>`; }).join('');
+      return `<span class="bchip" style="--tc:var(--c${b.tier})" title="${esc(b.name)} · ${boostEffTxt(k, b.val)}">${BOOSTS[k].icon} <span class="bcn">${esc(b.name)} · ${boostEffTxt(k, b.val)} · </span><b data-bt="${k}"></b></span>`; }).join('');
   }
   bar.querySelectorAll('[data-bt]').forEach(el => { el.textContent = mmss(state.boosts[el.dataset.bt].until - now); });
+  for (const k of act) { const b = state.boosts[k]; if (!b.warned && b.until - now < 30e3 && b.until - now > 0) { b.warned = true; toast(`⏳ ${b.name} loopt over 30 seconden af`, 'boost'); } }
+  for (const x of state.kist) if (!x.warned && x.exp - now < 3600e3) { x.warned = true; toast(`☕ ${boostName(x)} in je kist wordt binnen het uur koud`, 'boost'); }
 }
 
 /* =====================================================================
@@ -2779,7 +3038,7 @@ function buyNode(id) {
   if (id === 'nw_vlan' || id === 'nw_lb') ensureSwitchSlots();
   ensureShop();
   SFX.upgrade();
-  toast(`🎓 ${n.name}${n.max > 1 && n.max < Infinity ? ' ' + pn(id) + '/' + n.max : ''}: ${n.desc}`);
+  toast(`🎓 ${n.name}${n.max > 1 && n.max < Infinity ? ' ' + pn(id) + '/' + n.max : ''}: ${n.desc}`, 'buy');
   careerSel = id;
   save(); renderAll();
   const nn = document.querySelector(`[data-node="${id}"]`); if (nn) { nn.classList.remove('bought'); void nn.offsetWidth; nn.classList.add('bought'); }
@@ -2795,7 +3054,7 @@ function graduate() {
   P.bestRun = Math.max(P.bestRun, old.runEarned);
   P.fastestRun = P.fastestRun ? Math.min(P.fastestRun, runMs) : runMs;
   const keep = { prestige: P, skins: old.skins, skin: old.skin, playerId: old.playerId, redeemed: old.redeemed, muted: old.muted,
-                 seenHelp: true, seenTiers: old.seenTiers, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
+                 seenHelp: true, seenTiers: old.seenTiers, locked: old.locked, found: old.found, stats: old.stats, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
   const admin = permanentItems(), oldUp = old.up;
   state = newState();
   Object.assign(state, keep);
@@ -2842,6 +3101,7 @@ function botnetOffline(awaySec) {
   for (let i = 0; i < n; i++) {
     const { item } = generateRoll();
     state.rolls++;
+    trackRoll(item);
     state.pity = item.tier >= 2 ? 0 : state.pity + 1;
     if (pn('lk_streak')) { if (state.streak > 0) state.streak--; if (item.tier >= 3) state.streak = 10; }
     if (!best || price(item) > price(best)) best = item;
@@ -2852,6 +3112,7 @@ function botnetOffline(awaySec) {
     if (up) { const old = getAt(b.loc); setAt(b.loc, item); if (old) toStorage(old, true); }
     else toStorage(item, true);
   }
+  state.stats.bought += bought;
   if (bought) optimizeRack();
   incomeCache = totalIncome();
   return { n, bought, best };
@@ -2932,10 +3193,6 @@ function renderCareerBtn() {
 /* =====================================================================
    RackOS: vensters, taakbalk, startmenu, terminal, item-art, cinematics, juice
    ===================================================================== */
-const UI_KEY = 'rackrng-ui-beta';
-let ui = { cine: true, hum: false };
-try { Object.assign(ui, JSON.parse(localStorage.getItem(UI_KEY) || '{}')); } catch (e) {}
-const saveUi = () => { try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (e) {} };
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = () => matchMedia('(max-width: 900px)').matches;
 const ico = (id, cls = 'ico') => `<svg class="${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -2953,9 +3210,9 @@ function itemIconId(it) {
 const itemIcon = (it, cls = 'iico') => ico(itemIconId(it), cls);
 
 /* Vensters */
-const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 820, h: 600 }, casino: { w: 940, h: 660 }, career: { w: 1260, h: 760 }, term: { w: 620, h: 420 } };
-const WIN_TITLE = { career: 'carriere.app', up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
-const WIN_ICON = { career: 'g-cap', up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
+const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 960, h: 640 }, casino: { w: 940, h: 660 }, career: { w: 1260, h: 760 }, set: { w: 640, h: 640 }, stats: { w: 760, h: 620 }, cat: { w: 980, h: 660 }, term: { w: 620, h: 420 } };
+const WIN_TITLE = { stats: 'stats.exe', cat: 'catalogus.db', set: 'instellingen', career: 'carriere.app', up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
+const WIN_ICON = { stats: 'g-chart', cat: 'g-book', set: 'g-gear', career: 'g-cap', up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
 const openWins = new Set();
 let zTop = 30, focusedWin = null;
 function openWin(id) {
@@ -2969,9 +3226,17 @@ function openWin(id) {
   focusWin(id);
   if (id === 'term') renderTerm(true);
   if (id === 'career') renderCareer();
+  if (id === 'set') renderSettings();
+  if (id === 'stats') renderStats();
+  if (id === 'cat') renderCat();
+  if (id === 'shop') ui.shopSeen = state.shop && state.shop.hour, saveUi();
 }
 function placeWin(el, id) {
-  const d = $('desktop').getBoundingClientRect(), n = openWins.size;
+  const d = $('desktop').getBoundingClientRect(), n = openWins.size, m = ui.wins[id];
+  if (m && m.w <= d.width && m.l < d.width - 80 && m.t < d.height - 40) {
+    Object.assign(el.style, { width: m.w + 'px', height: m.h + 'px', left: m.l + 'px', top: m.t + 'px' });
+    el.dataset.placed = 1; return;
+  }
   const w = Math.min(WINS[id].w, d.width - 120), h = Math.min(WINS[id].h, d.height - 40);
   el.style.width = w + 'px'; el.style.height = h + 'px';
   el.style.left = Math.max(96, Math.min(d.width - w - 10, (d.width - w) / 2 + n * 30)) + 'px';
@@ -3015,7 +3280,53 @@ document.addEventListener('pointermove', e => {
   win.style.left = Math.max(0, Math.min(d.width - 120, e.clientX - d.left - dx)) + 'px';
   win.style.top = Math.max(0, Math.min(d.height - 34, e.clientY - d.top - dy)) + 'px';
 });
-document.addEventListener('pointerup', () => { drag = null; });
+document.addEventListener('pointerup', e => {
+  if (drag) rememberWin(drag.win);
+  else { const w = e.target.closest && e.target.closest('.win.float'); if (w && !isMobile()) rememberWin(w); }   // ook na vergroten/verkleinen
+  drag = null;
+});
+function rememberWin(w) {
+  const id = w.id.slice(4), r = { l: parseFloat(w.style.left) || 0, t: parseFloat(w.style.top) || 0, w: w.offsetWidth, h: w.offsetHeight };
+  const o = ui.wins[id];
+  if (!o || o.l !== r.l || o.t !== r.t || o.w !== r.w || o.h !== r.h) { ui.wins[id] = r; saveUi(); }
+}
+
+document.addEventListener('dblclick', e => {
+  const bar = e.target.closest('.win.float .wbar'); if (!bar || e.target.closest('button') || isMobile()) return;
+  const w = bar.parentElement, d = $('desktop').getBoundingClientRect();
+  if (w.dataset.max) { const o = JSON.parse(w.dataset.max); Object.assign(w.style, o); delete w.dataset.max; }
+  else { w.dataset.max = JSON.stringify({ left: w.style.left, top: w.style.top, width: w.style.width, height: w.style.height }); Object.assign(w.style, { left: '4px', top: '4px', width: d.width - 8 + 'px', height: d.height - 8 + 'px' }); }
+  rememberWin(w);
+});
+
+/* Tooltip met item-info (alleen met muis) */
+const canHover = matchMedia('(hover: hover)').matches;
+function tipItem(el) {
+  if (el.matches('.slot.filled')) return { it: getAt(locFromEl(el)), placed: true };
+  if (el.matches('.it[data-id]')) return { it: state.inv.find(x => x.id === +el.dataset.id), placed: false };
+  return null;
+}
+document.addEventListener('pointerover', e => {
+  if (!canHover || isMobile()) return;
+  const el = e.target.closest('.slot.filled, .it[data-id]'), tip = $('tip');
+  if (!el) { tip.hidden = true; return; }
+  const r = tipItem(el); if (!r || !r.it) return;
+  const it = r.it, cmp = r.placed ? null : compareInfo(it);
+  tip.style.setProperty('--tc', `var(--c${it.tier})`);
+  tip.innerHTML = `<div class="tph">${itemIcon(it, 'tpico')}<div><div class="tpt">${TIERS[it.tier].name} · ${TYPES[it.type].label}</div><div class="tpn">${nameHtml(it)}</div></div></div>
+    <div class="tps">${esc(it.spec)}</div><div class="tpv">${statText(it)}</div>
+    ${it.mut ? `<div class="tpm" style="color:${MUTATIONS[it.mut].color}">${MUTATIONS[it.mut].icon} ${mutLabel(it)}: ${MUTATIONS[it.mut].desc}</div>` : ''}
+    ${cmp ? `<div class="tpc ${cmp.up ? 'up' : 'down'}">${cmp.text}</div>` : ''}
+    <div class="tpf"><span>Verkoop ${isAdminItem(it) ? '–' : fmt(sellPrice(it))}</span>${isLocked(it) ? `<span>${ico('g-lock', 'lockico')} vergrendeld</span>` : ''}${r.placed ? '' : '<span>Shift+klik = beste plek</span>'}</div>`;
+  tip.hidden = false;
+});
+document.addEventListener('pointermove', e => {
+  const tip = $('tip'); if (!tip || tip.hidden) return;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 16) + 'px';
+  tip.style.top = (e.clientY + h + 24 > innerHeight ? e.clientY - h - 12 : e.clientY + 18) + 'px';
+});
+document.addEventListener('pointerdown', () => { const t = $('tip'); if (t) t.hidden = true; }, true);
 
 /* Mobiel: tabbalk, één app tegelijk */
 function setMobileTab(t) {
@@ -3024,6 +3335,10 @@ function setMobileTab(t) {
   document.querySelectorAll('.mtabs [data-act=mtab]').forEach(b => b.classList.toggle('on', b.dataset.t === t));
   if (t === 'term') renderTerm(true);
   if (t === 'career') renderCareer();
+  if (t === 'set') renderSettings();
+  if (t === 'stats') renderStats();
+  if (t === 'cat') renderCat();
+  if (t === 'shop') { ui.shopSeen = state.shop && state.shop.hour; saveUi(); }
   closeStart();
   scrollTo(0, 0);
 }
@@ -3048,6 +3363,92 @@ function renderStart() {
   $('smCine').textContent = ui.cine ? 'aan' : 'uit';
   $('smHum').textContent = ui.hum ? 'aan' : 'uit';
   $('smSnd').textContent = state.muted ? 'uit' : 'aan';
+}
+
+/* Instellingen-venster */
+const swRow = (key, name, desc, on) => `<label class="srow"><span><b>${name}</b>${desc ? `<small>${desc}</small>` : ''}</span><button class="sw ${on ? 'on' : ''}" data-act="uiToggle" data-k="${key}" role="switch" aria-checked="${on}"><i></i></button></label>`;
+const segRow = (key, name, desc, opts, val) => `<div class="srow"><span><b>${name}</b>${desc ? `<small>${desc}</small>` : ''}</span><div class="seg">${opts.map(([v, l]) => `<button class="${String(val) === String(v) ? 'on' : ''}" data-act="uiSet" data-k="${key}" data-v="${v}">${l}</button>`).join('')}</div></div>`;
+function renderSettings() {
+  const b = $('setBody'); if (!b || $('win-set').hidden) return;
+  setHTML(b, `<section class="sgrp"><h4>${ico('g-help')} Meldingen</h4>
+      <div class="sub" style="margin:-4px 0 8px">Uitgezette meldingen verschijnen niet meer rechtsonder, maar staan nog wel in de Terminal.</div>
+      ${NCATS.map(([k, n, d]) => swRow('n.' + k, n, d, ui.n[k])).join('')}
+      ${segRow('nTier', 'Roll-melding vanaf', 'Welke rarity een melding krijgt', [[2, 'Rare'], [3, 'Epic'], [4, 'Legendary'], [5, 'Mythic']], ui.nTier)}
+      ${segRow('nMax', 'Max tegelijk', '', [[1, '1'], [2, '2'], [3, '3'], [5, '5']], ui.nMax)}
+      ${segRow('nDur', 'Hoelang zichtbaar', '', [[1600, 'Kort'], [2600, 'Normaal'], [4500, 'Lang']], ui.nDur)}
+      ${swRow('stack', 'Gelijke meldingen samenvoegen', 'Toont ×3 in plaats van drie keer dezelfde melding', ui.stack)}
+    </section>
+    <section class="sgrp"><h4>${ico('g-film')} Effecten & clutter</h4>
+      ${swRow('cine', 'Filmische reveals', 'BIOS-scan bij een nieuwe Legendary en bij Mythic+', ui.cine)}
+      ${swRow('flash', 'Schermflits', 'Kleurflits bij zeldzame vondsten', ui.flash)}
+      ${swRow('shake', 'Scherm schudden', 'Bij Mythic+ vondsten', ui.shake)}
+      ${swRow('floats', 'Zwevende +€-getallen', 'Boven je best verdienende U\'s', ui.floats)}
+      ${swRow('coins', 'Vliegende muntjes', 'Bij verkopen', ui.coins)}
+      ${swRow('nearMiss', 'Near-misses op de reel', 'Af en toe een zeldzaam item vlak naast de markering', ui.nearMiss)}
+      ${swRow('buzz', 'Trillen (gsm)', '', ui.buzz)}
+    </section>
+    <section class="sgrp"><h4>${ico('g-sound')} Geluid</h4>
+      ${swRow('snd', 'Geluidseffecten', '', !state.muted)}
+      ${swRow('hum', 'Server-gezoem', 'Zacht achtergrondgezoem', ui.hum)}
+    </section>
+    <section class="sgrp"><h4>${ico('g-rack')} Weergave</h4>
+      ${segRow('num', 'Getallen', '', [['short', 'Kort · €1,2T'], ['sci', 'Wetenschappelijk · €1,2e12']], ui.num)}
+      <div class="srow"><span><b>Vensterindeling</b><small>Vensters onthouden hun plek en grootte</small></span><button class="btn sm sec" data-act="resetLayout">Indeling resetten</button></div>
+    </section>`);
+}
+
+/* Statistieken */
+const incHist = [];
+setInterval(() => { incHist.push(incomeCache); if (incHist.length > 90) incHist.shift(); if (!$('win-stats').hidden) renderStats(); }, 10000);
+function renderStats() {
+  const b = $('statsBody'); if (!b || $('win-stats').hidden) return;
+  const S = state.stats, P = state.prestige, tot = S.tiers.reduce((a, x) => a + x, 0) || 1, mx = Math.max(1, ...S.tiers);
+  const pts = incHist.length > 1 ? incHist : [incomeCache, incomeCache], hi = Math.max(1, ...pts);
+  const path = pts.map((v, i) => `${i ? 'L' : 'M'}${(i / (pts.length - 1) * 400).toFixed(1)},${(118 - v / hi * 108).toFixed(1)}`).join('');
+  const best = S.best;
+  setHTML(b, `<div class="kpis">
+      <div><span>Speeltijd</span><b>${fmtDur(S.playMs / 1000)}</b></div>
+      <div><span>Rolls</span><b>${fmtNum(tot === 1 && !S.tiers[0] ? 0 : S.tiers.reduce((a, x) => a + x, 0), 0)}</b></div>
+      <div><span>Inkomen</span><b>${fmt(incomeCache)}/s</b></div>
+      <div><span>Afgestudeerd</span><b>${P.count}×</b></div>
+    </div>
+    <div class="sgrp"><h4>${ico('g-chart')} Inkomen (laatste ${Math.max(1, Math.round(pts.length * 10 / 60))} min)</h4>
+      <svg class="incsvg" viewBox="0 0 400 120" preserveAspectRatio="none"><path d="${path}L400,120L0,120Z" fill="rgba(61,220,151,.15)"/><path d="${path}" fill="none" stroke="var(--good)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+      <div class="sub">Piek ${fmt(hi)}/s · elke 10 seconden een meting, zolang de game open staat</div></div>
+    <div class="sgrp"><h4>${ico('g-roll')} Rolls per rarity</h4>
+      ${TIERS.map((t, i) => t.hidden && !S.tiers[i] ? '' : `<div class="tbar" style="--tc:var(--c${i})"><span>${t.name}</span><i><b style="width:${S.tiers[i] / mx * 100}%"></b></i><em>${fmtNum(S.tiers[i] || 0, 0)}</em><small>${S.tiers[i] ? (S.tiers[i] / tot * 100 < 0.1 ? '<0,1' : fmtNum(S.tiers[i] / tot * 100, 1)) + '%' : ''}</small></div>`).join('')}
+    </div>
+    <div class="sgrp"><h4>${ico('g-box')} Overig</h4>
+      <div class="kv"><span>Beste vondst ooit</span><b style="color:var(--c${best ? best.tier : 0})">${best ? `${TIERS[best.tier].name} ${esc(best.name)}` : '–'}</b></div>
+      <div class="kv"><span>Upgrades gekocht</span><b>${fmtNum(S.bought, 0)}</b></div>
+      <div class="kv"><span>Items verkocht</span><b>${fmtNum(S.sold, 0)}</b></div>
+      <div class="kv"><span>Catalogus</span><b>${state.found.length}/${Object.keys(DEFS).length}</b></div>
+      <div class="kv"><span>Casino (ooit)</span><b class="${state.casinoNet >= 0 ? 'pos' : 'neg'}">${state.casinoNet >= 0 ? '+' : ''}${fmt(state.casinoNet)}</b></div>
+      <div class="kv"><span>Totaal verdiend (alle runs)</span><b>${fmt(P.totalEarned + state.runEarned)}</b></div>
+    </div>`);
+  $('statsMeta').textContent = fmtDur(S.playMs / 1000);
+}
+/* Catalogus */
+let catType = 'all';
+function renderCat() {
+  const b = $('catBody'); if (!b || $('win-cat').hidden) return;
+  const found = new Set(state.found), all = Object.keys(DEFS).length;
+  const types = Object.keys(DEFS_BY);
+  const tabs = `<div class="cattabs">${['all', ...types].map(t => { const refs = t === 'all' ? Object.keys(DEFS) : DEFS_BY[t].flat(); const f = refs.filter(r => found.has(r)).length;
+    return `<button class="chip ${catType === t ? 'on' : ''}" data-act="catType" data-t="${t}">${t === 'all' ? 'Alles' : TYPES[t].label} <em>${f}/${refs.length}</em></button>`; }).join('')}</div>`;
+  const pct = Math.round(found.size / all * 100);
+  let h = `<div class="cathead"><div><b>${found.size}</b> van ${all} items ontdekt</div><div class="catbar"><i style="width:${pct}%"></i></div><span>${pct}%</span></div>` + tabs;
+  for (const t of types) {
+    if (catType !== 'all' && catType !== t) continue;
+    h += `<div class="catsec"><h4>${ico(itemIconId({ type: t, d: {} }), 'ico')} ${TYPES[t].label}</h4><div class="catgrid">`;
+    DEFS_BY[t].forEach((refs, tier) => refs.forEach(r => {
+      const d = DEFS[r], ok = found.has(r);
+      h += `<div class="catit ${ok ? 'ok' : ''}" style="--tc:var(--c${tier})" title="${ok ? esc(d.name + ' · ' + d.spec) : 'Nog niet ontdekt'}"><span class="ct">${TIERS[tier].name}</span><span class="cn2">${ok ? esc(d.name) : '???'}</span>${ok ? `<span class="cs">${esc(d.spec)}</span>` : ''}</div>`;
+    }));
+    h += '</div></div>';
+  }
+  setHTML(b, h);
+  $('catMeta').textContent = `${found.size}/${all}`;
 }
 
 /* Klok */
@@ -3129,6 +3530,7 @@ function floatText(x, y, txt, cls = '') {
   setTimeout(() => f.remove(), 1300);
 }
 function rackFloats() {
+  if (!ui.floats) return;
   if (document.hidden || isMobile() && document.body.dataset.tab !== 'home') return;
   // alleen boven je 3 best verdienende U's
   const rows = [...document.querySelectorAll('#rack .u.live')].sort((a, b) => b.dataset.inc - a.dataset.inc).slice(0, 3);
@@ -3139,7 +3541,7 @@ function rackFloats() {
   floatText(r.left + r.width / 2, r.top, '+' + m.textContent.replace('/s', ''));
 }
 function flyCoins(fromEl, n = 6) {
-  if (reduceMotion() || !fromEl) return;
+  if (reduceMotion() || !fromEl || !ui.coins) return;
   const a = fromEl.getBoundingClientRect(), b = $('money').getBoundingClientRect();
   for (let i = 0; i < n; i++) {
     const c = document.createElement('div');
@@ -3156,7 +3558,7 @@ function flyCoins(fromEl, n = 6) {
   }
   setTimeout(() => { const m = $('money'); m.classList.remove('bump'); void m.offsetWidth; m.classList.add('bump'); }, 650);
 }
-const buzz = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+const buzz = p => { if (!ui.buzz) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
 
 /* Server-gezoem (WebAudio, start pas na een klik) */
 let hum = null;
@@ -3204,13 +3606,17 @@ function showBetaPanel() {
 }
 function showHelp() {
   showModal(`<div style="font-weight:700;font-size:18px">Welkom bij RackOS</div>
-    <div class="help"><p><b>Zo werkt je bureaublad:</b> links staat je rack, rechts de roll-console. Shop, Opslag, Casino, Carrière en de Terminal open je via de iconen links of het <b>RackOS</b>-menu linksonder. Vensters kun je verslepen en minimaliseren. Onderaan rechts zie je je saldo, inkomen en rang.</p></div>
+    <div class="help"><p><b>Zo werkt je bureaublad:</b> links staat je rack, rechts de roll-console. Upgrades, Shop, Opslag, Casino, Carrière en de andere apps open je via de iconen links of het <b>RackOS</b>-menu linksonder. Vensters kun je verslepen, vergroten (dubbelklik op de titel) en minimaliseren, en ze onthouden hun plek. Onderaan rechts zie je je saldo, inkomen en rang.</p></div>
+    <div class="help keys"><b>Sneltoetsen</b>
+      <span><kbd>spatie</kbd> roll</span><span><kbd>B</kbd> koop</span><span><kbd>E</kbd> beste uitrusting</span><span><kbd>A</kbd> auto-roll</span>
+      <span><kbd>1</kbd>–<kbd>9</kbd> apps openen</span><span><kbd>Esc</kbd> sluiten</span><span><kbd>Shift</kbd>+klik op een upgrade: zoveel mogelijk niveaus</span><span><kbd>Shift</kbd>+klik in Opslag: beste plek</span></div>
     <div class="help">
       <p>🎲 <b>Roll</b> (knop of spatie) voor een willekeurig serveronderdeel. Hoe zeldzamer, hoe meer het oplevert.</p>
       <p>🛒 <b>Koop</b> wat je wilt. Het item blijft staan tot je opnieuw rolt. De pijl toont of het je rack beter maakt.</p>
       <p>🗄️ Elke <b>U</b> in je rack heeft een CPU-, RAM- en storage-slot. Alle drie dezelfde tier = <b>Perfect match ×2</b>.</p>
       <p>🌐 Een <b>router</b> (×) en <b>switches</b> (+%) versterken je hele rack.</p>
-      <p>📶 Upgrade je <b>verbinding</b> voor snellere rolls, en koop <b>upgrades</b> en <b>skins</b> in de shop.</p>
+      <p>📶 Upgrade je <b>verbinding</b> voor snellere rolls, koop <b>upgrades</b> in de Upgrades-app, en <b>boosts</b> en <b>skins</b> in de shop.</p>
+      <p>🔒 <b>Vergrendel</b> je beste items, dan worden ze nooit per ongeluk verkocht. Te veel meldingen? Zet ze uit in <b>Instellingen</b>.</p>
       <p>🎰 In het <b>casino</b> speel je met je in-game geld. Hogere tafels = hogere inzet.</p>
       <p>⚡ Af en toe gebeurt er een <b>event</b>, goed of slecht. Hou de balk bovenaan in de gaten.</p>
       <p>💾 Je voortgang wordt in deze browser bewaard. Met <b>Save</b> maak je een back-up of speel je verder op een ander toestel.</p>
@@ -3257,7 +3663,7 @@ function spinReels(cands, win, dur, done) {
   reels.forEach((reel, k) => {
     const strip = reel.querySelector('.strip');
     let html = '';
-    const tease = dur > 0 && cands[k] && cands[k].tier <= 2 && Math.random() < 0.08 ? (Math.random() < .5 ? T - 1 : T + 1) : -1;
+    const tease = dur > 0 && cands[k] && cands[k].tier <= 2 && ui.nearMiss && Math.random() < 0.08 ? (Math.random() < .5 ? T - 1 : T + 1) : -1;
     const teaseItem = () => { const ty = COMP[Math.floor(Math.random() * 3)], tr = Math.random() < .3 ? 5 : 4, refs = DEFS_BY[ty][tr]; return new Item(refs[Math.floor(Math.random() * refs.length)]); };
     for (let i = 0; i < C; i++) html += reelCard(i === T ? cands[k] : i === tease ? teaseItem() : rollOne(luck(), 0, false));
     strip.innerHTML = html;
@@ -3332,6 +3738,9 @@ function renderRack() {
       <div class="umeta"><span class="leds"><i></i><i></i><i></i></span><span class="badge ${m.cls}">${m.label}</span><span class="uinc">${fmt(inc)}/s</span></div>
     </div>`;
   });
+  // lege "spook-U's" tonen waar je rack naartoe groeit
+  for (let i = state.rack.length; i < Math.min(CFG.maxUnits, Math.max(4, state.rack.length + 1)); i++)
+    h += `<button class="u ghostu" data-act="buyU" ${i > state.rack.length ? 'disabled' : ''}><div class="unum">U${i + 1}</div><span>${i === state.rack.length ? `+ Koop deze U · ${fmt(unitCost())}` : 'leeg'}</span></button>`;
   celebrate.clear();
   setHTML($('rack'), h);
   if (newU >= 0) { const nu = newU; newU = -1; setTimeout(() => { const r = $('rack').querySelectorAll('.u')[nu]; if (r) { r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }, 50); }
@@ -3350,8 +3759,8 @@ function renderRack() {
 let resultFx = '';
 function renderResult() {
   const el = $('result'), c = state.current;
-  if (rolling) { el.className = 'result'; setHTML(el, '<div class="empty-msg">Hardware detecteren…</div>'); return; }
-  if (!c) { el.className = 'result'; setHTML(el, '<div class="empty-msg">Nog niks gerold.<br>Druk op ROLL (of spatie) voor je eerste onderdeel.</div>'); return; }
+  if (rolling) { el.className = 'result'; setHTML(el, '<div class="empty-msg rempty scanning"><span class="scanbar"></span><b>Hardware detecteren…</b></div>'); return; }
+  if (!c) { el.className = 'result'; setHTML(el, `<div class="empty-msg rempty">${ico('g-roll', 'reico')}<b>Klaar om te scannen</b><span>Druk op <kbd>ROLL</kbd> of <kbd>spatie</kbd> voor je eerste onderdeel.</span></div>`); return; }
   const cmp = compareInfo(c);
   el.className = 'result has' + (resultFx ? ' ' + resultFx : '');
   el.dataset.t = c.tier;
@@ -3493,7 +3902,7 @@ function buySkin(id) {
   state.money -= s.price;
   state.skins.push(id);
   state.skin = id;
-  toast(`🎨 Skin gekocht: ${s.name}`);
+  toast(`🎨 Skin gekocht: ${s.name}`, 'buy');
   SFX.upgrade(); flash(s.tier);
   save(); renderAll();
 }
@@ -3502,25 +3911,29 @@ function useSkin(id) {
   state.skin = id; save(); renderAll();
 }
 
-let invView = 'hw';
+let invView = 'hw', invQ = '', invSort = 'tier';
 function renderInv() {
   setHTML($('invViews'), [['hw', `${ico('g-box')} Hardware (${state.inv.length})`], ['kist', `${ico('g-wrench')} Gereedschapskist (${state.kist.length}/${kistSlots(lvl('supplier'))})`]]
-    .map(([k, n]) => `<button class="chip ${invView === k ? 'on' : ''}" data-act="invView" data-v="${k}">${n}</button>`).join(''));
+    .map(([k, n]) => `<button class="stab ${invView === k ? 'on' : ''}" data-act="invView" data-v="${k}">${n}</button>`).join(''));
   $('invHw').hidden = invView !== 'hw';
+  $('invSide').hidden = invView !== 'hw';
   $('kist').hidden = invView !== 'kist';
   renderKist();
   const keys = ['all', ...Object.keys(TYPES)];
   setHTML($('filters'), keys.map(k => {
     const n = k === 'all' ? state.inv.length : state.inv.filter(x => x.type === k).length;
-    return `<button class="chip ${filter === k ? 'on' : ''}" data-act="filter" data-f="${k}">${k === 'all' ? 'Alles' : TYPES[k].label} (${n})</button>`;
+    return `<button class="stab ${filter === k ? 'on' : ''}" data-act="filter" data-f="${k}"><span>${k === 'all' ? 'Alles' : TYPES[k].label}</span><em>${n}</em></button>`;
   }).join(''));
-  const list = state.inv.filter(x => filter === 'all' || x.type === filter)
-    .sort((a, b) => b.tier - a.tier || basePrice(b) - basePrice(a));
+  const q = invQ.trim().toLowerCase();
+  const sorts = { tier: (a, b) => b.tier - a.tier || basePrice(b) - basePrice(a), val: (a, b) => basePrice(b) - basePrice(a),
+                  new: (a, b) => b.id - a.id, type: (a, b) => a.type.localeCompare(b.type) || b.tier - a.tier };
+  const list = state.inv.filter(x => (filter === 'all' || x.type === filter) && (!q || (x.name + ' ' + x.spec + ' ' + TIERS[x.tier].name + ' ' + TYPES[x.type].label).toLowerCase().includes(q)))
+    .sort(sorts[invSort] || sorts.tier);
   setHTML($('inv'), list.length ? list.map(it => `
-    <button class="it ${sel && sel.src === 'inv' && sel.id === it.id ? 'selected' : ''} ${isAdminItem(it) ? 'adm' : ''}" data-t="${it.tier}" style="--tc:var(--c${it.tier})" data-act="inv" data-id="${it.id}">
-      <div class="top">${itemIcon(it, 'tico')}<span class="ty">${TYPES[it.type].label}</span><span class="tr">${TIERS[it.tier].name}</span></div>
+    <button class="it ${sel && sel.src === 'inv' && sel.id === it.id ? 'selected' : ''} ${isAdminItem(it) ? 'adm' : ''} ${isLocked(it) ? 'locked' : ''}" data-t="${it.tier}" style="--tc:var(--c${it.tier})" data-act="inv" data-id="${it.id}">
+      <div class="top">${itemIcon(it, 'tico')}<span class="ty">${TYPES[it.type].label}</span>${isLocked(it) ? ico('g-lock', 'lockico') : ''}<span class="tr">${TIERS[it.tier].name}</span></div>
       <div class="n">${nameHtml(it)}</div><div class="s">${esc(it.spec)}</div><div class="v">${statText(it)}</div>
-    </button>`).join('') : `<div class="sub" style="grid-column:1/-1">Niks hier. Gekochte items die niet meer in je rack passen komen hier terecht.</div>`);
+    </button>`).join('') : `<div class="sub" style="grid-column:1/-1">${q ? 'Geen items gevonden.' : 'Niks hier. Gekochte items die niet meer in je rack passen komen hier terecht.'}</div>`);
   $('invCount').textContent = `· ${state.inv.length} items`;
   $('autoSell').value = String(state.autoSellTier);
 }
@@ -3534,6 +3947,7 @@ function renderSel() {
   setHTML(bar, `
     <div class="info"><div style="font-weight:600">${nameHtml(it)} <span class="sub">· ${TIERS[it.tier].name} ${TYPES[it.type].label} · ${statText(it)}</span></div><div class="hint">${hint}</div></div>
     ${sel.src === 'slot' ? '<button class="btn sec" data-act="toInv">Naar opslag</button>' : ''}
+    ${isAdminItem(it) ? '' : `<button class="btn sec lockbtn ${isLocked(it) ? 'on' : ''}" data-act="toggleLock" title="Vergrendelde items worden nooit verkocht">${ico('g-lock')}${isLocked(it) ? 'Ontgrendel' : 'Vergrendel'}</button>`}
     ${isAdminItem(it) ? '<span class="sub">🛠️ Admin-item: blijft altijd bewaard</span>' : `<button class="btn sec" data-act="sell">Verkoop ${fmt(sellPrice(it))}</button>`}
     <button class="ghost" data-act="desel">✕</button>`);
 }
@@ -3593,7 +4007,9 @@ setInterval(() => {
   const now = Date.now();
   const gain = incomeCache * (now - lastTick) / 1000;
   state.money += gain; state.runEarned += gain;
+  if (!document.hidden) state.stats.playMs += Math.min(1000, now - lastTick);
   lastTick = now;
+  renderBadges();
   renderHeader(); updateAfford();
   tryAutoRoll(); // in de interval, zodat auto-roll ook doorloopt als het tabblad op de achtergrond staat
   tickEvents(); renderEvent();
@@ -3638,7 +4054,15 @@ document.addEventListener('click', e => {
     case 'crStart': if (el.dataset.again) $('betIn').value = lastBet; crStart(); break;
     case 'crCash': crCash(); break;
     case 'conn': upgradeConn(); break;
-    case 'up': buyUpgrade(el.dataset.id); break;
+    case 'up': {
+      if (!e.shiftKey) { buyUpgrade(el.dataset.id); break; }
+      const u = upDef(el.dataset.id), l0 = lvl(u.id);
+      let n = 0; while (lvl(u.id) < u.max && state.money >= upCost(u) && n < 500) { state.money -= upCost(u); state.up[u.id] = lvl(u.id) + 1; n++; }
+      if (!n) break;
+      state.stats.bought += n;
+      if (u.id === 'autoroll' && l0 < 2 && lvl('autoroll') >= 2) { state.rollTiers = [false, true, true, true, true, true, true]; state.hotSwap = true; }
+      toast(`${u.icon} ${u.name} ×${n} → ${u.eff(lvl(u.id))}`, 'buy'); SFX.upgrade(); save(); renderAll(); break;
+    }
     case 'shopTab': shopTab = el.dataset.t; renderShop(); updateAfford(); break;
     case 'buySkin': buySkin(el.dataset.id); break;
     case 'useSkin': useSkin(el.dataset.id); break;
@@ -3651,6 +4075,7 @@ document.addEventListener('click', e => {
     case 'slot': clickSlot(locFromEl(el)); break;
     case 'inv': {
       const id = +el.dataset.id;
+      if (e.shiftKey) { const it = state.inv.find(x => x.id === id); if (it) placeBest(it); break; }
       sel = sel && sel.src === 'inv' && sel.id === id ? null : { src: 'inv', id };
       renderAll(); break;
     }
@@ -3658,6 +4083,8 @@ document.addEventListener('click', e => {
     case 'rollFilter': state.rollFilter = el.dataset.f || null; save(); renderRollMeta(); break;
     case 'togAuto': state.autoRoll = !state.autoRoll; save(); renderRollMeta(); break;
     case 'sell': sellSel(); break;
+    case 'undo': undoSell(); break;
+    case 'toggleLock': { const it = selItem(); if (!it) break; state.locked = isLocked(it) ? state.locked.filter(x => x !== it.id) : [...state.locked, it.id]; save(); toast(isLocked(it) ? `🔒 ${it.name} vergrendeld` : `🔓 ${it.name} ontgrendeld`); renderAll(); break; }
     case 'toInv': toInvSel(); break;
     case 'bulkSell': bulkSell(); break;
     case 'desel': sel = null; renderAll(); break;
@@ -3670,6 +4097,17 @@ document.addEventListener('click', e => {
     case 'task': taskClick(el.dataset.w); break;
     case 'mtab': setMobileTab(el.dataset.t); break;
     case 'startMenu': toggleStart(); break;
+    case 'catType': catType = el.dataset.t; renderCat(); break;
+    case 'uiToggle': {
+      const k = el.dataset.k;
+      if (k === 'snd') { state.muted = !state.muted; save(); renderHeader && renderHeader(); }
+      else if (k === 'hum') { ui.hum = !ui.hum; setHum(ui.hum); }
+      else if (k.startsWith('n.')) ui.n[k.slice(2)] = !ui.n[k.slice(2)];
+      else ui[k] = !ui[k];
+      saveUi(); renderSettings(); renderStart(); break;
+    }
+    case 'uiSet': { const k = el.dataset.k, v = el.dataset.v; ui[k] = isNaN(+v) ? v : +v; saveUi(); renderSettings(); if (k === 'num') renderAll(); break; }
+    case 'resetLayout': ui.wins = {}; saveUi(); document.querySelectorAll('.win.float').forEach(w => { delete w.dataset.placed; w.style.cssText = w.style.zIndex ? `z-index:${w.style.zIndex}` : ''; if (!w.hidden) placeWin(w, w.id.slice(4)); }); toast('Vensterindeling gereset'); break;
     case 'toggleCine': ui.cine = !ui.cine; saveUi(); renderStart(); toast(`Filmische reveals ${ui.cine ? 'aan' : 'uit'}`); break;
     case 'toggleHum': ui.hum = !ui.hum; saveUi(); setHum(ui.hum); renderStart(); break;
     case 'career': closeStart(); closeModal(); openWin('career'); break;
@@ -3724,8 +4162,10 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('input', e => {
   if (e.target.id === 'crAuto') crAuto = e.target.value;
+  if (e.target.id === 'invQ') { invQ = e.target.value; renderInv(); }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'invSort') { invSort = e.target.value; renderInv(); }
   if (e.target.id === 'autoSell') { state.autoSellTier = +e.target.value; save(); toast(state.autoSellTier < 0 ? 'Auto-verkoop uit' : `Auto-verkoop: ${$('autoSell').selectedOptions[0].text}`); }
   if (e.target.id === 'admKind') { const m = e.target.value === 'money'; $('admItemF').style.display = m ? 'none' : ''; $('admMoneyF').style.display = m ? '' : 'none'; }
   if (e.target.id === 'admType') $('admValLbl').textContent = VALUE_LABEL[e.target.value];
@@ -3734,6 +4174,13 @@ document.addEventListener('keydown', e => {
   if (blocked) return;
   if (e.target.matches('textarea, input, select')) return;
   if (e.code === 'Space' && !e.repeat) { e.preventDefault(); roll(); }
+  if (e.ctrlKey || e.metaKey || e.altKey || $('modal').innerHTML) return;
+  const apps = ['up', 'shop', 'inv', 'casino', 'career', 'term', 'stats', 'cat', 'set'];
+  if (/^[1-9]$/.test(e.key)) { const id = apps[+e.key - 1]; if ($('win-' + id) && !$('win-' + id).hidden && focusedWin === id) minWin(id); else openWin(id); return; }
+  const k = e.key.toLowerCase();
+  if (k === 'b' && state.current && !state.currentBought) { const c = compareInfo(state.current); buyCurrent(c.up ? 'place' : 'store'); }
+  if (k === 'e') equipBest();
+  if (k === 'a' && lvl('autoroll')) { state.autoRoll = !state.autoRoll; save(); renderRollMeta(); toast(`Auto-roll ${state.autoRoll ? 'aan' : 'uit'}`, 'auto'); }
   if (e.key === 'Escape') {
     if (cineActive) return endCine();
     if (!$('startMenu').hidden) return closeStart();
@@ -3768,11 +4215,14 @@ incomeCache = totalIncome();
     const earned = incomeCache * away;
     state.money += earned; state.runEarned += earned;
     const bn = botnetOffline(away);
-    showModal(`<div style="font-weight:700;font-size:17px">Welkom terug!</div>
-      <div class="sub" style="margin-top:6px">Je servers draaiden ${fmtDur(away)} door${elapsedMs > maxMs ? ` (max ${offlineMax()}u)` : ''}.</div>
+    const restock = state.shop && ui.shopSeen !== state.shop.hour;
+    showModal(`<div class="offrep"><div style="font-weight:700;font-size:18px">Welkom terug!</div>
+      <div class="sub" style="margin-top:4px">Je servers draaiden ${fmtDur(away)} door${elapsedMs > maxMs ? ` (max ${offlineMax()}u, upgrade <b>UPS</b> voor meer)` : ''}.</div>
       <div class="amt">+${fmt(earned)}</div>
-      ${bn ? `<div class="sub" style="margin:-6px 0 14px">🤖 Botnet: ${fmtNum(bn.n, 0)} rolls, ${bn.bought} gekocht${bn.best ? ` · beste vondst: ${TIERS[bn.best.tier].name} ${esc(bn.best.name)}` : ''}</div>` : ''}
-      <button class="btn full" data-act="closeModal">Lekker</button>`);
+      <div class="kpis small"><div><span>Weg</span><b>${fmtDur(elapsedMs / 1000)}</b></div><div><span>Inkomen</span><b>${fmt(incomeCache)}/s</b></div><div><span>Saldo</span><b>${fmt(state.money)}</b></div></div>
+      ${bn ? `<div class="sgrp" style="margin-top:10px"><h4>🤖 Botnet</h4><div class="kv"><span>Rolls</span><b>${fmtNum(bn.n, 0)}</b></div><div class="kv"><span>Gekocht door Hot-Swap</span><b>${bn.bought}</b></div>${bn.best ? `<div class="kv"><span>Beste vondst</span><b style="color:var(--c${bn.best.tier})">${TIERS[bn.best.tier].name} ${esc(bn.best.name)}</b></div>` : ''}</div>` : ''}
+      ${restock ? '<div class="sub" style="margin-top:10px">⚡ De boost-shop heeft intussen nieuwe voorraad.</div>' : ''}
+      <button class="btn full" style="margin-top:14px" data-act="closeModal">Lekker</button></div>`, true, 'welkom_terug.log');
   }
 }
 renderClock();
