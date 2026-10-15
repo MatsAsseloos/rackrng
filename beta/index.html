@@ -469,92 +469,386 @@ header{background:linear-gradient(180deg,#1c2b43,#132033); border:1px solid var(
   header{padding:10px}
 }
 
+/* =====================================================================
+   RackOS: bureaublad-besturingssysteem
+   ===================================================================== */
+:root{ --tb:48px; --win:#121c2b; --winbar:#1a2639; --winbar2:#151f30; --wborder:#2b3a52; --desk:#09111d }
+html,body{height:100%}
+body.os{padding:0; margin:0; overflow:hidden; box-shadow:none;
+  background:
+    radial-gradient(ellipse 70% 55% at 18% 8%, rgba(78,161,255,.16), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(255,181,71,.07), transparent 60%),
+    linear-gradient(rgba(120,160,220,.035) 1px, transparent 1px) 0 0/28px 28px,
+    linear-gradient(90deg, rgba(120,160,220,.035) 1px, transparent 1px) 0 0/28px 28px,
+    var(--desk)}
+body.os::before{content:"RackOS"; position:fixed; right:28px; bottom:calc(var(--tb) + 16px); font:700 92px/1 var(--cond); letter-spacing:-2px; color:rgba(160,190,230,.035); pointer-events:none; z-index:0}
+body.os::after{content:""; position:fixed; left:0; right:0; top:0; height:3px; background:var(--vfd); z-index:90; pointer-events:none}
+.ico{width:18px; height:18px; flex:none; vertical-align:middle}
+
+/* Bureaublad */
+#desktop{position:fixed; inset:0 0 var(--tb) 0; display:grid; grid-template-columns:78px minmax(0,1fr); gap:10px; padding:14px 14px 12px 8px; z-index:1}
+.dicons{display:flex; flex-direction:column; gap:4px; padding-top:2px}
+.dicon{display:flex; flex-direction:column; align-items:center; gap:5px; padding:9px 4px 7px; border-radius:8px; background:transparent; border:1px solid transparent; color:#c9d6e8; font:500 11.5px var(--cond)}
+.dicon .ico{width:30px; height:30px; padding:5px; border-radius:8px; background:linear-gradient(180deg,#22324a,#162236); border:1px solid #33465f; color:#9cc8ff; box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.dicon:hover{background:rgba(78,161,255,.1); border-color:rgba(78,161,255,.25)}
+.dicon:hover .ico{color:#fff}
+.tiles{display:grid; grid-template-columns:minmax(0,1.22fr) minmax(370px,1fr); gap:12px; min-height:0}
+
+/* Vensters */
+.win{display:flex; flex-direction:column; min-height:0; background:var(--win); border:1px solid var(--wborder); border-radius:9px; overflow:hidden;
+  box-shadow:0 18px 40px -18px rgba(0,0,0,.8), 0 0 0 1px rgba(0,0,0,.35)}
+.wbar{display:flex; align-items:center; gap:8px; height:34px; flex:none; padding:0 6px 0 10px; background:linear-gradient(180deg,var(--winbar),var(--winbar2)); border-bottom:1px solid var(--wborder); user-select:none}
+.wbar .ico{width:16px; height:16px; color:#8fb8ea}
+.wt{font:600 12.5px var(--mono); color:#d7e3f3}
+.wmeta{font:500 11.5px var(--mono); color:var(--muted); margin-left:auto; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.wctl{display:flex; gap:2px; margin-left:8px}
+.wctl button{width:28px; height:24px; border-radius:5px; border:0; background:transparent; color:#9fb0c7; font:600 13px var(--mono)}
+.wctl button:hover{background:#2a3a54; color:#fff}
+.wctl button:last-child:hover{background:#c53a47}
+.wbody{flex:1; min-height:0; overflow:auto; padding:12px 14px; scrollbar-width:thin; scrollbar-color:#34465f transparent}
+.win.float{position:absolute; z-index:30; resize:both; min-width:340px; min-height:220px; max-width:calc(100vw - 40px)}
+.win.float .wbar{cursor:grab}
+.win.float .wbar:active{cursor:grabbing}
+.win.float.focus{border-color:#466184; box-shadow:0 26px 60px -20px rgba(0,0,0,.9), 0 0 0 1px rgba(78,161,255,.18)}
+.win.float:not(.focus) .wbar{filter:saturate(.6) brightness(.9)}
+.win[hidden]{display:none !important}
+.win.float{animation:winopen .16s ease-out}
+@keyframes winopen{from{transform:scale(.97); opacity:0}}
+#win-rack .wbody{padding-top:8px}
+#win-rack .rack{margin-top:8px}
+.connbox{margin-top:12px; padding-top:10px; border-top:1px dashed #2b3a52}
+.connbox .conn{margin-top:0}
+
+/* Taakbalk */
+.taskbar{position:fixed; left:0; right:0; bottom:0; height:var(--tb); z-index:60; display:flex; align-items:center; gap:8px; padding:0 8px;
+  background:linear-gradient(180deg,rgba(24,36,56,.97),rgba(13,21,34,.98)); border-top:1px solid #2f4260; backdrop-filter:blur(10px)}
+.startbtn{display:flex; align-items:center; gap:7px; height:36px; padding:0 13px 0 10px; border-radius:7px; border:1px solid #3a5070; background:linear-gradient(180deg,#26385a,#1a2742); color:#fff; font:700 14px var(--cond)}
+.startbtn .ico{width:20px; height:20px}
+.startbtn:hover,.startbtn[aria-expanded=true]{background:linear-gradient(180deg,#2e4570,#203152)}
+.tasks{display:flex; gap:4px; flex:1; min-width:0; overflow:hidden}
+.task{display:flex; align-items:center; gap:6px; height:34px; padding:0 12px; max-width:170px; border-radius:6px; border:1px solid transparent; background:rgba(255,255,255,.04); color:#c3d0e2; font:500 12px var(--mono)}
+.task span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.task.on{background:rgba(78,161,255,.16); border-color:rgba(78,161,255,.4); color:#fff; box-shadow:inset 0 -2px 0 var(--accent)}
+.task.min{opacity:.65}
+.tray{display:flex; align-items:center; gap:8px; margin-left:auto}
+.traybtn{display:flex; align-items:center; gap:6px; height:34px; padding:0 10px; border-radius:6px; border:1px solid #2f4260; background:rgba(255,255,255,.03); color:#d7e3f3; font:600 12.5px var(--cond)}
+.traybtn:hover{background:rgba(255,255,255,.08)}
+.trmoney{display:flex; align-items:baseline; gap:8px; height:36px; padding:0 12px; border-radius:6px; background:var(--vfd-bg); border:1px solid #3a2a10; box-shadow:inset 0 0 12px rgba(255,181,71,.1)}
+.trmoney .big{font:600 19px/36px var(--mono); color:var(--vfd); text-shadow:0 0 9px rgba(255,181,71,.45); letter-spacing:.5px; transition:transform .15s}
+.trmoney .big.bump{animation:bump .35s ease-out}
+@keyframes bump{40%{transform:scale(1.12)}}
+.trmoney .rate{font:500 12.5px var(--mono); color:var(--good)}
+.clock{font:500 12.5px var(--mono); color:#9fb0c7; padding:0 4px 0 2px; min-width:40px; text-align:right}
+#boostBar{margin:0; gap:4px}
+#boostBar .bchip{font-size:11px; padding:3px 8px}
+.careerbtn.ready{border-color:var(--vfd)}
+
+/* Startmenu */
+.startmenu{position:fixed; left:8px; bottom:calc(var(--tb) + 8px); z-index:70; width:340px; padding:12px; border-radius:11px; background:rgba(18,28,44,.98); border:1px solid #34486a; box-shadow:0 24px 60px -16px rgba(0,0,0,.9); animation:winopen .14s ease-out}
+.startmenu[hidden]{display:none}
+.smhead{display:flex; gap:10px; align-items:center; padding:2px 4px 12px; border-bottom:1px solid #2b3a52}
+.smhead .ico{width:34px; height:34px; color:#cfe2ff}
+.smhead b{font:700 16px var(--cond)}
+.smgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; padding:12px 0; border-bottom:1px solid #2b3a52}
+.smgrid button{display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px 4px; border-radius:8px; border:1px solid transparent; background:transparent; color:#d7e3f3; font:500 12px var(--cond)}
+.smgrid button .ico{width:24px; height:24px; color:#9cc8ff}
+.smgrid button:hover{background:rgba(78,161,255,.1); border-color:rgba(78,161,255,.25)}
+.smlist{display:flex; flex-direction:column; padding-top:8px}
+.smlist button,.smlist a{display:flex; align-items:center; gap:10px; padding:8px 8px; border-radius:6px; border:0; background:transparent; color:#d7e3f3; text-decoration:none; font:500 13px var(--sans, inherit); text-align:left}
+.smlist .ico{color:#8fa6c4}
+.smlist button:hover,.smlist a:hover{background:rgba(255,255,255,.06)}
+.smlist .danger{color:#ff8a94} .smlist .danger .ico{color:#ff8a94}
+.smstate{margin-left:auto; font:500 11.5px var(--mono); color:var(--muted)}
+.smlist [hidden]{display:none}
+
+/* Meldingen (rechtsonder) */
+#toasts{top:auto; bottom:calc(var(--tb) + 10px); right:12px; z-index:80}
+.toast{background:rgba(22,33,52,.97); border:1px solid #34486a; border-left:3px solid var(--accent); border-radius:8px; padding:9px 12px 9px 12px; font-size:13px; box-shadow:0 12px 30px -10px rgba(0,0,0,.8)}
+.toast::before{content:"RackOS"; display:block; font:600 10.5px var(--mono); color:var(--muted); margin-bottom:2px}
+.selbar{bottom:calc(var(--tb) + 12px); z-index:65}
+
+/* Systeemmelding (events) */
+#eventBar{position:absolute; top:12px; left:50%; transform:translateX(-50%); z-index:50; width:min(640px, calc(100% - 130px)); margin:0; box-shadow:0 20px 50px -18px rgba(0,0,0,.9)}
+#eventBar.show{display:flex}
+
+/* Terminal */
+.wbody.term{background:#060b12; font:12.5px/1.55 var(--mono); color:#b8f5d0}
+#termlog .tt{color:#5b7a95}
+#termlog div{white-space:pre-wrap; word-break:break-word}
+
+/* Dialoogvensters */
+.modal{background:rgba(3,7,13,.6); backdrop-filter:blur(3px)}
+.modal .box{padding:0; overflow:hidden; display:flex; flex-direction:column; border:1px solid #3a5070; border-radius:10px; background:var(--win)}
+.dbar{display:flex; align-items:center; gap:8px; height:34px; flex:none; padding:0 6px 0 10px; background:linear-gradient(180deg,var(--winbar),var(--winbar2)); border-bottom:1px solid var(--wborder); font:600 12.5px var(--mono); color:#d7e3f3}
+.dbar .ico{width:16px; height:16px}
+.dx{margin-left:auto; width:28px; height:24px; border-radius:5px; border:0; background:transparent; color:#9fb0c7}
+.dx:hover{background:#c53a47; color:#fff}
+.dbody{padding:22px; overflow:auto; min-height:0}
+.modal .box.wide .dbody{padding:18px}
+
+/* ---------- Item-art ---------- */
+.iico{width:30px; height:30px; color:var(--tc); filter:drop-shadow(0 0 4px color-mix(in srgb,var(--tc) 40%,transparent))}
+.rc{gap:2px}
+.rc .iico{width:32px; height:32px}
+.rc .t{font-size:9.5px; opacity:.75}
+.reels.multi .rc .iico{display:none}
+.slot.filled{flex-direction:row; align-items:center; gap:7px}
+.sico{width:24px; height:24px; flex:none; color:var(--tc)}
+.stx{display:flex; flex-direction:column; min-width:0}
+.it .top{align-items:center; gap:6px}
+.tico{width:20px; height:20px; color:var(--tc)}
+.it .top .ty{margin-right:auto}
+.rhead{display:flex; gap:12px; align-items:center}
+.rart{width:58px; height:58px; flex:none; display:grid; place-items:center; border-radius:10px; background:radial-gradient(circle at 50% 40%, color-mix(in srgb,var(--tc) 22%,#0c1522), #0c1522 70%); border:1px solid color-mix(in srgb,var(--tc) 45%,transparent)}
+.rico{width:40px; height:40px; color:var(--tc); filter:drop-shadow(0 0 8px color-mix(in srgb,var(--tc) 55%,transparent))}
+.rtxt{min-width:0}
+
+/* ---------- Rarity-frames ---------- */
+[data-t]{position:relative}
+.rc[data-t="2"],.slot[data-t="2"],.it[data-t="2"]{box-shadow:inset 0 0 12px -6px var(--c2)}
+.rc[data-t="3"],.slot[data-t="3"],.it[data-t="3"],.result[data-t="3"]{box-shadow:inset 0 0 16px -6px var(--c3), 0 0 12px -6px var(--c3)}
+[data-t="4"],[data-t="5"],[data-t="6"]{overflow:hidden}
+.rc[data-t="4"]::after,.slot[data-t="4"]::after,.it[data-t="4"]::after,.result[data-t="4"]::after,
+.rc[data-t="5"]::after,.slot[data-t="5"]::after,.it[data-t="5"]::after,.result[data-t="5"]::after,
+.rc[data-t="6"]::after,.slot[data-t="6"]::after,.it[data-t="6"]::after,.result[data-t="6"]::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(105deg, transparent 35%, color-mix(in srgb,var(--tc) 30%,transparent) 48%, rgba(255,255,255,.18) 50%, transparent 62%) -150% 0/250% 100% no-repeat;
+  animation:sheen 3.2s ease-in-out infinite}
+[data-t="5"]{box-shadow:inset 0 0 18px -6px var(--c5), 0 0 16px -6px var(--c5)}
+[data-t="5"]::after{animation-duration:2.2s !important}
+[data-t="6"]{animation:hue 4s linear infinite; box-shadow:inset 0 0 20px -6px var(--c6), 0 0 20px -4px var(--c6)}
+[data-t="7"]{box-shadow:0 0 0 1px rgba(253,224,71,.55), 0 0 14px rgba(253,224,71,.35)}
+@keyframes sheen{0%,35%{background-position:-150% 0}75%,100%{background-position:150% 0}}
+
+/* ---------- Reveal-effecten ---------- */
+.result.fx-beam::before{content:""; position:absolute; inset:-40% 40%; background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--tc) 50%,transparent),transparent); animation:beam .9s ease-out forwards; pointer-events:none}
+@keyframes beam{from{transform:translateX(-160%) skewX(-18deg); opacity:.9}to{transform:translateX(160%) skewX(-18deg); opacity:0}}
+.result.fx-rise{animation:rise .7s cubic-bezier(.2,.9,.25,1.3)}
+@keyframes rise{0%{transform:translateY(14px) scale(.96); box-shadow:0 0 0 0 var(--tc)}60%{box-shadow:0 0 34px 2px color-mix(in srgb,var(--tc) 60%,transparent)}100%{transform:none}}
+#cine{position:fixed; inset:0; z-index:85; display:none; place-items:center; background:radial-gradient(ellipse at center, rgba(3,6,12,.82), rgba(0,0,0,.96)); cursor:pointer}
+#cine.on{display:grid}
+.cbios{position:absolute; left:6vw; top:9vh; right:6vw}
+.cbios pre{margin:0; font:14px/1.6 var(--mono); color:#9de6bb; text-shadow:0 0 6px rgba(61,220,151,.4); white-space:pre-wrap}
+.ccard{display:flex; flex-direction:column; align-items:center; gap:8px; padding:30px 44px; border-radius:16px; text-align:center; min-width:min(420px,86vw);
+  background:radial-gradient(circle at 50% 30%, color-mix(in srgb,var(--tc) 22%,#0c1522), #0b121d 70%); border:2px solid var(--tc);
+  box-shadow:0 0 80px -10px color-mix(in srgb,var(--tc) 70%,transparent); opacity:0; transform:scale(.6) translateY(30px); transition:all .55s cubic-bezier(.2,.9,.25,1.25)}
+#cine.show .ccard{opacity:1; transform:none}
+#cine.show .cbios{opacity:.25; transition:opacity .4s}
+.cico{width:96px; height:96px; color:var(--tc); filter:drop-shadow(0 0 18px var(--tc))}
+.ctier{font:700 14px var(--mono); letter-spacing:2px; color:var(--tc); text-transform:uppercase}
+.cname{font:700 30px var(--cond); color:#fff}
+.cspec{font:500 13px var(--mono); color:#b9c7da}
+.cskip{position:absolute; bottom:6vh; font:500 12px var(--mono); color:#6f829c}
+#cine.t6 .ccard{animation:hue 3s linear infinite}
+
+/* ---------- Juice ---------- */
+.fnum{position:fixed; z-index:75; pointer-events:none; transform:translate(-50%,0); font:600 12.5px var(--mono); color:var(--good); text-shadow:0 0 6px rgba(61,220,151,.5); animation:floatup 1.25s ease-out forwards}
+@keyframes floatup{to{transform:translate(-50%,-42px); opacity:0}}
+.coin{position:fixed; z-index:78; width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:50%; pointer-events:none;
+  background:radial-gradient(circle at 35% 35%, #fff3c4, #ffb547 45%, #b4701a); box-shadow:0 0 8px rgba(255,181,71,.8); transition:transform .75s cubic-bezier(.5,0,.75,.4), opacity .75s}
+.u.slidein{animation:slidein .5s cubic-bezier(.2,.9,.25,1.2)}
+@keyframes slidein{from{transform:translateX(-30px); opacity:0; box-shadow:0 0 30px rgba(78,161,255,.6)}}
+body.shake #desktop{animation:sh .5s}
+body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotate(80deg) saturate(1.8) contrast(1.2)}
+
+/* ---------- Mobiel ---------- */
+.mtabs{display:none}
+@media (max-width:900px){
+  :root{--tb:50px}
+  body.os{overflow:auto}
+  body.os::before{display:none}
+  #desktop{position:static; display:block; padding:calc(var(--tb) + 10px) 10px 78px}
+  .dicons{display:none}
+  .tiles{display:flex; flex-direction:column; gap:10px}
+  body:not([data-tab=home]) .tiles{display:none}
+  .win.tile .wbody{overflow:visible}
+  .win.float{position:static; resize:none; width:auto !important; height:auto !important; min-height:calc(100vh - var(--tb) - 100px); max-width:none; animation:none}
+  .win.float .wbar{cursor:default}
+  .wctl button[data-act=minWin]{display:none}
+  .taskbar{top:0; bottom:auto; border-top:0; border-bottom:1px solid #2f4260; padding:0 8px}
+  .startbtn,.tasks,.clock{display:none}
+  .tray{margin:0; width:100%; gap:6px}
+  .trmoney{margin-right:auto; height:38px}
+  .trmoney .big{font-size:18px; line-height:38px}
+  #boostBar{display:none}
+  .mtabs{display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60; height:62px; padding:4px 4px calc(4px + env(safe-area-inset-bottom)); background:rgba(13,21,34,.98); border-top:1px solid #2f4260}
+  .mtabs button{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; border:0; background:transparent; color:#8496b0; font:600 11px var(--cond); border-radius:8px}
+  .mtabs button .ico{width:22px; height:22px}
+  .mtabs button.on{color:#fff; background:rgba(78,161,255,.14)}
+  .startmenu{left:8px; right:8px; width:auto; bottom:70px}
+  #toasts{bottom:72px; left:12px; right:12px; align-items:stretch}
+  .selbar{bottom:72px}
+  #eventBar{position:fixed; top:calc(var(--tb) + 8px); width:calc(100% - 20px)}
+  .cname{font-size:24px}
+  #win-roll{order:-1}
+}
+@media (max-width:540px){ .sico{display:none} .slot.filled{gap:0} }
+@media (prefers-reduced-motion: reduce){ [data-t]::after{animation:none !important} [data-t="6"]{animation:none} .win.float,.startmenu{animation:none} }
+
 </style>
 </head>
-<body>
-<div class="wrap">
-  <header>
-    <div class="brand"><div class="logo">42U</div><div>RackRNG <span class="betatag">BETA</span><small>testversie · aparte save</small></div></div>
-    <div class="money">
-      <div><div class="sub">Saldo</div><div class="big" id="money">€0</div></div>
-      <div><div class="sub">Inkomen</div><div class="rate" id="rate">€0/s</div></div>
-    </div>
-    <div class="hbtns">
-      <button class="ghost careerbtn" data-act="career" id="careerBtn">🎓 Stagiair</button>
-      <button class="ghost" data-act="mute" id="muteBtn" title="Geluid">🔊</button>
-      <button class="ghost" data-act="adminPanel" id="adminBtn" title="Admin panel" hidden>🛠️</button>
-      <button class="ghost" data-act="redeem" title="Code inwisselen">🎁</button>
-      <button class="ghost" data-act="help" title="Hoe speel je?">?</button>
-      <button class="ghost" data-act="betaPanel" title="Test-tools">🧪</button>
-      <button class="ghost" data-act="saveMenu">Save</button>
-      <button class="ghost" data-act="reset">Reset</button>
-    </div>
-  </header>
+<body class="os" data-tab="home">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Hardware (32×32, lijn = currentColor) -->
+    <symbol id="i-cpu" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="8" y="8" width="16" height="16" rx="2"/><rect x="12.5" y="12.5" width="7" height="7" rx="1" fill="currentColor" fill-opacity=".3"/><path d="M12 4v4M16 4v4M20 4v4M12 24v4M16 24v4M20 24v4M4 12h4M4 16h4M4 20h4M24 12h4M24 16h4M24 20h4"/></g></symbol>
+    <symbol id="i-ram" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M2.5 9.5h27v11h-12.5l-1 1.5-1-1.5H2.5z"/><rect x="5" y="12" width="5" height="5" fill="currentColor" fill-opacity=".3"/><rect x="13.5" y="12" width="5" height="5" fill="currentColor" fill-opacity=".3"/><rect x="22" y="12" width="5" height="5" fill="currentColor" fill-opacity=".3"/><path d="M5 23.5v2M9 23.5v2M13 23.5v2M19 23.5v2M23 23.5v2M27 23.5v2" stroke-linecap="round"/></g></symbol>
+    <symbol id="i-hdd" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="3.5" width="20" height="25" rx="2"/><circle cx="16" cy="13.5" r="6.5"/><circle cx="16" cy="13.5" r="1.4" fill="currentColor"/><path d="M22 23l-4.5-7.5" stroke-linecap="round"/><circle cx="9" cy="25" r=".9" fill="currentColor"/></g></symbol>
+    <symbol id="i-ssd" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4.5" y="7" width="23" height="18" rx="2"/><rect x="8" y="10.5" width="11" height="6" rx="1" fill="currentColor" fill-opacity=".25"/><path d="M8 20.5h16M8 22.5h9" stroke-linecap="round"/><path d="M27.5 12v8" stroke-width="2.4"/></g></symbol>
+    <symbol id="i-nvme" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 12.5h24.5a2.5 2.5 0 0 1 0 7H2.5z"/><rect x="5.5" y="14" width="6" height="4" fill="currentColor" fill-opacity=".3"/><rect x="13.5" y="14" width="6" height="4" fill="currentColor" fill-opacity=".3"/><circle cx="26.5" cy="16" r="1.2"/><path d="M2.5 14v4" stroke-width="2.4"/></g></symbol>
+    <symbol id="i-usb" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M21 13h7v6h-7"/><path d="M24 15h1.5M24 17h1.5" stroke-linecap="round"/><circle cx="8" cy="16" r="1.5" fill="currentColor"/></g></symbol>
+    <symbol id="i-cloud" viewBox="0 0 32 32"><path d="M9 24h14.5a5.5 5.5 0 0 0 .6-11A7.5 7.5 0 0 0 9.6 12 6 6 0 0 0 9 24z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-switch" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="10" width="27" height="12" rx="1.5"/><path d="M6 14.5h3v3.5H6zM11 14.5h3v3.5h-3zM16 14.5h3v3.5h-3zM21 14.5h3v3.5h-3z" fill="currentColor" fill-opacity=".3"/><circle cx="26.5" cy="13" r=".9" fill="currentColor"/></g></symbol>
+    <symbol id="i-router" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3.5" y="16" width="25" height="9" rx="2"/><path d="M9 16l-2-10M23 16l2-10M16 16V8"/><circle cx="8.5" cy="20.5" r="1" fill="currentColor"/><circle cx="12.5" cy="20.5" r="1" fill="currentColor"/><path d="M18 20.5h6"/></g></symbol>
+    <!-- Interface -->
+    <symbol id="g-logo" viewBox="0 0 24 24"><rect x="3" y="2.5" width="18" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 7h7M6.5 12h7M6.5 17h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="17" cy="7" r="1.3" fill="#3ddc97"/><circle cx="17" cy="12" r="1.3" fill="#3ddc97"/><circle cx="17" cy="17" r="1.3" fill="#ffb547"/></symbol>
+    <symbol id="g-shop" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2zM9 8V6.5a3 3 0 0 1 6 0V8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="g-box" viewBox="0 0 24 24"><path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5zM3.5 7.5L12 12l8.5-4.5M12 12v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="g-dice" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="8.5" r="1.4" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.4" fill="currentColor"/><circle cx="8.5" cy="15.5" r="1.4" fill="currentColor"/></symbol>
+    <symbol id="g-cap" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5M22 9v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="g-term" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 9.5l3 2.5-3 2.5M12 15h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="g-rack" viewBox="0 0 24 24"><rect x="4" y="2.5" width="16" height="19" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 8.5h16M4 14.5h16" stroke="currentColor" stroke-width="1.6"/><circle cx="16.5" cy="5.5" r="1" fill="currentColor"/><circle cx="16.5" cy="11.5" r="1" fill="currentColor"/><circle cx="16.5" cy="17.5" r="1" fill="currentColor"/></symbol>
+    <symbol id="g-roll" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v4h-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="g-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="g-mute" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="g-gift" viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-2-3.5-6-3-5 0M12 7c2-3.5 6-3 5 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="g-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 16.5v.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="g-save" viewBox="0 0 24 24"><path d="M5 3.5h11.5L20.5 7.5V20.5H5z M8 3.5v5h7v-5M8 20.5v-6h8v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="g-flask" viewBox="0 0 24 24"><path d="M9.5 3h5M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3M7.5 15h9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="g-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0 5 5L21 13l-8 8-3-3 6-6 .5-.5a4 4 0 0 1-5-5L9 9 5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="g-power" viewBox="0 0 24 24"><path d="M12 3v8M7 6.3a7 7 0 1 0 10 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="g-wave" viewBox="0 0 24 24"><path d="M3 12h2l2-5 3 10 3-12 3 10 2-3h3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="g-film" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 9.5l4.5 2.5-4.5 2.5z" fill="currentColor"/></symbol>
+    <symbol id="g-home" viewBox="0 0 24 24"><path d="M3.5 11L12 4l8.5 7M6 9.5V20h12V9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="g-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="g-exit" viewBox="0 0 24 24"><path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="g-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
 
-  <div id="eventBar"></div>
-  <div id="boostBar"></div>
+<div id="desktop">
+  <nav class="dicons" aria-label="Apps">
+    <button class="dicon" data-act="openWin" data-w="shop"><svg class="ico"><use href="#g-shop"/></svg><span>Shop</span></button>
+    <button class="dicon" data-act="openWin" data-w="inv"><svg class="ico"><use href="#g-box"/></svg><span>Opslag</span></button>
+    <button class="dicon" data-act="openWin" data-w="casino"><svg class="ico"><use href="#g-dice"/></svg><span>Casino</span></button>
+    <button class="dicon" data-act="career"><svg class="ico"><use href="#g-cap"/></svg><span>Carrière</span></button>
+    <button class="dicon" data-act="openWin" data-w="term"><svg class="ico"><use href="#g-term"/></svg><span>Terminal</span></button>
+  </nav>
 
-  <div class="grid">
-    <section class="card">
-      <h2><span>Server rack</span><span class="sub" id="rackCount"></span></h2>
-      <div class="sub" id="rackBreakdown"></div>
-      <div class="rack" id="rack"></div>
-      <div class="rackbtns">
-        <button class="btn sec" data-act="buyU" id="buyU"></button>
-        <button class="btn sec" data-act="equipBest" title="Zet je beste items uit rack + opslag automatisch op de beste plek">⚡ Beste uitrusting</button>
+  <main class="tiles">
+    <section class="win tile" id="win-rack" aria-label="Server rack">
+      <div class="wbar"><svg class="ico"><use href="#g-rack"/></svg><span class="wt">rack.sys</span><span class="wmeta" id="rackCount"></span></div>
+      <div class="wbody">
+        <div class="sub" id="rackBreakdown"></div>
+        <div class="rack" id="rack"></div>
+        <div class="rackbtns">
+          <button class="btn sec" data-act="buyU" id="buyU"></button>
+          <button class="btn sec" data-act="equipBest" title="Zet je beste items uit rack en opslag automatisch op de beste plek">Beste uitrusting</button>
+        </div>
       </div>
     </section>
 
-    <div class="col">
-      <section class="card">
-        <h2><span>Roll</span><span class="sub" id="rollCount"></span></h2>
+    <section class="win tile" id="win-roll" aria-label="Roll">
+      <div class="wbar"><svg class="ico"><use href="#g-roll"/></svg><span class="wt">roll.exe</span><span class="wmeta" id="rollCount"></span></div>
+      <div class="wbody">
         <div class="reels" id="reels"></div>
         <button class="rollbtn" data-act="roll" id="rollBtn"><div class="fill" id="rollFill"></div><span class="rl" id="rollLbl">ROLL</span></button>
         <div class="rstat" id="rstat"></div>
         <div class="tools" id="tools"></div>
         <div class="result" id="result"></div>
         <div class="odds" id="odds"></div>
-      </section>
-      <section class="card">
-        <h2><span>Verbinding</span><span class="sub">sneller = kortere cooldown</span></h2>
-        <div class="conn" id="conn"></div>
-      </section>
-    </div>
-  </div>
-
-  <section class="card mt">
-    <h2><span>🎰 Casino Corner <span class="sub">· nepgeld, geen echt geld</span></span><span class="sub" id="casinoNet"></span></h2>
-    <div class="ctop">
-      <div class="filters" id="ctabs" style="margin:0"></div>
-      <div class="betrow">
-        <span class="sub">Inzet</span><input id="betIn" type="number" min="1" inputmode="numeric">
-        <button class="chip" data-act="betQ" data-q="0.25">¼</button>
-        <button class="chip" data-act="betQ" data-q="0.5">½</button>
-        <button class="chip" data-act="betQ" data-q="1">Max</button>
+        <div class="connbox"><div class="conn" id="conn"></div></div>
       </div>
+    </section>
+  </main>
+
+  <section class="win float" id="win-shop" hidden aria-label="Shop">
+    <div class="wbar"><svg class="ico"><use href="#g-shop"/></svg><span class="wt">shop.app</span><span class="wmeta" id="upCount"></span><span class="wctl"><button data-act="minWin" data-w="shop" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="shop" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody">
+      <div class="filters" id="shopTabs"></div>
+      <div class="ups" id="ups"></div>
     </div>
-    <div class="filters" id="ctables" style="margin:0 0 10px"></div>
-    <div id="cgame"></div>
   </section>
 
-  <section class="card mt">
-    <h2><span>🛒 Shop</span><span class="sub" id="upCount"></span></h2>
-    <div class="filters" id="shopTabs"></div>
-    <div class="ups" id="ups"></div>
+  <section class="win float" id="win-inv" hidden aria-label="Opslag">
+    <div class="wbar"><svg class="ico"><use href="#g-box"/></svg><span class="wt">opslag/</span><span class="wmeta" id="invCount"></span><span class="wctl"><button data-act="minWin" data-w="inv" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="inv" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody">
+      <div class="invtools"><span class="sub" title="Verkoopt automatisch wat Hot-Swap naar je opslag stuurt. Mutaties en admin-items worden nooit automatisch verkocht.">Auto-verkoop</span><select id="autoSell"><option value="-1">uit</option><option value="0">Common</option><option value="1">t/m Uncommon</option><option value="2">t/m Rare</option><option value="3">t/m Epic</option></select><span class="sub">Verkoop alles t/m</span><select id="bulkTier"></select><button class="btn sm sec" data-act="bulkSell" id="bulkBtn">Verkoop</button></div>
+      <div class="sub" style="margin-top:8px">Klik een item en daarna een gemarkeerd slot in je rack om het te plaatsen of te wisselen.</div>
+      <div class="filters" id="filters"></div>
+      <div class="inv" id="inv"></div>
+    </div>
   </section>
 
-  <section class="card mt">
-    <h2><span>Opslag <span class="sub" id="invCount"></span></span>
-      <span class="invtools"><span class="sub" title="Verkoopt automatisch wat Hot-Swap naar je opslag stuurt. Mutaties en admin-items worden nooit automatisch verkocht.">Auto-verkoop</span><select id="autoSell"><option value="-1">uit</option><option value="0">Common</option><option value="1">t/m Uncommon</option><option value="2">t/m Rare</option><option value="3">t/m Epic</option></select><span class="sub" style="margin-left:8px">Verkoop alles t/m</span><select id="bulkTier"></select><button class="btn sm sec" data-act="bulkSell">Verkoop</button></span>
-    </h2>
-    <div class="sub">Klik een item en daarna een gemarkeerd slot in je rack om het te plaatsen of te wisselen.</div>
-    <div class="filters" id="filters"></div>
-    <div class="inv" id="inv"></div>
+  <section class="win float" id="win-casino" hidden aria-label="Casino">
+    <div class="wbar"><svg class="ico"><use href="#g-dice"/></svg><span class="wt">casino.exe</span><span class="wmeta" id="casinoNet"></span><span class="wctl"><button data-act="minWin" data-w="casino" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="casino" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody">
+      <div class="sub">Speel met je in-game geld, niet met echt geld.</div>
+      <div class="ctop">
+        <div class="filters" id="ctabs" style="margin:0"></div>
+        <div class="betrow">
+          <span class="sub">Inzet</span><input id="betIn" type="number" min="1" inputmode="numeric">
+          <button class="chip" data-act="betQ" data-q="0.25">¼</button>
+          <button class="chip" data-act="betQ" data-q="0.5">½</button>
+          <button class="chip" data-act="betQ" data-q="1">Max</button>
+        </div>
+      </div>
+      <div class="filters" id="ctables" style="margin:0 0 10px"></div>
+      <div id="cgame"></div>
+    </div>
   </section>
 
-<footer class="foot">RackRNG BETA · aparte save, je echte voortgang blijft veilig · <a class="linkbtn" href="../">Naar de echte game</a> · RackRNG v1.0 · Electronics-ICT edition · je voortgang wordt lokaal in je browser bewaard · <button class="linkbtn" data-act="help">Hoe speel je?</button></footer>
+  <section class="win float" id="win-term" hidden aria-label="Terminal">
+    <div class="wbar"><svg class="ico"><use href="#g-term"/></svg><span class="wt">terminal</span><span class="wmeta">systeemlog</span><span class="wctl"><button data-act="minWin" data-w="term" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="term" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody term"><div id="termlog"></div></div>
+  </section>
+
+  <div id="eventBar"></div>
 </div>
 
+<footer class="taskbar">
+  <button class="startbtn" data-act="startMenu" id="startBtn" aria-haspopup="menu"><svg class="ico"><use href="#g-logo"/></svg><span>RackOS</span></button>
+  <div class="tasks" id="tasks"></div>
+  <div class="tray">
+    <div id="boostBar"></div>
+    <button class="traybtn careerbtn" data-act="career" id="careerBtn">Stagiair</button>
+    <div class="trmoney" title="Saldo en inkomen"><span class="big" id="money">€0</span><span class="rate" id="rate">€0/s</span></div>
+    <button class="traybtn" data-act="mute" id="muteBtn" title="Geluid aan/uit"></button>
+    <span class="clock" id="clock"></span>
+  </div>
+</footer>
+
+<nav class="mtabs" aria-label="Navigatie">
+  <button data-act="mtab" data-t="home" class="on"><svg class="ico"><use href="#g-home"/></svg><span>Systeem</span></button>
+  <button data-act="mtab" data-t="shop"><svg class="ico"><use href="#g-shop"/></svg><span>Shop</span></button>
+  <button data-act="mtab" data-t="inv"><svg class="ico"><use href="#g-box"/></svg><span>Opslag</span></button>
+  <button data-act="mtab" data-t="casino"><svg class="ico"><use href="#g-dice"/></svg><span>Casino</span></button>
+  <button data-act="startMenu" data-t="start"><svg class="ico"><use href="#g-menu"/></svg><span>Menu</span></button>
+</nav>
+
+<div class="startmenu" id="startMenu" hidden role="menu">
+  <div class="smhead"><svg class="ico"><use href="#g-logo"/></svg><div><b>RackOS 42</b> <span class="betatag">BETA</span><div class="sub" id="smUser"></div></div></div>
+  <div class="smgrid">
+    <button data-act="openWin" data-w="shop"><svg class="ico"><use href="#g-shop"/></svg>Shop</button>
+    <button data-act="openWin" data-w="inv"><svg class="ico"><use href="#g-box"/></svg>Opslag</button>
+    <button data-act="openWin" data-w="casino"><svg class="ico"><use href="#g-dice"/></svg>Casino</button>
+    <button data-act="career"><svg class="ico"><use href="#g-cap"/></svg>Carrière</button>
+    <button data-act="openWin" data-w="term"><svg class="ico"><use href="#g-term"/></svg>Terminal</button>
+    <button data-act="redeem"><svg class="ico"><use href="#g-gift"/></svg>Code inwisselen</button>
+  </div>
+  <div class="smlist">
+    <button data-act="toggleCine"><svg class="ico"><use href="#g-film"/></svg>Filmische reveals<span class="smstate" id="smCine"></span></button>
+    <button data-act="toggleHum"><svg class="ico"><use href="#g-wave"/></svg>Server-gezoem<span class="smstate" id="smHum"></span></button>
+    <button data-act="mute"><svg class="ico"><use href="#g-sound"/></svg>Geluidseffecten<span class="smstate" id="smSnd"></span></button>
+    <button data-act="saveMenu"><svg class="ico"><use href="#g-save"/></svg>Save exporteren / importeren</button>
+    <button data-act="help"><svg class="ico"><use href="#g-help"/></svg>Hoe speel je?</button>
+    <button data-act="betaPanel"><svg class="ico"><use href="#g-flask"/></svg>Test-tools (beta)</button>
+    <button data-act="adminPanel" id="adminBtn" hidden><svg class="ico"><use href="#g-wrench"/></svg>Admin panel</button>
+    <a href="../"><svg class="ico"><use href="#g-exit"/></svg>Naar de echte game</a>
+    <button data-act="reset" class="danger"><svg class="ico"><use href="#g-power"/></svg>Beta-save wissen</button>
+  </div>
+</div>
+
+<div id="cine" aria-live="polite"></div>
 <div class="selbar" id="selbar" hidden></div>
 <div id="toasts"></div>
 <div id="flash"></div>
@@ -1272,6 +1566,7 @@ function toast(msg) {
   const t = document.createElement('div');
   t.className = 'toast'; t.textContent = msg;
   box.appendChild(t);
+  termLog(msg);
   setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2600);
 }
 function flash(tier) {
@@ -1306,7 +1601,11 @@ function shake() {
   document.body.classList.add('shake');
   setTimeout(() => document.body.classList.remove('shake'), 600);
 }
-function showModal(html, closable = true) { $('modal').innerHTML = `<div class="modal" ${closable ? 'data-act="closeModal"' : ''}><div class="box">${html}</div></div>`; }
+function showModal(html, closable = true, title = 'RackOS') {
+  $('modal').innerHTML = `<div class="modal" ${closable ? 'data-act="closeModal"' : ''}><div class="box" role="dialog" aria-modal="true">
+    <div class="dbar"><svg class="ico" aria-hidden="true"><use href="#g-logo"/></svg><span>${esc(title)}</span>${closable ? '<button class="dx" data-act="closeModal" aria-label="Sluiten">✕</button>' : ''}</div>
+    <div class="dbody">${html}</div></div></div>`;
+}
 const closeModal = () => { $('modal').innerHTML = ''; };
 
 /* =====================================================================
@@ -1376,10 +1675,14 @@ function hotSwapTry(item) {
   buyCurrent(up ? 'place' : 'store', true);
 }
 function tryAutoRoll() {
-  if (state.autoRoll && lvl('autoroll') && !rolling && Date.now() >= state.rollReadyAt && !$('modal').innerHTML) roll();
+  if (state.autoRoll && lvl('autoroll') && !rolling && !cineActive && Date.now() >= state.rollReadyAt && !$('modal').innerHTML) roll();
 }
 function reveal(it) {
   SFX.tier(it.tier);
+  resultFx = it.tier === 2 ? 'fx-beam' : it.tier === 3 ? 'fx-rise' : it.tier >= 4 ? 'fx-rise' : '';
+  setTimeout(() => { resultFx = ''; }, 1400);
+  if (it.tier >= 3) buzz(it.tier >= 5 ? [60, 40, 140] : 40);
+  cinematic(it);
   if (it.tier >= 3) { flash(it.tier); toast(`🎉 ${TIERS[it.tier].name}! ${it.oc ? '⚡OC ' : ''}${it.name}`); }
   else if (it.oc) toast(`⚡ Overclocked ${it.name}!`);
   if (it.mut) { const m = MUTATIONS[it.mut]; toast(`${m.icon} Mutatie: ${mutLabel(it)}! ${m.desc}`); flashColor(m.color); }
@@ -1483,6 +1786,7 @@ function buyUnit() {
   state.money -= cost;
   const oldSw = state.switches.length;
   state.rack.push(emptyU());
+  newU = state.rack.length - 1;
   ensureSwitchSlots();
   toast(`U${state.rack.length} toegevoegd aan je rack` + (state.switches.length > oldSw ? ' + nieuw switch-slot!' : ''));
   SFX.upgrade();
@@ -1549,6 +1853,7 @@ function clickSlot(loc) {
 function sellSel() {
   const it = selItem(); if (!it) return;
   if (isAdminItem(it)) return toast('Admin-items kun je niet verkopen');
+  flyCoins($('selbar'), 6);
   const before = perfectSet();
   if (sel.src === 'inv') state.inv = state.inv.filter(x => x.id !== it.id);
   else setAt(sel.loc, null);
@@ -1570,6 +1875,7 @@ function bulkSell() {
   if (!list.length) return toast('Niks om te verkopen');
   const total = list.reduce((a, x) => a + sellPrice(x), 0);
   if (!confirm(`${list.length} items verkopen voor ${fmt(total)}?`)) return;
+  flyCoins($('bulkBtn'), Math.min(12, 4 + list.length));
   state.inv = state.inv.filter(x => x.tier > max);
   state.money += total;
   if (sel && sel.src === 'inv' && !selItem()) sel = null;
@@ -2210,7 +2516,6 @@ function showCareer() {
       <div><div class="sub">Rang</div><div class="crank">🎓 ${rankName()}</div>
         <div class="sub">${P.count}× afgestudeerd · volgende: ${nx.name} (${nx.at}×)</div></div>
       <div class="cects"><div class="sub">ECTS</div><div class="big">${fmtNum(P.ects, 0)}</div><div class="sub">${fmtNum(P.ectsTotal, 0)} ooit verdiend</div></div>
-      <button class="ghost cclose" data-act="closeModal" aria-label="Sluiten">✕</button>
     </div>
     <div class="cgrad">${grad}</div>
     <div class="btabs">${BRANCHES.map(b => `<button class="chip ${careerBranch === b.id ? 'on' : ''}" data-act="cbranch" data-b="${b.id}">${b.icon} ${b.name}</button>`).join('')}</div>
@@ -2223,9 +2528,260 @@ function showCareer() {
 }
 function renderCareerBtn() {
   const b = $('careerBtn'); if (!b) return;
-  b.textContent = `🎓 ${rankName()}`;
+  setHTML(b, `${ico('g-cap')}<span>${rankName()}</span>`);
   b.classList.toggle('ready', ectsFor(state.runEarned) > 0);
   b.title = ectsFor(state.runEarned) ? `Je kunt afstuderen: +${ectsFor(state.runEarned)} ECTS` : 'Carrière & skill tree';
+}
+
+/* =====================================================================
+   RackOS: vensters, taakbalk, startmenu, terminal, item-art, cinematics, juice
+   ===================================================================== */
+const UI_KEY = 'rackrng-ui-beta';
+let ui = { cine: true, hum: false };
+try { Object.assign(ui, JSON.parse(localStorage.getItem(UI_KEY) || '{}')); } catch (e) {}
+const saveUi = () => { try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (e) {} };
+const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = () => matchMedia('(max-width: 900px)').matches;
+const ico = (id, cls = 'ico') => `<svg class="${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
+
+/* Item-art: een icoon per type (storage per soort schijf) */
+function itemIconId(it) {
+  if (it.type !== 'storage') return 'i-' + it.type;
+  const n = (it.name || '').toLowerCase();
+  if (/usb/.test(n)) return 'i-usb';
+  if (/cloud/.test(n)) return 'i-cloud';
+  if (/hdd|archief|glazen/.test(n)) return 'i-hdd';
+  if (/nvme|e3\.s|u\.2/.test(n)) return 'i-nvme';
+  return 'i-ssd';
+}
+const itemIcon = (it, cls = 'iico') => ico(itemIconId(it), cls);
+
+/* Vensters */
+const WINS = { shop: { w: 860, h: 620 }, inv: { w: 820, h: 600 }, casino: { w: 760, h: 600 }, term: { w: 620, h: 420 } };
+const WIN_TITLE = { shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
+const WIN_ICON = { shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
+const openWins = new Set();
+let zTop = 30, focusedWin = null;
+function openWin(id) {
+  if (!WINS[id]) return;
+  closeStart();
+  if (isMobile()) return setMobileTab(id);
+  const el = $('win-' + id);
+  el.hidden = false;
+  if (!el.dataset.placed) placeWin(el, id);
+  openWins.add(id);
+  focusWin(id);
+  if (id === 'term') renderTerm(true);
+}
+function placeWin(el, id) {
+  const d = $('desktop').getBoundingClientRect(), n = openWins.size;
+  const w = Math.min(WINS[id].w, d.width - 120), h = Math.min(WINS[id].h, d.height - 40);
+  el.style.width = w + 'px'; el.style.height = h + 'px';
+  el.style.left = Math.max(96, Math.min(d.width - w - 10, (d.width - w) / 2 + n * 30)) + 'px';
+  el.style.top = Math.max(10, Math.min(d.height - h - 10, (d.height - h) / 2 + n * 26)) + 'px';
+  el.dataset.placed = 1;
+}
+function focusWin(id) {
+  focusedWin = id;
+  document.querySelectorAll('.win.float').forEach(w => w.classList.toggle('focus', w.id === 'win-' + id));
+  $('win-' + id).style.zIndex = ++zTop;
+  renderTasks();
+}
+function minWin(id) { $('win-' + id).hidden = true; if (focusedWin === id) focusedWin = null; renderTasks(); }
+function closeWin(id) {
+  if (isMobile()) return setMobileTab('home');
+  $('win-' + id).hidden = true; openWins.delete(id); if (focusedWin === id) focusedWin = null; renderTasks();
+}
+function taskClick(id) {
+  const el = $('win-' + id);
+  if (el.hidden) { el.hidden = false; focusWin(id); }
+  else if (focusedWin === id) minWin(id);
+  else focusWin(id);
+}
+function renderTasks() {
+  setHTML($('tasks'), [...openWins].map(id => `<button class="task ${focusedWin === id && !$('win-' + id).hidden ? 'on' : ''} ${$('win-' + id).hidden ? 'min' : ''}" data-act="task" data-w="${id}">${ico(WIN_ICON[id])}<span>${WIN_TITLE[id]}</span></button>`).join(''));
+}
+// slepen aan de titelbalk
+let drag = null;
+document.addEventListener('pointerdown', e => {
+  const win = e.target.closest('.win.float');
+  if (win) focusWin(win.id.slice(4));
+  const bar = e.target.closest('.win.float .wbar');
+  if (!bar || e.target.closest('button') || isMobile()) return;
+  const r = win.getBoundingClientRect(), d = $('desktop').getBoundingClientRect();
+  drag = { win, dx: e.clientX - r.left, dy: e.clientY - r.top, d };
+  bar.setPointerCapture(e.pointerId);
+});
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const { win, dx, dy, d } = drag;
+  win.style.left = Math.max(0, Math.min(d.width - 120, e.clientX - d.left - dx)) + 'px';
+  win.style.top = Math.max(0, Math.min(d.height - 34, e.clientY - d.top - dy)) + 'px';
+});
+document.addEventListener('pointerup', () => { drag = null; });
+
+/* Mobiel: tabbalk, één app tegelijk */
+function setMobileTab(t) {
+  document.body.dataset.tab = t;
+  Object.keys(WINS).forEach(id => { $('win-' + id).hidden = t !== id; });
+  document.querySelectorAll('.mtabs [data-act=mtab]').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  if (t === 'term') renderTerm(true);
+  closeStart();
+  scrollTo(0, 0);
+}
+let wasMobile = isMobile();
+window.addEventListener('resize', () => {
+  const m = isMobile();
+  if (m === wasMobile) return;
+  wasMobile = m;
+  if (m) setMobileTab('home');
+  else { Object.keys(WINS).forEach(id => { $('win-' + id).hidden = !openWins.has(id); }); document.body.dataset.tab = 'home'; renderTasks(); }
+});
+
+/* Startmenu */
+function toggleStart() {
+  const m = $('startMenu');
+  m.hidden = !m.hidden;
+  if (!m.hidden) renderStart();
+}
+const closeStart = () => { const m = $('startMenu'); if (m) m.hidden = true; };
+function renderStart() {
+  $('smUser').textContent = `${state.playerId} · ${rankName()}`;
+  $('smCine').textContent = ui.cine ? 'aan' : 'uit';
+  $('smHum').textContent = ui.hum ? 'aan' : 'uit';
+  $('smSnd').textContent = state.muted ? 'uit' : 'aan';
+}
+
+/* Klok */
+function renderClock() {
+  const d = new Date();
+  $('clock').textContent = d.toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit' });
+}
+
+/* Terminal: alle meldingen met tijdstempel */
+const termLines = [];
+function termLog(msg) {
+  const t = new Date().toLocaleTimeString('nl-BE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  termLines.push({ t, msg });
+  if (termLines.length > 300) termLines.shift();
+  renderTerm();
+}
+function renderTerm(full) {
+  const box = $('termlog');
+  if (!box || ($('win-term').hidden && !full)) return;
+  if (full) box.innerHTML = '';
+  const have = box.children.length, start = full ? 0 : Math.max(0, termLines.length - (termLines.length - have));
+  for (let i = have; i < termLines.length; i++) {
+    const l = termLines[i], d = document.createElement('div');
+    d.innerHTML = `<span class="tt">[${l.t}]</span> `; d.appendChild(document.createTextNode(l.msg));
+    box.appendChild(d);
+  }
+  while (box.children.length > 300) box.firstChild.remove();
+  const w = box.parentElement; w.scrollTop = w.scrollHeight;
+}
+
+/* Cinematics bij een zeldzame roll */
+let cineActive = false, cineTimer = null;
+function cinematic(it) {
+  if (!ui.cine || reduceMotion() || it.tier < 4) return;
+  const box = $('cine');
+  cineActive = true;
+  const lines = [
+    'RackOS BIOS v4.2  ·  POST',
+    `Scanning bus ${TYPES[it.type].label.toUpperCase()} …`,
+    `Device found: ${it.name}`,
+    `Integrity check …… OK`,
+    `Signature: ${TIERS[it.tier].name.toUpperCase()}`,
+  ];
+  box.className = 'on t' + it.tier;
+  box.innerHTML = `<div class="cbios"><pre id="cineTxt"></pre></div>
+    <div class="ccard" style="--tc:var(--c${it.tier})" data-t="${it.tier}">
+      <div class="cart">${itemIcon(it, 'cico')}</div>
+      <div class="ctier">${TIERS[it.tier].name} · ${TYPES[it.type].label}</div>
+      <div class="cname">${mutHtml(it)}${it.oc ? '<span class="oc">OC</span>' : ''}${esc(it.name)}</div>
+      <div class="cspec">${esc(it.spec)} · ${statText(it)}</div>
+    </div>
+    <div class="cskip">klik om verder te gaan</div>`;
+  const pre = $('cineTxt');
+  lines.forEach((l, i) => setTimeout(() => { if (pre.isConnected) pre.textContent += l + '\n'; }, 140 * i));
+  setTimeout(() => { if (box.classList.contains('on')) { box.classList.add('show'); flash(it.tier); if (it.tier >= 5) shake(); } }, 140 * lines.length + 120);
+  clearTimeout(cineTimer);
+  cineTimer = setTimeout(endCine, 140 * lines.length + 2900);
+}
+function endCine() { const b = $('cine'); b.className = ''; b.innerHTML = ''; cineActive = false; clearTimeout(cineTimer); }
+
+/* Juice */
+let shownMoney = null, newU = -1;
+function tickMoney() {   // saldo telt vloeiend op; uitgaven springen meteen
+  const target = state.money;
+  if (shownMoney === null || target < shownMoney || !isFinite(shownMoney) || reduceMotion()) shownMoney = target;
+  else shownMoney += (target - shownMoney) * 0.22;
+  if (Math.abs(target - shownMoney) < Math.max(0.01, target * 1e-4)) shownMoney = target;
+  $('money').textContent = fmt(shownMoney);
+}
+function floatText(x, y, txt, cls = '') {
+  if (reduceMotion()) return;
+  const f = document.createElement('div');
+  f.className = 'fnum ' + cls; f.textContent = txt;
+  f.style.left = x + 'px'; f.style.top = y + 'px';
+  document.body.appendChild(f);
+  setTimeout(() => f.remove(), 1300);
+}
+function rackFloats() {
+  if (document.hidden || isMobile() && document.body.dataset.tab !== 'home') return;
+  const rows = [...document.querySelectorAll('#rack .u.live')];
+  if (!rows.length) return;
+  const row = rows[Math.floor(Math.random() * rows.length)], m = row.querySelector('.uinc');
+  const r = m.getBoundingClientRect();
+  if (r.bottom < 0 || r.top > innerHeight) return;
+  floatText(r.left + r.width / 2, r.top, '+' + m.textContent.replace('/s', ''));
+}
+function flyCoins(fromEl, n = 6) {
+  if (reduceMotion() || !fromEl) return;
+  const a = fromEl.getBoundingClientRect(), b = $('money').getBoundingClientRect();
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('div');
+    c.className = 'coin';
+    c.style.left = a.left + a.width / 2 + (Math.random() - .5) * 40 + 'px';
+    c.style.top = a.top + a.height / 2 + (Math.random() - .5) * 20 + 'px';
+    document.body.appendChild(c);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      c.style.transitionDelay = i * 45 + 'ms';
+      c.style.transform = `translate(${b.left + b.width / 2 - parseFloat(c.style.left)}px, ${b.top + b.height / 2 - parseFloat(c.style.top)}px) scale(.5)`;
+      c.style.opacity = '0.2';
+    }));
+    setTimeout(() => c.remove(), 900 + i * 45);
+  }
+  setTimeout(() => { const m = $('money'); m.classList.remove('bump'); void m.offsetWidth; m.classList.add('bump'); }, 650);
+}
+const buzz = p => { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} };
+
+/* Server-gezoem (WebAudio, start pas na een klik) */
+let hum = null;
+function setHum(on) {
+  if (!on) { if (hum) { hum.g.gain.setTargetAtTime(0, hum.ctx.currentTime, .3); setTimeout(() => { try { hum.src.stop(); hum.osc.stop(); } catch (e) {} hum = null; }, 900); } return; }
+  if (hum) return;
+  try {
+    const ctx = actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const len = ctx.sampleRate * 2, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+    let last = 0; for (let i = 0; i < len; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; }
+    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520;
+    const osc = ctx.createOscillator(); osc.frequency.value = 100; const og = ctx.createGain(); og.gain.value = 0.12;
+    const g = ctx.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(0.05, ctx.currentTime, .6);
+    src.connect(lp).connect(g); osc.connect(og).connect(g); g.connect(ctx.destination);
+    src.start(); osc.start();
+    hum = { ctx, src, osc, g };
+  } catch (e) {}
+}
+if (ui.hum) document.addEventListener('pointerdown', function once() { setHum(true); document.removeEventListener('pointerdown', once); });
+
+// Titels van de dialoogvensters (als 'bestanden' in RackOS)
+const setModalTitle = t => { const e = $('modal').querySelector('.dbar span'); if (e) e.textContent = t; };
+for (const [fn, t] of [['showCareer', 'carriere.app'], ['ceremony', 'diploma.pdf'], ['showHelp', 'help.txt'], ['showAdmin', 'admin.sh'],
+                       ['showRedeem', 'code.exe'], ['showSaveMenu', 'save.dat'], ['showBetaPanel', 'testtools.sh']]) {
+  const f = window[fn]; if (typeof f !== 'function') continue;
+  window[fn] = function (...a) { const r = f.apply(this, a); setModalTitle(t); return r; };
 }
 
 /* =====================================================================
@@ -2245,7 +2801,8 @@ function showBetaPanel() {
     <button class="ghost" style="margin-top:14px" data-act="closeModal">Sluiten</button></div>`);
 }
 function showHelp() {
-  showModal(`<div style="font-weight:700;font-size:18px">Welkom bij RackRNG 🖥️</div>
+  showModal(`<div style="font-weight:700;font-size:18px">Welkom bij RackOS</div>
+    <div class="help"><p><b>Zo werkt je bureaublad:</b> links staat je rack, rechts de roll-console. Shop, Opslag, Casino, Carrière en de Terminal open je via de iconen links of het <b>RackOS</b>-menu linksonder. Vensters kun je verslepen en minimaliseren. Onderaan rechts zie je je saldo, inkomen en rang.</p></div>
     <div class="help">
       <p>🎲 <b>Roll</b> (knop of spatie) voor een willekeurig serveronderdeel. Hoe zeldzamer, hoe meer het oplevert.</p>
       <p>🛒 <b>Koop</b> wat je wilt. Het item blijft staan tot je opnieuw rolt. De pijl toont of het je rack beter maakt.</p>
@@ -2280,7 +2837,7 @@ function showHelp() {
 
 function reelCard(x) {
   if (!x) return `<div class="rc" style="--tc:#3a4660"><div class="t">?</div><div class="n">Druk op ROLL</div></div>`;
-  return `<div class="rc ${x.tier === 6 ? 'qtm' : ''}" style="--tc:var(--c${x.tier})"><div class="t">${TYPES[x.type].short}</div><div class="n">${nameHtml(x)}</div></div>`;
+  return `<div class="rc" data-t="${x.tier}" style="--tc:var(--c${x.tier})">${itemIcon(x)}<div class="t">${TYPES[x.type].short}</div><div class="n">${nameHtml(x)}</div></div>`;
 }
 /* Eén reel per thread (Multithreading). Ze stoppen na elkaar, de winnaar licht op. */
 function spinReels(cands, win, dur, done) {
@@ -2298,7 +2855,9 @@ function spinReels(cands, win, dur, done) {
   reels.forEach((reel, k) => {
     const strip = reel.querySelector('.strip');
     let html = '';
-    for (let i = 0; i < C; i++) html += reelCard(i === T ? cands[k] : rollOne(luck(), 0, false));
+    const tease = dur > 0 && cands[k] && cands[k].tier <= 2 && Math.random() < 0.18 ? (Math.random() < .5 ? T - 1 : T + 1) : -1;
+    const teaseItem = () => { const ty = COMP[Math.floor(Math.random() * 3)], tr = Math.random() < .3 ? 5 : 4, refs = DEFS_BY[ty][tr]; return new Item(refs[Math.floor(Math.random() * refs.length)]); };
+    for (let i = 0; i < C; i++) html += reelCard(i === T ? cands[k] : i === tease ? teaseItem() : rollOne(luck(), 0, false));
     strip.innerHTML = html;
     const d = dur > 0 ? dur * (N > 1 ? 0.6 + 0.4 * k / (N - 1) : 1) : 0;
     maxD = Math.max(maxD, d);
@@ -2337,9 +2896,9 @@ function renderStaticReels() {
 }
 
 function renderHeader() {
-  $('money').textContent = fmt(state.money);
+  tickMoney();
   $('rate').textContent = fmt(incomeCache) + '/s';
-  $('muteBtn').textContent = state.muted ? '🔇' : '🔊';
+  setHTML($('muteBtn'), ico(state.muted ? 'g-mute' : 'g-sound'));
   renderCareerBtn();
 }
 
@@ -2350,8 +2909,8 @@ function slotHtml(loc, it, label) {
   const attrs = `data-act="slot" data-kind="${loc.kind}"` +
     (loc.u != null ? ` data-u="${loc.u}"` : '') + (loc.slot ? ` data-slot="${loc.slot}"` : '') + (loc.i != null ? ` data-i="${loc.i}"` : '');
   if (!it) return `<button class="slot empty ${isTarget ? 'target' : ''}" ${attrs}>+ ${label}</button>`;
-  return `<button class="slot filled ${isTarget ? 'target' : ''} ${isSel ? 'selected' : ''} ${it.tier === 6 ? 'qtm' : ''} ${isAdminItem(it) ? 'adm' : ''}" style="--tc:var(--c${it.tier})" ${attrs} title="${esc(it.name)} · ${esc(it.spec)}">
-    <span class="n">${nameHtml(it)}</span><span class="s">${statShort(it)}</span></button>`;
+  return `<button class="slot filled ${isTarget ? 'target' : ''} ${isSel ? 'selected' : ''} ${isAdminItem(it) ? 'adm' : ''}" data-t="${it.tier}" style="--tc:var(--c${it.tier})" ${attrs} title="${esc(it.name)} · ${esc(it.spec)}">
+    ${itemIcon(it, 'sico')}<span class="stx"><span class="n">${nameHtml(it)}</span><span class="s">${statShort(it)}</span></span></button>`;
 }
 
 function renderRack() {
@@ -2365,7 +2924,7 @@ function renderRack() {
     const inc = uBase(u) * nm;
     // status-LED's: knipperen sneller naarmate deze U meer verdient
     const blink = inc > 0 ? Math.max(0.16, Math.min(1.8, 1.8 - Math.log10(inc + 1) * 0.22)).toFixed(2) : 0;
-    h += `<div class="u ${m.perfect ? 'perfect' : ''} ${inc > 0 ? 'live' : ''} ${celebrate.has(i) ? 'celebrate' : ''}" style="--blink:${blink}s">
+    h += `<div class="u ${m.perfect ? 'perfect' : ''} ${inc > 0 ? 'live' : ''} ${celebrate.has(i) ? 'celebrate' : ''} ${newU === i ? 'slidein' : ''}" style="--blink:${blink}s">
       <div class="unum">U${i + 1}</div>
       ${COMP.map(k => slotHtml({ kind: 'u', u: i, slot: k }, u[k], TYPES[k].label)).join('')}
       <div class="umeta"><span class="leds"><i></i><i></i><i></i></span><span class="badge ${m.cls}">${m.label}</span><span class="uinc">${fmt(inc)}/s</span></div>
@@ -2373,6 +2932,7 @@ function renderRack() {
   });
   celebrate.clear();
   setHTML($('rack'), h);
+  if (newU >= 0) { const nu = newU; newU = -1; setTimeout(() => { const r = $('rack').querySelectorAll('.u')[nu]; if (r) { r.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }, 50); }
   $('rack').className = 'rack skin-' + (SKINS.some(x => x.id === state.skin) ? state.skin : 'default');
   $('rackCount').textContent = `${state.rack.length}/${CFG.maxUnits}U`;
   $('rackBreakdown').textContent = `Basis ${fmt(baseIncome())}/s · Router ×${fmtNum(routerM())} · Switches +${switchB()}%` +
@@ -2385,16 +2945,19 @@ function renderRack() {
   }
 }
 
+let resultFx = '';
 function renderResult() {
   const el = $('result'), c = state.current;
   if (rolling) { el.className = 'result'; setHTML(el, '<div class="empty-msg">Hardware detecteren…</div>'); return; }
   if (!c) { el.className = 'result'; setHTML(el, '<div class="empty-msg">Nog niks gerold.<br>Druk op ROLL (of spatie) voor je eerste onderdeel.</div>'); return; }
   const cmp = compareInfo(c);
-  el.className = 'result has';
+  el.className = 'result has' + (resultFx ? ' ' + resultFx : '');
+  el.dataset.t = c.tier;
   el.style.setProperty('--tc', `var(--c${c.tier})`);
   setHTML(el, `
-    <div class="tier ${c.tier === 6 ? 'qtm' : ''}">${TIERS[c.tier].name} · ${TYPES[c.type].label}${c.oc ? ' · ⚡ Overclocked' : ''}</div>
-    <div class="name">${mutHtml(c)}${esc(c.name)}</div>
+    <div class="rhead"><div class="rart">${itemIcon(c, 'rico')}</div><div class="rtxt">
+    <div class="tier">${TIERS[c.tier].name} · ${TYPES[c.type].label}${c.oc ? ' · Overclocked' : ''}</div>
+    <div class="name">${mutHtml(c)}${esc(c.name)}</div></div></div>
     ${c.mut ? `<div class="sub" style="color:${MUTATIONS[c.mut].color}">${MUTATIONS[c.mut].icon} ${mutLabel(c)}: ${MUTATIONS[c.mut].desc}</div>` : ''}
     <div class="sub">${esc(c.spec)}</div>
     <div class="stat">${statText(c)}</div>
@@ -2512,8 +3075,8 @@ function renderInv() {
   const list = state.inv.filter(x => filter === 'all' || x.type === filter)
     .sort((a, b) => b.tier - a.tier || basePrice(b) - basePrice(a));
   setHTML($('inv'), list.length ? list.map(it => `
-    <button class="it ${sel && sel.src === 'inv' && sel.id === it.id ? 'selected' : ''} ${isAdminItem(it) ? 'adm' : ''}" style="--tc:var(--c${it.tier})" data-act="inv" data-id="${it.id}">
-      <div class="top"><span class="ty">${TYPES[it.type].label}</span><span class="tr">${TIERS[it.tier].name}</span></div>
+    <button class="it ${sel && sel.src === 'inv' && sel.id === it.id ? 'selected' : ''} ${isAdminItem(it) ? 'adm' : ''}" data-t="${it.tier}" style="--tc:var(--c${it.tier})" data-act="inv" data-id="${it.id}">
+      <div class="top">${itemIcon(it, 'tico')}<span class="ty">${TYPES[it.type].label}</span><span class="tr">${TIERS[it.tier].name}</span></div>
       <div class="n">${nameHtml(it)}</div><div class="s">${esc(it.spec)}</div><div class="v">${statText(it)}</div>
     </button>`).join('') : `<div class="sub" style="grid-column:1/-1">Niks hier. Gekochte items die niet meer in je rack passen komen hier terecht.</div>`);
   $('invCount').textContent = `· ${state.inv.length} items`;
@@ -2572,6 +3135,7 @@ function frame() {
     $('rollLbl').textContent = `Downloaden via ${CONN[state.conn].name}… ${Math.floor(pct)}%`;
   }
   crTick();
+  tickMoney();
   requestAnimationFrame(frame);
 }
 
@@ -2584,6 +3148,7 @@ setInterval(() => {
   renderHeader(); updateAfford();
   tryAutoRoll(); // in de interval, zodat auto-roll ook doorloopt als het tabblad op de achtergrond staat
   tickEvents(); renderEvent();
+  renderClock();
   if (ensureShop()) { save(); if (shopTab === 'boosts') renderShop(); }
   renderBoostBar();
   { const t = $('shopTimer'); if (t) t.textContent = shopTimerTxt(); }
@@ -2591,10 +3156,13 @@ setInterval(() => {
   crTick();
 }, 200);
 setInterval(save, 5000);
+setInterval(rackFloats, 1700);
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 window.addEventListener('pagehide', save);
 
 document.addEventListener('click', e => {
+  if (!e.target.closest('#startMenu, [data-act=startMenu]')) closeStart();
+  if (cineActive && e.target.closest('#cine')) { endCine(); return; }
   const el = e.target.closest('[data-act]');
   if (!el) return;
   switch (el.dataset.act) {
@@ -2637,14 +3205,22 @@ document.addEventListener('click', e => {
     case 'toInv': toInvSel(); break;
     case 'bulkSell': bulkSell(); break;
     case 'desel': sel = null; renderAll(); break;
-    case 'mute': state.muted = !state.muted; save(); renderHeader(); break;
-    case 'saveMenu': showSaveMenu(); break;
-    case 'help': showHelp(); break;
-    case 'career': showCareer(); break;
+    case 'mute': state.muted = !state.muted; save(); renderHeader(); renderStart(); break;
+    case 'saveMenu': closeStart(); showSaveMenu(); break;
+    case 'help': closeStart(); showHelp(); break;
+    case 'openWin': openWin(el.dataset.w); break;
+    case 'closeWin': closeWin(el.dataset.w); break;
+    case 'minWin': minWin(el.dataset.w); break;
+    case 'task': taskClick(el.dataset.w); break;
+    case 'mtab': setMobileTab(el.dataset.t); break;
+    case 'startMenu': toggleStart(); break;
+    case 'toggleCine': ui.cine = !ui.cine; saveUi(); renderStart(); toast(`Filmische reveals ${ui.cine ? 'aan' : 'uit'}`); break;
+    case 'toggleHum': ui.hum = !ui.hum; saveUi(); setHum(ui.hum); renderStart(); break;
+    case 'career': closeStart(); showCareer(); break;
     case 'cbranch': careerBranch = el.dataset.b; showCareer(); break;
     case 'pnode': buyNode(el.dataset.id); break;
     case 'graduate': graduate(); break;
-    case 'betaPanel': showBetaPanel(); break;
+    case 'betaPanel': closeStart(); showBetaPanel(); break;
     case 'betaMoney': state.money += +el.dataset.v; save(); renderAll(); toast('🧪 +' + fmt(+el.dataset.v)); break;
     case 'betaRun': state.runEarned += 1e12; save(); renderAll(); toast('🧪 +1T run-verdiend'); break;
     case 'betaEcts': state.prestige.ects += 100; state.prestige.ectsTotal += 100; save(); renderAll(); toast('🧪 +100 ECTS'); break;
@@ -2663,9 +3239,9 @@ document.addEventListener('click', e => {
       if (!confirm('Beta-save wissen?')) break;
       localStorage.removeItem(SAVE_KEY); state = newState(); state.seenHelp = true; sel = null; save(); closeModal(); renderAll(); renderStaticReels();
       break;
-    case 'redeem': showRedeem(); break;
+    case 'redeem': closeStart(); showRedeem(); break;
     case 'redeemGo': redeem(); break;
-    case 'adminPanel': showAdmin(); break;
+    case 'adminPanel': closeStart(); showAdmin(); break;
     case 'admGen': admGenerateKeys(); break;
     case 'admImport': admImportKey(); break;
     case 'admMe': $('admPid').value = state.playerId; break;
@@ -2701,7 +3277,13 @@ document.addEventListener('keydown', e => {
   if (blocked) return;
   if (e.target.matches('textarea, input, select')) return;
   if (e.code === 'Space' && !e.repeat) { e.preventDefault(); roll(); }
-  if (e.key === 'Escape') { if ($('modal').querySelector('[data-act="closeModal"]')) closeModal(); else if (!$('modal').innerHTML && sel) { sel = null; renderAll(); } }
+  if (e.key === 'Escape') {
+    if (cineActive) return endCine();
+    if (!$('startMenu').hidden) return closeStart();
+    if ($('modal').querySelector('[data-act="closeModal"]')) closeModal();
+    else if (!$('modal').innerHTML && sel) { sel = null; renderAll(); }
+    else if (!$('modal').innerHTML && focusedWin) closeWin(focusedWin);
+  }
 });
 let rz;
 window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (!rolling) renderStaticReels(); }, 150); });
@@ -2736,6 +3318,8 @@ incomeCache = totalIncome();
       <button class="btn full" data-act="closeModal">Lekker</button>`);
   }
 }
+renderClock();
+if (isMobile()) setMobileTab('home');
 renderAll();
 $('betIn').value = Math.max(10, Math.floor(maxBet() / 10));
 renderGame();
