@@ -791,6 +791,94 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
   .wbody.upbody{padding:0 12px 14px}
   .ups.dealgrid{grid-template-columns:1fr}
 }
+/* Casino: neon na sluitingstijd */
+#win-casino{--shop:#ff4fa3; --cas:#ff4fa3}
+#win-casino .wbar .ico{color:var(--cas)}
+.casbody .snav{background:linear-gradient(180deg,#160e22,#0c0914); border-right-color:#2a1d3d}
+.casbody .sbrand b{color:var(--cas); text-shadow:0 0 12px rgba(255,79,163,.6)}
+.slbl{font:600 10.5px var(--mono); letter-spacing:1.2px; text-transform:uppercase; color:#7d6b99; margin:10px 8px 6px}
+.cgame-btn{display:flex; align-items:center; gap:10px; width:100%; padding:10px; margin-bottom:5px; border-radius:10px; border:1px solid #2c2042; background:linear-gradient(180deg,#1d1430,#140e22); color:#d9cdf0; text-align:left; cursor:pointer}
+.cgame-btn b{display:block; font:700 14px var(--cond); color:#f3ecff}
+.cgame-btn small{display:block; font-size:10.5px; color:#8e7fab; line-height:1.3}
+.cgame-btn .cgi{font-size:22px; width:34px; height:34px; display:grid; place-items:center; border-radius:8px; background:rgba(255,79,163,.08); flex:none}
+.cgame-btn.on{border-color:rgba(255,79,163,.6); box-shadow:0 0 0 1px rgba(255,79,163,.25), 0 0 18px -6px rgba(255,79,163,.7); background:linear-gradient(180deg,#2a1538,#1a0f27)}
+.ctab-t em{margin-left:auto; font:500 10.5px var(--mono); font-style:normal; color:#8e7fab}
+.ctab-t .tdot{width:9px; height:9px; border-radius:50%; flex:none}
+.ctab-t.t0 .tdot{background:#1f9d63} .ctab-t.t1 .tdot{background:#2f6fd6} .ctab-t.t2 .tdot{background:#b8323d}
+.csess{margin-top:14px; padding:10px; border-radius:10px; border:1px solid #2a1d3d; background:rgba(10,6,16,.6); display:flex; flex-direction:column; gap:5px; font-size:12px}
+.csess div{display:flex; justify-content:space-between; color:#8e7fab}
+.csess b{font:600 12px var(--mono); color:#e8def8} .csess .pos{color:var(--good)} .csess .neg{color:var(--bad)}
+.cfine{margin-top:auto; padding:12px 6px 0; font-size:10.5px; color:#6c5c86}
+.cmain{padding-top:14px}
+.cbet{display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:10px 12px; margin-bottom:12px; border-radius:12px; border:1px solid #2a1d3d; background:linear-gradient(180deg,#171024,#100b1a)}
+.cbetl{display:flex; align-items:center; gap:8px}
+.cbet input{width:140px; background:#0b0812; color:#fff; border:1px solid #3a2a55; border-radius:8px; padding:7px 9px; font:600 14px var(--mono)}
+.cmax{font:500 11px var(--mono); color:#8e7fab}
+.fiches{display:flex; gap:6px}
+.fiche{width:44px; height:44px; border-radius:50%; border:0; cursor:pointer; display:grid; place-items:center; position:relative;
+  background:radial-gradient(circle,var(--fc) 0 52%,#fff 53% 58%,var(--fc) 59%); box-shadow:inset 0 0 0 3px rgba(0,0,0,.25), 0 3px 0 rgba(0,0,0,.4), 0 6px 12px -4px rgba(0,0,0,.6);
+  transition:transform .1s}
+.fiche::before{content:""; position:absolute; inset:2px; border-radius:50%; border:3px dashed rgba(255,255,255,.75)}
+.fiche span{position:relative; font:700 9.5px var(--mono); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.6); max-width:36px; overflow:hidden}
+.fiche:hover{transform:translateY(-2px)} .fiche:active{transform:translateY(1px)}
+.cq{display:flex; gap:4px; margin-left:auto}
+.felt{position:relative; border-radius:16px; padding:16px; min-height:300px; border:1px solid #1b4d3a;
+  background:radial-gradient(ellipse at 50% 0%,#17694a,#0c3b2a 55%,#08241a); box-shadow:inset 0 0 0 6px rgba(0,0,0,.18), inset 0 0 60px rgba(0,0,0,.5)}
+#win-casino[data-table="1"] .bjfelt{background:radial-gradient(ellipse at 50% 0%,#1f4f9a,#123063 55%,#0a1a3a); border-color:#1d3f75}
+#win-casino[data-table="2"] .bjfelt{background:radial-gradient(ellipse at 50% 0%,#8a2230,#54121c 55%,#2c0a10); border-color:#6b1b26}
+.feltarc{text-align:center; font:700 11px var(--mono); letter-spacing:3px; color:rgba(255,230,160,.55); margin:2px 0 6px}
+.bjside{display:flex; flex-direction:column; align-items:center}
+.bjside .hand{justify-content:center}
+.hlabel{font:600 13px var(--cond); color:#d6f5e6; display:flex; align-items:center; gap:8px; justify-content:center}
+.tot{font:700 13px var(--mono); padding:1px 9px; border-radius:20px; background:rgba(0,0,0,.45); color:#fff; border:1px solid rgba(255,255,255,.2)}
+.tot.bust{background:#7f1d1d} .tot.bj{background:#a16207}
+.bjstake{display:flex; align-items:center; justify-content:center; gap:8px; margin:2px 0 8px; font:600 13px var(--mono); color:#ffe6a0}
+.stakechip{width:20px; height:20px; border-radius:50%; background:radial-gradient(circle,#ef4444 0 50%,#fff 51% 58%,#ef4444 59%); box-shadow:0 2px 0 rgba(0,0,0,.4)}
+.pc{width:58px; height:82px; border-radius:8px; background:linear-gradient(180deg,#fff,#eef1f5); position:relative; padding:4px 6px; font:700 15px var(--cond); box-shadow:0 3px 8px rgba(0,0,0,.45); animation:none; display:block}
+.pc .pr{position:absolute; top:4px; left:6px} .pc .pr2{position:absolute; bottom:4px; right:6px; transform:rotate(180deg)}
+.pc .bs{position:absolute; inset:0; display:grid; place-items:center; font-size:28px; align-self:auto}
+.pc.back{background:repeating-linear-gradient(45deg,#7a1f5c 0 5px,#5a1545 5px 10px); border:3px solid #fff}
+.pc.deal{animation:dealin .38s cubic-bezier(.2,.8,.3,1.2) both}
+.pc.flip{animation:flipin .45s ease both}
+@keyframes dealin{from{transform:translate(120px,-90px) rotate(18deg); opacity:0}}
+@keyframes flipin{0%{transform:rotateY(90deg)}100%{transform:none}}
+.bjempty{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; min-height:200px; color:#bfe6d2}
+.bjempty{position:relative}
+.bjempty .pc{position:absolute; top:24px; left:calc(50% - 29px)} .ghost1{transform:translateX(-22px) rotate(-8deg); opacity:.55} .ghost2{transform:translateX(22px) rotate(7deg); opacity:.55}
+.bjempty p{margin-top:110px}
+.cres{text-align:center; font:700 17px var(--cond); margin:8px 0}
+.cres.win{color:#6ef0a5; text-shadow:0 0 14px rgba(110,240,165,.5)}
+.felt .cactions{justify-content:center}
+/* crash-monitor */
+.crfelt{background:linear-gradient(180deg,#0f0a1a,#09070f); border-color:#2a1d3d; box-shadow:inset 0 0 50px rgba(0,0,0,.6)}
+.crhist{display:flex; gap:5px; flex-wrap:wrap; margin:0 0 10px; min-height:22px}
+.crhist span{font:600 11px var(--mono); padding:2px 8px; border-radius:20px; border:1px solid}
+.crhist .hi{color:var(--good); border-color:rgba(61,220,151,.35); background:rgba(61,220,151,.08)}
+.crhist .lo{color:var(--bad); border-color:rgba(255,99,99,.35); background:rgba(255,99,99,.08)}
+.crhist .none{color:#6c5c86; border:0}
+.mon{position:relative; border-radius:10px; border:1px solid #2a1d3d; background:#07050c; overflow:hidden}
+.monbar{display:flex; align-items:center; gap:8px; padding:6px 10px; font:500 11px var(--mono); color:#8e7fab; border-bottom:1px solid #1d1430}
+.monbar .mright{margin-left:auto; letter-spacing:1px}
+.live{width:8px; height:8px; border-radius:50%; background:#4b3d63}
+.live.on{background:var(--bad); box-shadow:0 0 8px var(--bad); animation:curblink 1s steps(1) infinite}
+.crsvg{display:block; width:100%; height:220px}
+.crsvg .gl{stroke:#1d1430; stroke-width:1; vector-effect:non-scaling-stroke}
+.crsvg .gt{fill:#5b4c75; font:10px var(--mono)}
+.mon .crash-m{position:absolute; top:42px; left:0; right:0; margin:0; font:700 52px var(--mono); color:#fff; text-shadow:0 0 20px rgba(255,79,163,.6); pointer-events:none}
+.mon .crash-m.boom{color:var(--bad); text-shadow:0 0 20px rgba(255,99,99,.6)} .mon .crash-m.cashed{color:var(--good)}
+.mon.boom{border-color:rgba(255,99,99,.5); animation:shakeit .35s}
+.e502{position:absolute; left:0; right:0; bottom:22px; text-align:center; font:700 22px var(--mono); letter-spacing:3px; color:var(--bad)}
+.e502 small{display:block; font:500 11px var(--mono); letter-spacing:0; color:#c58a8a}
+@keyframes shakeit{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.cashbtn{min-width:220px; display:flex; justify-content:space-between; gap:12px; background:linear-gradient(180deg,#ff6fb5,#e0338a) !important; font-size:15px; padding:10px 16px}
+@media (max-width:900px){
+  .casbody .snav{flex-direction:column; overflow:visible}
+  .casbody #ctabs,.casbody #ctables{display:flex; gap:6px; overflow-x:auto}
+  .casbody .cgame-btn{min-width:200px; margin:0}
+  .casbody .csess{flex-direction:row; flex-wrap:wrap; gap:4px 14px}
+  .casbody .cfine{display:none}
+  .cq{margin-left:0}
+}
 </style>
 </head>
 <body class="os" data-tab="home">
@@ -904,19 +992,24 @@ body.glitching #desktop{animation:gshake .1s steps(2) infinite; filter:hue-rotat
 
   <section class="win float" id="win-casino" hidden aria-label="Casino">
     <div class="wbar"><svg class="ico"><use href="#g-dice"/></svg><span class="wt">casino.exe</span><span class="wmeta" id="casinoNet"></span><span class="wctl"><button data-act="minWin" data-w="casino" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="casino" aria-label="Sluiten">✕</button></span></div>
-    <div class="wbody">
-      <div class="sub">Speel met je in-game geld, niet met echt geld.</div>
-      <div class="ctop">
-        <div class="filters" id="ctabs" style="margin:0"></div>
-        <div class="betrow">
-          <span class="sub">Inzet</span><input id="betIn" type="number" min="1" inputmode="numeric">
-          <button class="chip" data-act="betQ" data-q="0.25">¼</button>
-          <button class="chip" data-act="betQ" data-q="0.5">½</button>
-          <button class="chip" data-act="betQ" data-q="1">Max</button>
+    <div class="wbody shopbody casbody">
+      <nav class="snav cnav" aria-label="Casino">
+        <div class="sbrand"><svg class="ico"><use href="#g-dice"/></svg><span>Casino<b>.exe</b></span></div>
+        <div class="slbl">Spel</div>
+        <div id="ctabs"></div>
+        <div class="slbl">Tafel</div>
+        <div id="ctables"></div>
+        <div class="csess" id="csess"></div>
+        <div class="cfine">Speel met in-game geld, niet met echt geld.</div>
+      </nav>
+      <div class="smain cmain">
+        <div class="cbet">
+          <div class="cbetl"><span class="slbl" style="margin:0">Inzet</span><input id="betIn" type="number" min="1" inputmode="numeric"><span class="cmax" id="cmax"></span></div>
+          <div class="fiches" id="fiches"></div>
+          <div class="cq"><button class="chip" data-act="betQ" data-q="0.25">¼</button><button class="chip" data-act="betQ" data-q="0.5">½</button><button class="chip" data-act="betQ" data-q="1">Max</button><button class="chip" data-act="betClr">Wis</button></div>
         </div>
+        <div id="cgame"></div>
       </div>
-      <div class="filters" id="ctables" style="margin:0 0 10px"></div>
-      <div id="cgame"></div>
     </div>
   </section>
 
@@ -2126,7 +2219,8 @@ function newDeck(n = 1) {
 let shoe = [];
 const drawShoe = () => { if (shoe.length < 60) shoe = newDeck(6); return shoe.pop(); };
 
-let ctab = 'bj', bj = null, cr = null, crAuto = '';
+let ctab = 'bj', bj = null, cr = null, crAuto = '', lastBet = 0;
+const sess = { net: 0, games: 0, best: 0 };
 const crHist = [];
 const casinoBusy = () => (bj && !bj.done) || (cr && !cr.over);
 const maxBet = (t = state.table) => Math.floor(Math.max(TABLES[t].floor, steadyIncome() * 60 * TABLES[t].minutes));
@@ -2136,6 +2230,7 @@ function readBet() {
   if (!(v >= 1)) { toast('Vul een inzet in'); return 0; }
   if (v > maxBet()) { toast(`Max inzet aan de ${TABLES[state.table].name.toLowerCase()}: ${fmt(maxBet())}`); return 0; }
   if (v > state.money) { toast('Niet genoeg geld'); return 0; }
+  lastBet = v;
   return v;
 }
 function takeBet(v) { state.money -= v; state.casinoPending += v; }
@@ -2143,6 +2238,7 @@ function payout(stake, ret) {
   state.money += ret;
   state.casinoPending = Math.max(0, state.casinoPending - stake);
   state.casinoNet += ret - stake;
+  sess.net += ret - stake; sess.games++; sess.best = Math.max(sess.best, ret - stake);
   if (ret > stake) beep([660, 880, 1100], 0.07); else if (ret < stake) beep([300, 220], 0.09, 'triangle'); else beep([500], 0.06);
   save(); renderHeader(); updateAfford(); renderCasinoControls();
 }
@@ -2158,7 +2254,7 @@ function bjDeal() {
   if (bj && !bj.done) return;
   const v = readBet(); if (!v) return;
   takeBet(v);
-  bj = { p: [drawShoe(), drawShoe()], d: [drawShoe(), drawShoe()], stake: v, done: false, res: null };
+  bj = { p: [drawShoe(), drawShoe()], d: [drawShoe(), drawShoe()], stake: v, done: false, res: null, seenP: 0, seenD: 0 };
   const pb = bjVal(bj.p) === 21, db = bjVal(bj.d) === 21;
   if (pb || db) return bjSettle(pb && db ? 'push' : pb ? 'bj' : 'dealerbj');
   renderGame();
@@ -2200,7 +2296,7 @@ function crStart() {
   const v = readBet(); if (!v) return;
   const auto = parseFloat(String(crAuto).replace(',', '.'));
   takeBet(v);
-  cr = { stake: v, start: Date.now(), at: crashPoint(), auto: auto >= 1.01 ? Math.min(auto, CRASH_MAX) : null, over: false, m: 1, res: null };
+  cr = { stake: v, start: Date.now(), at: crashPoint(), auto: auto >= 1.01 ? Math.min(auto, CRASH_MAX) : null, over: false, m: 1, res: null, pts: [[0, 1]] };
   renderGame();
   crTick();
 }
@@ -2211,16 +2307,18 @@ function crTick() {
   if (m >= cr.at && cr.at >= CRASH_MAX) { toast(`🏆 Server op max capaciteit! Automatisch uitbetaald bij ×${CRASH_MAX}`); return crCash(CRASH_MAX); }
   if (m >= cr.at) {
     cr.m = cr.at; cr.over = true; cr.res = { win: false };
+    cr.pts.push([(Date.now() - cr.start) / 1000, cr.at]);
     crHist.unshift(cr.at); crHist.length = Math.min(crHist.length, 10);
     payout(cr.stake, 0);
     return renderGame();
   }
   cr.m = m;
+  cr.pts.push([(Date.now() - cr.start) / 1000, m]);
   const el = $('crM');
   if (el) {
     el.textContent = '×' + m.toFixed(2);
-    $('crBar').style.width = Math.min(100, Math.log(m) / Math.log(CRASH_MAX) * 100) + '%';
-    $('crCashBtn').textContent = `Cash out · ${fmt(cr.stake * m)}`;
+    drawCrash();
+    $('crCashBtn').innerHTML = `Cash out <b>${fmt(cr.stake * m)}</b>`;
   }
 }
 function crCash(at) {
@@ -2235,27 +2333,38 @@ function crCash(at) {
 
 /* Casino render */
 const cardHtml = (c, extra = '', tag = 'div', attrs = '') => c
-  ? `<${tag} class="pc ${'♥♦'.includes(c.s) ? 'red' : ''} ${extra}" ${attrs}><span>${c.r}</span><span class="bs">${c.s}</span></${tag}>`
-  : `<div class="pc back"></div>`;
+  ? `<${tag} class="pc ${'♥♦'.includes(c.s) ? 'red' : ''} ${extra}" ${attrs}><span class="pr">${c.r}</span><span class="bs">${c.s}</span><span class="pr2">${c.r}</span></${tag}>`
+  : `<div class="pc back ${extra}"></div>`;
+const niceNum = v => { if (v < 10) return Math.max(1, Math.round(v)); const p = 10 ** Math.floor(Math.log10(v)), f = v / p; return (f < 1.5 ? 1 : f < 3.5 ? 2.5 : f < 7.5 ? 5 : 10) * p; };
+const fiches = () => { const m = maxBet(); return [...new Set([0.01, 0.05, 0.2, 0.5].map(q => niceNum(m * q)))]; };
+const FICHE_C = ['#e5e7eb', '#ef4444', '#3b82f6', '#22c55e', '#a855f7'];
 function renderCasinoControls() {
-  const tabs = [['bj', '🃏 Blackjack'], ['crash', '📈 Crash']];
-  setHTML($('ctabs'), tabs.map(([k, n]) => `<button class="chip ${ctab === k ? 'on' : ''}" data-act="ctab" data-t="${k}">${n}</button>`).join(''));
-  setHTML($('ctables'), TABLES.map((t, i) => `<button class="chip ${state.table === i ? 'on' : ''}" data-act="ctable" data-i="${i}">${t.name} · max ${fmt(maxBet(i))}</button>`).join(''));
-  const n = state.casinoNet;
+  const games = [['bj', '🃏', 'Blackjack', 'Versla de dealer · 3:2'], ['crash', '📈', 'Crash', `Cash out voor de crash · max ×${CRASH_MAX}`]];
+  setHTML($('ctabs'), games.map(([k, i, n, d]) => `<button class="cgame-btn ${ctab === k ? 'on' : ''}" data-act="ctab" data-t="${k}"><span class="cgi">${i}</span><span><b>${n}</b><small>${d}</small></span></button>`).join(''));
+  setHTML($('ctables'), TABLES.map((t, i) => `<button class="stab ctab-t t${i} ${state.table === i ? 'on' : ''}" data-act="ctable" data-i="${i}"><i class="tdot"></i><span>${t.name}</span><em>${fmt(maxBet(i))}</em></button>`).join(''));
+  const n = state.casinoNet, sc = v => `<b class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${fmt(v)}</b>`;
+  setHTML($('csess'), `<div><span>Deze sessie</span>${sc(sess.net)}</div><div><span>Spellen</span><b>${sess.games}</b></div><div><span>Grootste winst</span><b class="pos">${fmt(sess.best)}</b></div><div><span>Ooit</span>${sc(n)}</div>`);
   $('casinoNet').innerHTML = `Totaal: <span style="color:${n >= 0 ? 'var(--good)' : 'var(--bad)'}">${n >= 0 ? '+' : ''}${fmt(n)}</span>`;
+  setHTML($('fiches'), fiches().map((v, i) => `<button class="fiche" style="--fc:${FICHE_C[i + 1]}" data-act="ficheAdd" data-v="${v}" title="+${fmt(v)}"><span>${fmt(v).replace('€', '')}</span></button>`).join(''));
+  $('cmax').textContent = `max ${fmt(maxBet())}`;
+  const w = $('win-casino'); if (w) w.dataset.table = state.table;
 }
 function resultHtml(win, push, text) { return `<div class="cres ${push ? 'push' : win ? 'win' : 'lose'}">${text}</div>`; }
+const againBtn = act => lastBet ? `<button class="btn sec" data-act="${act}" data-again="1">Opnieuw · ${fmt(lastBet)}</button>` : '';
 function renderGame() {
   const g = $('cgame');
   if (ctab === 'bj') {
-    let h = '<div class="felt">';
-    if (!bj) h += '<div class="hlabel" style="padding:40px 0;text-align:center">Kies een inzet en klik op <b>Delen</b>. Dealer staat op 17, blackjack betaalt 3:2.</div>';
+    let h = `<div class="felt bjfelt"><div class="feltarc">BLACKJACK PAYS 3 TO 2 · DEALER STAAT OP 17</div>`;
+    if (!bj) h += `<div class="bjempty"><div class="pc back ghost1"></div><div class="pc back ghost2"></div><p>Kies je inzet met de fiches en klik op <b>Delen</b>.</p></div>`;
     else {
-      const showD = bj.done;
-      h += `<div class="hlabel">Dealer ${showD ? `<b>${bjVal(bj.d)}</b>` : ''}</div>
-        <div class="hand">${bj.d.map((c, i) => i === 1 && !showD ? cardHtml(null) : cardHtml(c)).join('')}</div>
-        <div class="hlabel">Jij <b>${bjVal(bj.p)}</b> · inzet ${fmt(bj.stake)}${bj.doubled ? ' (verdubbeld)' : ''}</div>
-        <div class="hand">${bj.p.map(c => cardHtml(c)).join('')}</div>`;
+      const showD = bj.done, newCls = (i, seen) => i >= seen ? `deal" style="animation-delay:${(i - seen) * 140}ms` : '';
+      h += `<div class="bjside"><div class="hlabel">Dealer ${showD ? `<span class="tot">${bjVal(bj.d)}</span>` : '<span class="tot">?</span>'}</div>
+        <div class="hand">${bj.d.map((c, i) => i === 1 && !showD ? cardHtml(null, newCls(i, bj.seenD)) : cardHtml(c, (i === 1 && bj.seenD >= 2 && !bj.flipped ? 'flip ' : '') + newCls(i, bj.seenD))).join('')}</div></div>
+        <div class="bjstake"><span class="stakechip"></span>${fmt(bj.stake)}${bj.doubled ? ' · verdubbeld' : ''}</div>
+        <div class="bjside"><div class="hand">${bj.p.map((c, i) => cardHtml(c, newCls(i, bj.seenP))).join('')}</div>
+        <div class="hlabel">Jij <span class="tot ${bjVal(bj.p) > 21 ? 'bust' : bjVal(bj.p) === 21 ? 'bj' : ''}">${bjVal(bj.p)}</span></div></div>`;
+      if (bj.done) bj.flipped = true;
+      bj.seenP = bj.p.length; bj.seenD = bj.d.length;
       if (bj.res) {
         const { o, ret, s } = bj.res;
         const txt = { bj: `🃏 Blackjack! +${fmt(ret - s)}`, win: `Gewonnen! +${fmt(ret - s)}`, push: 'Gelijkspel, inzet terug',
@@ -2266,24 +2375,42 @@ function renderGame() {
     h += '<div class="cactions">';
     if (bj && !bj.done) h += `<button class="btn" data-act="bjHit">Hit</button><button class="btn sec" data-act="bjStand">Stand</button>
       ${bj.p.length === 2 ? `<button class="btn sec" data-act="bjDouble" ${state.money < bj.stake ? 'disabled' : ''}>Double (${fmt(bj.stake)})</button>` : ''}`;
-    else h += '<button class="btn" data-act="bjDeal">Delen</button>';
+    else h += `<button class="btn" data-act="bjDeal">Delen</button>${bj ? againBtn('bjDeal') : ''}`;
     g.innerHTML = h + '</div></div>';
   } else {
     const live = cr && !cr.over;
     let cls = '', label = '×1.00';
     if (cr) { label = '×' + cr.m.toFixed(2); if (cr.over) cls = cr.res.win ? 'cashed' : 'boom'; }
-    let h = `<div class="felt"><div class="hlabel" style="text-align:center">Serverbelasting stijgt… cash out voor de server crasht! (max ×${CRASH_MAX})</div>
-      <div class="crash-m ${cls}" id="crM">${label}</div>
-      <div class="crash-bar"><div id="crBar" style="width:${cr ? Math.min(100, Math.log(cr.m) / Math.log(CRASH_MAX) * 100) : 0}%"></div></div>`;
-    if (cr && cr.over) h += cr.res.win ? resultHtml(true, false, `✅ Uitbetaald bij ×${cr.m.toFixed(2)}: +${fmt(cr.res.ret - cr.stake)} (${cr.at >= CRASH_MAX ? 'server op max capaciteit' : `server crashte bij ×${cr.at.toFixed(2)}`})`)
-                                       : resultHtml(false, false, `💥 SERVER CRASH bij ×${cr.at.toFixed(2)} (−${fmt(cr.stake)})`);
+    let h = `<div class="felt crfelt">
+      <div class="crhist">${crHist.length ? crHist.map(x => `<span class="${x >= 2 ? 'hi' : 'lo'}">×${x.toFixed(2)}</span>`).join('') : '<span class="none">nog geen rondes</span>'}</div>
+      <div class="mon ${cls}">
+        <div class="monbar"><span class="live ${live ? 'on' : ''}"></span>server-load · rack-01<span class="mright">${live ? 'LIVE' : cr ? 'OFFLINE' : 'IDLE'}</span></div>
+        <svg class="crsvg" id="crSvg" viewBox="0 0 400 190" preserveAspectRatio="none"></svg>
+        <div class="crash-m ${cls}" id="crM">${label}</div>
+        ${cls === 'boom' ? `<div class="e502">502 BAD GATEWAY<small>server crashte bij ×${cr.at.toFixed(2)}</small></div>` : ''}
+      </div>`;
+    if (cr && cr.over && cr.res.win) h += resultHtml(true, false, `✅ Uitbetaald bij ×${cr.m.toFixed(2)}: +${fmt(cr.res.ret - cr.stake)} (${cr.at >= CRASH_MAX ? 'server op max capaciteit' : `server crashte bij ×${cr.at.toFixed(2)}`})`);
+    if (cr && cr.over && !cr.res.win) h += resultHtml(false, false, `💥 Server crash (−${fmt(cr.stake)})`);
     h += '<div class="cactions">';
-    if (live) h += `<button class="btn" data-act="crCash" id="crCashBtn">Cash out · ${fmt(cr.stake * cr.m)}</button>${cr.auto ? `<span class="sub">Auto bij ×${cr.auto}</span>` : ''}`;
-    else h += `<button class="btn" data-act="crStart">Start</button><span class="sub">Auto cash-out bij ×</span><input class="cin" id="crAuto" placeholder="bv. 2" value="${esc(crAuto)}" style="width:80px">`;
-    h += '</div>';
-    if (crHist.length) h += `<div class="crhist">${crHist.map(x => `<span style="color:${x >= 2 ? 'var(--good)' : 'var(--bad)'}">×${x.toFixed(2)}</span>`).join('')}</div>`;
-    g.innerHTML = h + '</div>';
+    if (live) h += `<button class="btn cashbtn" data-act="crCash" id="crCashBtn">Cash out <b>${fmt(cr.stake * cr.m)}</b></button>${cr.auto ? `<span class="sub">Auto bij ×${cr.auto}</span>` : ''}`;
+    else h += `<button class="btn" data-act="crStart">Start</button>${cr ? againBtn('crStart') : ''}<span class="sub" style="margin-left:auto">Auto cash-out bij ×</span><input class="cin" id="crAuto" placeholder="bv. 2" value="${esc(crAuto)}" style="width:80px">`;
+    g.innerHTML = h + '</div></div>';
+    drawCrash();
   }
+}
+function drawCrash() {
+  const svg = $('crSvg'); if (!svg) return;
+  const pts = cr ? cr.pts : [[0, 1]], last = pts[pts.length - 1];
+  const tMax = Math.max(8, last[0] * 1.15), mMax = Math.max(2, last[1] * 1.25), W = 400, H = 190;
+  const X = t => t / tMax * W, Y = m => H - Math.log(m) / Math.log(mMax) * (H - 14) - 4;
+  let grid = '';
+  for (const g of [1.5, 2, 3, 5, 10, 20]) if (g < mMax) grid += `<line x1="0" x2="${W}" y1="${Y(g)}" y2="${Y(g)}" class="gl"/><text x="4" y="${Y(g) - 3}" class="gt">×${g}</text>`;
+  const step = Math.max(1, Math.ceil(pts.length / 160));
+  const path = pts.filter((_, i) => i % step === 0 || i === pts.length - 1).map(([t, m], i) => `${i ? 'L' : 'M'}${X(t).toFixed(1)},${Y(m).toFixed(1)}`).join('');
+  const col = cr && cr.over ? (cr.res.win ? 'var(--good)' : 'var(--bad)') : 'var(--cas)';
+  svg.innerHTML = `<defs><linearGradient id="crg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    ${grid}<path d="${path}L${X(last[0]).toFixed(1)},${H}L0,${H}Z" fill="url(#crg)"/><path d="${path}" fill="none" stroke="${col}" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round"/>
+    <circle cx="${X(last[0])}" cy="${Y(last[1])}" r="4" fill="${col}"/>`;
 }
 
 /* =====================================================================
@@ -2730,7 +2857,7 @@ function itemIconId(it) {
 const itemIcon = (it, cls = 'iico') => ico(itemIconId(it), cls);
 
 /* Vensters */
-const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 820, h: 600 }, casino: { w: 760, h: 600 }, term: { w: 620, h: 420 } };
+const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 820, h: 600 }, casino: { w: 940, h: 660 }, term: { w: 620, h: 420 } };
 const WIN_TITLE = { up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
 const WIN_ICON = { up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
 const openWins = new Set();
@@ -3404,11 +3531,13 @@ document.addEventListener('click', e => {
     case 'ctab': ctab = el.dataset.t; renderCasinoControls(); renderGame(); break;
     case 'ctable': state.table = +el.dataset.i; save(); renderCasinoControls(); break;
     case 'betQ': $('betIn').value = Math.max(1, Math.floor(Math.min(maxBet(), state.money) * +el.dataset.q)); break;
-    case 'bjDeal': bjDeal(); break;
+    case 'ficheAdd': $('betIn').value = Math.min(maxBet(), (Math.floor(+$('betIn').value) || 0) + +el.dataset.v); beep([900], 0.03); break;
+    case 'betClr': $('betIn').value = ''; break;
+    case 'bjDeal': if (el.dataset.again) $('betIn').value = lastBet; bjDeal(); break;
     case 'bjHit': bjHit(); break;
     case 'bjStand': bjStand(); break;
     case 'bjDouble': bjDouble(); break;
-    case 'crStart': crStart(); break;
+    case 'crStart': if (el.dataset.again) $('betIn').value = lastBet; crStart(); break;
     case 'crCash': crCash(); break;
     case 'conn': upgradeConn(); break;
     case 'up': buyUpgrade(el.dataset.id); break;
