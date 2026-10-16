@@ -1647,7 +1647,7 @@ const NCATS = [
   ['boost',  'Boosts & shop',       'Restock, boost actief, kist'],
   ['casino', 'Casino',              'Meldingen uit het casino'],
 ];
-const UI_DEF = { cine: true, hum: false, n: Object.fromEntries(NCATS.map(([k]) => [k, true])), nTier: 3, nDur: 2600, nMax: 3, stack: true,
+const UI_DEF = { cine: true, cineFrom: 5, cineNew: true, hum: false, n: Object.fromEntries(NCATS.map(([k]) => [k, true])), nTier: 3, nDur: 2600, nMax: 3, stack: true,
                  floats: true, coins: true, flash: true, shake: true, nearMiss: true, buzz: true, num: 'short', wins: {} };
 let ui = JSON.parse(JSON.stringify(UI_DEF));
 try { const st = JSON.parse(localStorage.getItem(UI_KEY) || '{}'); Object.assign(ui, st, { n: Object.assign({}, UI_DEF.n, st.n || {}) }); } catch (e) {}
@@ -3409,7 +3409,9 @@ function renderSettings() {
       ${swRow('stack', 'Gelijke meldingen samenvoegen', 'Toont ×3 in plaats van drie keer dezelfde melding', ui.stack)}
     </section>
     <section class="sgrp"><h4>${ico('g-film')} Effecten & clutter</h4>
-      ${swRow('cine', 'Filmische reveals', 'BIOS-scan bij een nieuwe Legendary en bij Mythic+', ui.cine)}
+      ${swRow('cine', 'Filmische reveals', 'Fullscreen BIOS-scan bij zeldzame vondsten', ui.cine)}
+      ${ui.cine ? segRow('cineFrom', 'Altijd tonen vanaf', 'Bij deze rarity en hoger krijg je elke keer de pop-up', [[4, 'Legendary'], [5, 'Mythic'], [6, 'Quantum'], [7, 'Secret'], [99, 'Nooit']], ui.cineFrom) : ''}
+      ${ui.cine ? swRow('cineNew', 'Eerste vondst altijd tonen', 'Ook de eerste keer dat je een nieuwe tier vindt (vanaf Legendary)', ui.cineNew) : ''}
       ${swRow('flash', 'Schermflits', 'Kleurflits bij zeldzame vondsten', ui.flash)}
       ${swRow('shake', 'Scherm schudden', 'Bij Mythic+ vondsten', ui.shake)}
       ${swRow('floats', 'Zwevende +€-getallen', 'Boven je best verdienende U\'s', ui.floats)}
@@ -3515,7 +3517,8 @@ function cinematic(it) {
   // eerste vondst van een tier: altijd filmisch (vanaf Legendary) · daarna enkel nog Mythic en hoger
   const first = !state.seenTiers.includes(it.tier);
   if (first) state.seenTiers.push(it.tier);
-  if (!ui.cine || reduceMotion() || it.tier < 4 || (it.tier < 5 && !first)) return;
+  // instellingen: cineFrom = vanaf welke tier altijd (99 = nooit) · cineNew = eerste vondst van een tier (Legendary+) ook
+  if (!ui.cine || reduceMotion() || it.tier < 4 || !(it.tier >= ui.cineFrom || (first && ui.cineNew))) return;
   const box = $('cine');
   cineActive = true;
   const lines = [
