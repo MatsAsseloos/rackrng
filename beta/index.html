@@ -1440,13 +1440,15 @@ const mutChanceAt = l => 0.03 + 0.02 * l;   // 3% basis, +2% per Stralingslab-ni
    ECTS = 10 × √(verdiend deze run ÷ 1T). Rang = aantal keer afgestudeerd.
    ===================================================================== */
 const GRAD_MIN = 1e12;     // eerste diploma: €1T
-const GRAD_GROW = 10;      // elke keer dat je afstudeert wordt de eis ×10
+const GRAD_GROW = 1.3;     // elke keer dat je afstudeert wordt de eis ×1,3 (na 25 diploma's ~€700T)
 const gradReq = (c = state.prestige.count) => GRAD_MIN * GRAD_GROW ** c;
-// ECTS: (5 + aantal diploma's) × (1 + log10(verdiend ÷ eis)): precies de eis = basis, 10× = dubbel, 1000× = vier keer
-const ectsFor = earned => { const r = gradReq(); return earned >= r ? Math.floor((5 + state.prestige.count) * (1 + Math.log10(earned / r))) : 0; };
+// ECTS: (10 + 2 per diploma) × (1 + log10(verdiend ÷ eis)): precies de eis = basis, 10× = dubbel, 1000× = vier keer
+const ectsBase = () => 10 + 2 * state.prestige.count;
+const ectsFor = earned => { const r = gradReq(); return earned >= r ? Math.floor(ectsBase() * (1 + Math.log10(earned / r))) : 0; };
 const CAREER = [[0, 'Stagiair'], [1, 'Junior'], [3, 'Medior'], [6, 'Senior'], [10, 'Lead'], [15, 'Architect'], [25, 'CTO']];
 const LAYER_RANK = { 1: 1, 2: 3, 3: 6, 4: 10, 5: 15, 6: 25 };          // laag → minimaal aantal keer afgestudeerd
-const LAYER_COST = { 1: 5, 2: 15, 3: 40, 4: 100, 5: 250, 6: 300 };     // ECTS (per niveau ×2; oneindig ×1,25)
+// Afgestemd op de ECTS-curve: als een nieuwe laag opengaat, heb je de vorige net kunnen afmaken
+const LAYER_COST = { 1: 2, 2: 4, 3: 12, 4: 40, 5: 115, 6: 150 };      // ECTS (per niveau ×1,5; oneindig ×1,15)
 const LAYER_NAME = { 5: 'Keystone', 6: 'Oneindig' };
 const BRANCHES = [
   { id: 'hw', icon: '🖥️', name: 'Hardware' },
@@ -3048,7 +3050,7 @@ function nodeReq(n) {   // vereiste nodes
   if (n.layer <= 3) return sib.filter(x => x.layer === n.layer - 1 && x.col === n.col);
   return sib.filter(x => x.layer === n.layer - 1);
 }
-const nodeCost = n => Math.round(LAYER_COST[n.layer] * (n.layer === 6 ? 1.25 : 2) ** pn(n.id));
+const nodeCost = n => Math.round(LAYER_COST[n.layer] * (n.layer === 6 ? 1.15 : 1.5) ** pn(n.id));
 function nodeState(n) {
   const l = pn(n.id);
   if (l >= n.max) return 'max';
@@ -3182,7 +3184,7 @@ function renderCareer() {
     <div class="cgrad2">${gain ? `<button class="btn gradbtn" data-act="graduate">🎓 Afstuderen <b>+${gain} ECTS</b></button>
         <div class="sub">Reset geld, rack, items, verbinding, boosts en upgrades. Je boom, ECTS, admin-items en skins blijven.</div>`
       : `<div class="cgl"><span>Naar je diploma</span><b>${pct.toFixed(1)}%</b></div><div class="gradbar"><div style="width:${pct}%"></div></div>
-        <div class="sub">Je ${state.prestige.count + 1}e diploma vraagt ${fmt(gradReq())} verdiend in één run (elk diploma ×${GRAD_GROW}). Deze run: <b>${fmt(state.runEarned)}</b>.</div>`}</div>
+        <div class="sub">Je ${state.prestige.count + 1}e diploma vraagt ${fmt(gradReq())} verdiend in één run (elk diploma ×${fmtNum(GRAD_GROW)}). Deze run: <b>${fmt(state.runEarned)}</b>.</div>`}</div>
     <div class="cstats"><div><span>Beste run</span><b>${fmt(P.bestRun)}</b></div><div><span>Snelste run</span><b>${P.fastestRun ? fmtDur(P.fastestRun / 1000) : '–'}</b></div><div><span>Totaal verdiend</span><b>${fmt(P.totalEarned + state.runEarned)}</b></div></div>
     ${det}`);
   // boom
@@ -4232,7 +4234,7 @@ if (state.careerReset) {
   delete state.careerReset;
   setTimeout(() => showModal(`<div style="font-weight:700;font-size:18px">🎓 Carrière herbalanceerd</div>
     <div class="help"><p>Afstuderen was veel te sterk. Daarom is de carrière opnieuw gebalanceerd en is iedereens skill tree, ECTS en aantal diploma's gereset.</p>
-    <p>Nieuw: elk diploma vraagt <b>×10 meer</b> dan het vorige (start bij €1T), ECTS groeien rustiger, en de nodes zijn eerlijker.</p>
+    <p>Nieuw: elk diploma vraagt <b>×1,3 meer</b> dan het vorige (start bij €1T), je krijgt meer ECTS naarmate je rang stijgt, en de sterkste nodes zijn afgezwakt.</p>
     <p>Als bedankje voor het testen krijg je de exclusieve rack-skin <b>Pionier</b>. Je vindt hem bij Shop → Rack-skins.</p></div>
     <button class="btn full" data-act="closeModal">Top</button>`, true, 'changelog.txt'), 400);
 }
