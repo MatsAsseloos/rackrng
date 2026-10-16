@@ -1132,6 +1132,9 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
 .cmpt{font-size:13px; color:#cfeedd; margin-bottom:6px} .cmplog{margin:8px 0 0; font:12px var(--mono); color:#39ff88; white-space:pre-wrap}
 .pcico .ico{width:40px; height:40px; color:var(--tc)}
 @media (max-width:900px){ .pcgrid{grid-template-columns:1fr} .bounties{grid-template-columns:1fr} .heat i{width:80px} }
+.devbody{padding:14px 16px 18px; display:flex; flex-direction:column; gap:12px}
+.devrow{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px}
+.devrow select{min-width:120px}
 </style>
 </head>
 <body class="os" data-tab="home">
@@ -1333,6 +1336,11 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
         <div class="pcright"><div class="pctabs" id="pcTabs"></div><div id="pcMain"></div></div>
       </div>
     </div>
+  </section>
+
+  <section class="win float" id="win-dev" hidden aria-label="Test-tools">
+    <div class="wbar"><svg class="ico"><use href="#g-flask"/></svg><span class="wt">testtools.sh</span><span class="wmeta">alleen beta</span><span class="wctl"><button data-act="minWin" data-w="dev" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="dev" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody devbody" id="devBody"></div>
   </section>
 
   <section class="win float" id="win-term" hidden aria-label="Terminal">
@@ -2020,7 +2028,7 @@ const sellRate   = () => Math.min(1, (CFG.sellRate + 0.05 * lvl('resale')) * evM
 const incomeMult = () => (1 + 0.1 * lvl('income')) * 1.25 ** pn('hw_income') * (1 + 0.02 * pn('inf_hw'))
                    * (pn('ks_mono') ? 1 + 0.002 * state.prestige.ectsTotal : 1);
 const offlineMax = () => CFG.offlineMaxHours + 2 * lvl('ups') + 12 * pn('au_home');
-const cooldown   = () => CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed') * (pn('nw_backbone') ? 0.8 : 1) * 0.99 ** pn('inf_au');
+const cooldown   = () => (IS_BETA && devTurbo ? 0.05 : 1) * CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed') * (pn('nw_backbone') ? 0.8 : 1) * 0.99 ** pn('inf_au');
 const unitCost   = () => Math.round(CFG.unitBaseCost * (CFG.unitCostGrowth - (pn('ec_estate') ? 0.5 : 0)) ** (state.rack.length - 1) * (1 - 0.05 * lvl('permit')));
 
 /* Item-waardes */
@@ -2090,6 +2098,7 @@ function rollOne(L, minTier = 0, useFilter = true) {
   }
   return it;
 }
+let devTurbo = false, devForce = null;   // test-tools (alleen beta)
 function generateRoll() {
   const golden = nextGolden();
   const L = luck() * (golden ? goldenMult() : 1);
@@ -2098,6 +2107,7 @@ function generateRoll() {
   let win = 0;
   cands.forEach((c, i) => { if (price(c) > price(cands[win])) win = i; });
   let best = cands[win], pityHit = false;
+  if (IS_BETA && devForce != null) { best = rollOne(L, devForce); cands[win] = best; devForce = null; }
   if (hasFx('zeroday') && (state.rolls + 1) % 250 === 0 && best.tier < 6) { best = rollOne(L, 6); cands[win] = best; toast('💀 Zero-day: gegarandeerde Quantum!', 'roll'); }
   if (lvl('pity') && best.tier < 2 && state.pity + 1 >= pityLimit()) { best = rollOne(L, 2); cands[win] = best; pityHit = true; }
   let fwHit = false;
@@ -3433,9 +3443,9 @@ function itemIconId(it) {
 const itemIcon = (it, cls = 'iico') => ico(itemIconId(it), cls);
 
 /* Vensters */
-const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 960, h: 640 }, casino: { w: 940, h: 660 }, career: { w: 1260, h: 760 }, pc: { w: 1180, h: 760 }, set: { w: 640, h: 640 }, stats: { w: 760, h: 620 }, cat: { w: 980, h: 660 }, term: { w: 620, h: 420 } };
-const WIN_TITLE = { pc: 'workstation.exe', stats: 'stats.exe', cat: 'catalogus.db', set: 'instellingen', career: 'carriere.app', up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
-const WIN_ICON = { pc: 'g-pc', stats: 'g-chart', cat: 'g-book', set: 'g-gear', career: 'g-cap', up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
+const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 960, h: 640 }, casino: { w: 940, h: 660 }, career: { w: 1260, h: 760 }, pc: { w: 1180, h: 760 }, dev: { w: 760, h: 720 }, set: { w: 640, h: 640 }, stats: { w: 760, h: 620 }, cat: { w: 980, h: 660 }, term: { w: 620, h: 420 } };
+const WIN_TITLE = { dev: 'testtools.sh', pc: 'workstation.exe', stats: 'stats.exe', cat: 'catalogus.db', set: 'instellingen', career: 'carriere.app', up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
+const WIN_ICON = { dev: 'g-flask', pc: 'g-pc', stats: 'g-chart', cat: 'g-book', set: 'g-gear', career: 'g-cap', up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
 const openWins = new Set();
 let zTop = 30, focusedWin = null;
 function openWin(id) {
@@ -3453,6 +3463,7 @@ function openWin(id) {
   if (id === 'stats') renderStats();
   if (id === 'cat') renderCat();
   if (id === 'pc') renderPC();
+  if (id === 'dev') renderDev();
   if (id === 'shop') ui.shopSeen = state.shop && state.shop.hour, saveUi();
 }
 function placeWin(el, id) {
@@ -3562,6 +3573,7 @@ function setMobileTab(t) {
   if (t === 'set') renderSettings();
   if (t === 'stats') renderStats();
   if (t === 'pc') renderPC();
+  if (t === 'dev') renderDev();
   if (t === 'cat') renderCat();
   if (t === 'shop') { ui.shopSeen = state.shop && state.shop.hour; saveUi(); }
   closeStart();
@@ -3856,6 +3868,108 @@ function renderPC() {
   }
   setHTML($('pcMain'), h);
   $('pcMeta').textContent = `${fmtRC(P.rc)} · ${stTxt[0].toLowerCase()}`;
+}
+
+/* ---------- Test-tools (alleen beta) ---------- */
+const devItem = (type, tier) => { const refs = DEFS_BY[type][tier]; return refs && refs.length ? new Item(refs[Math.floor(Math.random() * refs.length)], state.nextId++) : null; };
+function devFill(n, tierFn) {   // rack vullen met n U's
+  state.rack = Array.from({ length: n }, (_, i) => ({ cpu: devItem('cpu', tierFn(i)), ram: devItem('ram', tierFn(i)), storage: devItem('storage', tierFn(i)) }));
+  state.router = devItem('router', tierFn(0)); ensureSwitchSlots(); state.switches = state.switches.map((_, i) => devItem('switch', tierFn(i)));
+}
+function devPC(t) {   // een werkende PC bouwen van tier t
+  const P = PC(), sock = SOCKETS[Math.floor(Math.random() * 3)], mk = (k, o) => { const p = Object.assign(genPart(k, t), o || {}); P.parts.push(p); P.build[k] = p.id; return p; };
+  const mb = mk('mobo', { socket: sock }); mb.name = `${PC_NAMES.mobo[t]} ${sock}`;
+  const c = mk('cpu', { socket: sock }); c.name = PC_NAMES.cpu[sock][t];
+  const r = mk('ram', { mem: mb.mem }); r.name = PC_NAMES.ram[mb.mem][t];
+  mk('gpu'); const ps = mk('psu'); ps.cap = Math.max(ps.cap, pcWatt() + 100); mk('cool', { cap: Math.max(PC_COOL[t], c.w * 1.6) }); mk('net');
+  P.seizedUntil = 0; P.crashUntil = 0;
+}
+function devSkip(h) {   // tijd vooruitspoelen
+  const ms = h * 3600e3, P = PC(), back = o => o && (o.until -= ms, o.start && (o.start -= ms));
+  state.money += incomeCache * h * 3600; state.runEarned += incomeCache * h * 3600;
+  const r = mineRate(); if (r) gainRC(r * h * 3600);
+  addHeat(-(2 / 60) * h * 3600);
+  back(P.bounty); back(P.compile); P.ctfAt -= ms; P.seizedUntil -= ms; P.crashUntil -= ms;
+  for (const k in state.boosts) state.boosts[k].until -= ms;
+  state.kist.forEach(x => x.exp -= ms);
+  if (state.event) state.event.until -= ms;
+  state.rollReadyAt -= ms;
+}
+function devPreset(k) {
+  if (!confirm('Je huidige beta-save wordt overschreven met dit test-profiel. Doorgaan?')) return;
+  const keep = { playerId: state.playerId, seenHelp: true, muted: state.muted };
+  state = newState(); Object.assign(state, keep);
+  const all = v => UPGRADES.forEach(u => state.up[u.id] = Math.ceil(u.max * v));
+  if (k === 'early') { state.money = 1e6; devFill(6, () => 2); all(0.3); state.conn = 5; }
+  if (k === 'mid')   { state.money = 1e10; devFill(15, i => i < 5 ? 4 : 3); all(0.6); state.conn = 9; state.prestige.count = 3; state.prestige.ects = 60; }
+  if (k === 'late')  { state.money = 1e13; state.runEarned = 2e12; devFill(28, i => i < 8 ? 6 : 5); all(1); state.conn = CONN.length - 1; state.prestige.count = 10; state.prestige.ects = 250; devPC(4); PC().rc = 3000; PC().frag = 4; }
+  if (k === 'end')   { state.money = 1e16; state.runEarned = 1e15; devFill(42, () => 6); all(1); state.conn = CONN.length - 1; state.prestige.count = 25; state.prestige.ects = 1200; state.prestige.ectsTotal = 2000;
+    NODES.forEach(n => { if (n.max !== Infinity && Math.random() < 0.6) state.prestige.nodes[n.id] = n.max; });
+    devPC(6); PC().rc = 25000; PC().frag = 20; COMP.concat(['switch', 'router']).forEach(t => state.inv.push(devItem(t, 6))); }
+  state.hotSwap = lvl('autoroll') >= 2; state.rollTiers = newState().rollTiers;
+  ensureSwitchSlots(); ensureShop(); incomeCache = totalIncome();
+  bj = cr = null; sel = null; rolling = false; lastSpin = null; ctf = null;
+  save(); renderAll(); renderGame(); renderStaticReels(); renderDev(); toast('🧪 Test-profiel geladen');
+}
+function devAct(a, v) {
+  const P = PC(), sv = () => { save(); renderAll(); renderPC(); renderDev(); };
+  switch (a) {
+    case 'preset': return devPreset(v);
+    case 'money': state.money += +v; toast('🧪 +' + fmt(+v)); break;
+    case 'money100': state.money *= 100; toast('🧪 Saldo ×100'); break;
+    case 'skip': devSkip(+v); toast(`🧪 ${v} uur vooruitgespoeld`); break;
+    case 'turbo': devTurbo = !devTurbo; state.rollReadyAt = 0; toast(`🧪 Turbo-rolls ${devTurbo ? 'aan' : 'uit'}`); break;
+    case 'maxup': UPGRADES.forEach(u => state.up[u.id] = u.max); state.rollTiers = [false, true, true, true, true, true, true, false, true]; state.hotSwap = true; toast('🧪 Alle upgrades max'); break;
+    case 'fiber': state.conn = CONN.length - 1; state.rollReadyAt = 0; toast('🧪 Glasvezel'); break;
+    case 'item': { const it = devItem($('devType').value, +$('devTier').value); if (it) { state.inv.push(it); toast(`🧪 ${TIERS[it.tier].name} ${it.name} in je opslag`); } break; }
+    case 'quantumAll': COMP.concat(['switch', 'router']).forEach(t => state.inv.push(devItem(t, 6))); toast('🧪 1 Quantum van elk type in je opslag'); break;
+    case 'hackerAll': hackerDefs().forEach(d => state.inv.push(new Item(d.ref, state.nextId++))); toast('🧪 Alle Hacker-items in je opslag'); break;
+    case 'force': devForce = +$('devTier').value; toast(`🧪 Volgende roll wordt ${TIERS[devForce].name}`); break;
+    case 'run': state.runEarned += gradReq(); toast('🧪 +' + fmt(gradReq()) + ' run-verdiend (genoeg om af te studeren)'); break;
+    case 'ects': state.prestige.ects += 100; state.prestige.ectsTotal += 100; toast('🧪 +100 ECTS'); break;
+    case 'grads': state.prestige.count += 5; toast(`🧪 Rang: ${rankName()}`); break;
+    case 'careerReset': state.prestige = newPrestige(); toast('🧪 Carrière gereset'); break;
+    case 'pc': devPC(+$('devPcTier').value); toast('🧪 Werkende PC gebouwd'); break;
+    case 'parts': for (let i = 0; i < 8 && P.parts.length < PC_PARTS_MAX; i++) { const k = Object.keys(PC_KINDS); P.parts.push(genPart(k[Math.floor(Math.random() * k.length)], Math.floor(Math.random() * 7))); } toast('🧪 Random onderdelen erbij'); break;
+    case 'rc': gainRC(+v); toast('🧪 +' + fmtRC(+v)); break;
+    case 'frag': P.frag += +v; toast(`🧪 +${v} fragmenten`); break;
+    case 'heat': P.heat = +v; toast(`🧪 Heat = ${v}`); break;
+    case 'finish': if (P.bounty) P.bounty.until = Date.now() - 1; if (P.compile) P.compile.until = Date.now() - 1; P.ctfAt = 0; P.seizedUntil = 0; P.crashUntil = 0; toast('🧪 Timers van je PC klaar'); break;
+    case 'ctfCode': if (ctf) toast(`🧪 CTF-code: ${ctf.code.join(' ')}`); else toast('Er loopt geen CTF'); break;
+    case 'restock': state.shop = null; ensureShop(); toast('🧪 Shop opnieuw gevuld'); break;
+    case 'event': { const d = EVENTS.find(e => e.id === $('devEvent').value); if (d) startEvent(d); break; }
+    case 'copyMain': { const raw = localStorage.getItem('rackrng-save-v1'); if (!raw) return toast('Geen echte save gevonden in deze browser');
+      if (!confirm('Je beta-save wordt vervangen door een kopie van je echte save. Doorgaan?')) return;
+      state = fromJSON(JSON.parse(raw)); ensureSwitchSlots(); sel = null; toast('🧪 Echte save gekopieerd'); renderStaticReels(); break; }
+    case 'wipe': if (!confirm('Beta-save wissen?')) return; localStorage.removeItem(SAVE_KEY); state = newState(); state.seenHelp = true; sel = null; renderStaticReels(); toast('🧪 Beta-save gewist'); break;
+  }
+  incomeCache = totalIncome(); sv();
+}
+const devBtn = (a, label, v = '', cls = 'sec') => `<button class="btn sm ${cls}" data-act="dev" data-a="${a}" data-v="${v}">${label}</button>`;
+function renderDev() {
+  const b = $('devBody'); if (!b || $('win-dev').hidden) return;
+  const tiers = TIERS.map((t, i) => t.hidden ? '' : `<option value="${i}" ${i === 6 ? 'selected' : ''}>${t.name}</option>`).join('');
+  setHTML(b, `<div class="sub" style="margin-bottom:10px">Alleen in de beta. Alles hier raakt alleen je beta-save. Gebruik een profiel om meteen late-game features te testen.</div>
+    <section class="sgrp"><h4>🚀 Snelstart-profielen</h4><div class="devrow">
+      ${devBtn('preset', 'Vroeg', 'early')}${devBtn('preset', 'Midden', 'mid')}${devBtn('preset', 'Laat', 'late')}${devBtn('preset', 'Endgame', 'end', '')}</div>
+      <div class="sub">Vroeg: 6U Rare · Midden: 15U Epic/Legendary, 3 diploma's · Laat: 28U Mythic/Quantum, 10 diploma's, werkende PC · Endgame: 42U Quantum, 25 diploma's, top-PC, ₿25.000, 20 fragmenten en een Quantum van elk type.</div></section>
+    <section class="sgrp"><h4>💶 Geld & tijd</h4><div class="devrow">
+      ${devBtn('money', '+€1M', 1e6)}${devBtn('money', '+€1B', 1e9)}${devBtn('money', '+€1T', 1e12)}${devBtn('money100', 'Saldo ×100')}</div><div class="devrow">
+      ${devBtn('skip', '+1 uur', 1)}${devBtn('skip', '+8 uur', 8)}${devBtn('skip', '+24 uur', 24)}${devBtn('turbo', devTurbo ? 'Turbo-rolls: AAN' : 'Turbo-rolls: uit', '', devTurbo ? '' : 'sec')}</div>
+      <div class="sub">Vooruitspoelen geeft inkomen en mining, en laat bounties, compileren, boosts en kist-items verder aflopen.</div></section>
+    <section class="sgrp"><h4>🎲 Items & rolls</h4><div class="devrow">
+      <select id="devType">${Object.keys(TYPES).map(t => `<option value="${t}">${TYPES[t].label}</option>`).join('')}</select><select id="devTier">${tiers}</select>
+      ${devBtn('item', 'Geef item', '', '')}${devBtn('force', 'Volgende roll = deze tier')}</div><div class="devrow">
+      ${devBtn('quantumAll', '1 Quantum van elk type')}${devBtn('hackerAll', 'Alle Hacker-items')}${devBtn('maxup', 'Alle upgrades max')}${devBtn('fiber', 'Glasvezel')}</div></section>
+    <section class="sgrp"><h4>🎓 Carrière</h4><div class="devrow">
+      ${devBtn('run', 'Genoeg voor diploma')}${devBtn('ects', '+100 ECTS')}${devBtn('grads', '+5 diploma’s')}${devBtn('careerReset', 'Reset carrière')}</div></section>
+    <section class="sgrp"><h4>🖥️ Eigen PC</h4><div class="devrow">
+      <select id="devPcTier">${TIERS.slice(0, 7).map((t, i) => `<option value="${i}" ${i === 4 ? 'selected' : ''}>${t.name}</option>`).join('')}</select>${devBtn('pc', 'Bouw werkende PC', '', '')}${devBtn('parts', '+8 random onderdelen')}</div><div class="devrow">
+      ${devBtn('rc', '+₿1.000', 1000)}${devBtn('rc', '+₿10.000', 10000)}${devBtn('frag', '+5 fragmenten', 5)}${devBtn('finish', 'Timers klaar')}</div><div class="devrow">
+      ${devBtn('heat', 'Heat 0', 0)}${devBtn('heat', 'Heat 90', 90)}${devBtn('ctfCode', 'Toon CTF-code')}</div></section>
+    <section class="sgrp"><h4>⚡ Shop & events</h4><div class="devrow">
+      ${devBtn('restock', 'Shop nu restocken')}<select id="devEvent">${EVENTS.map(e => `<option value="${e.id}">${e.icon} ${e.name}</option>`).join('')}</select>${devBtn('event', 'Start event')}</div></section>
+    <section class="sgrp"><h4>💾 Save</h4><div class="devrow">${devBtn('copyMain', 'Kopieer echte save')}${devBtn('wipe', 'Beta-save wissen')}</div></section>`);
 }
 
 /* Statistieken */
@@ -4608,7 +4722,8 @@ document.addEventListener('click', e => {
     case 'pnode': careerSel = el.dataset.id; renderCareer(); break;
     case 'buyNode': buyNode(el.dataset.id); break;
     case 'graduate': graduate(); break;
-    case 'betaPanel': closeStart(); showBetaPanel(); break;
+    case 'betaPanel': if (!IS_BETA) break; closeStart(); openWin('dev'); break;
+    case 'dev': if (IS_BETA) devAct(el.dataset.a, el.dataset.v); break;
     case 'betaMoney': state.money += +el.dataset.v; save(); renderAll(); toast('🧪 +' + fmt(+el.dataset.v)); break;
     case 'betaRun': state.runEarned += 1e12; save(); renderAll(); toast('🧪 +1T run-verdiend'); break;
     case 'betaEcts': state.prestige.ects += 100; state.prestige.ectsTotal += 100; save(); renderAll(); toast('🧪 +100 ECTS'); break;
@@ -4731,6 +4846,7 @@ incomeCache = totalIncome();
   }
 }
 renderClock();
+if (IS_BETA) { const n = document.querySelector('.dicons'); if (n) n.insertAdjacentHTML('beforeend', '<button class="dicon" data-act="openWin" data-w="dev"><svg class="ico"><use href="#g-flask"/></svg><span>Test-tools</span></button>'); }
 if (isMobile()) setMobileTab('home');
 renderAll();
 $('betIn').value = Math.max(10, Math.floor(maxBet() / 10));
