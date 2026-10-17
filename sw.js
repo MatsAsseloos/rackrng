@@ -1,6 +1,6 @@
 // RackRNG service worker: laat de game offline werken.
 // Verhoog VERSION bij elke update, zodat spelers de nieuwe versie krijgen.
-const VERSION = 'rackrng-v10';
+const VERSION = 'rackrng-v11';
 const FILES = [
   './',
   './index.html',

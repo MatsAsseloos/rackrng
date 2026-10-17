@@ -14,7 +14,7 @@ Alles draait in **RackOS**, een nep-besturingssysteem: één bureaublad met je r
 - ⬆️ **Upgrades**: luck, multithreading, gouden rolls, auto-roll met Hot-Swap, en nog veel meer.
 - 🛍️ **RackShop**: elk vol uur 3 nieuwe boosts met een vaste prijs. Gebruik ze meteen of bewaar ze in je **gereedschapskist**. Ook rack-skins.
 - 🖥️ **Eigen PC** (Workstation): bouw een PC met onderdelen uit de shop (let op socket, DDR-generatie en watt), mine **RackCoin**, kraak CTF's in de terminal en doe bug bounties. Pas op voor je **Heat**. In het Hacker-lab craft je **Hacker-items** die na afstuderen blijven, en met de **Exploit-injector** gok je op mutaties, een hogere tier… of een gebrickt item.
-- 🎓 **Carrière**: verdien €25T in één run en studeer af voor ECTS. Elk diploma vraagt iets meer, en met je ECTS koop je nodes in een skill tree met 5 takken. Je rang groeit van Stagiair tot CTO.
+- 🎓 **Carrière**: verdien €1T in één run en studeer af voor ECTS. Elk diploma vraagt iets meer, en met je ECTS koop je nodes in een skill tree met 5 takken. Je rang groeit van Stagiair tot CTO.
 - 🎰 **Casino** met blackjack en crash, gewoon met in-game geld.
 - ⚡ **Random events**: Patch Tuesday, Black Friday, stroomuitval, ransomware, …
 - 📊 **Stats** en een **catalogus** van alle items die je al vond.
