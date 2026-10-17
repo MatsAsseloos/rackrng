@@ -21,7 +21,7 @@
 :root{
   --bg:#0b0f17; --panel:#121826; --panel2:#182031; --line:#26324a; --text:#e7ecf4; --muted:#8b97ab;
   --accent:#3b82f6; --accent2:#2563eb; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
-  --c0:#a3acb9; --c1:#4ade80; --c2:#60a5fa; --c3:#c084fc; --c4:#fb923c; --c5:#f43f5e; --c6:#22d3ee; --c7:#f8fafc; --c8:#fde047;
+  --c0:#a3acb9; --c1:#4ade80; --c2:#60a5fa; --c3:#c084fc; --c4:#fb923c; --c5:#f43f5e; --c6:#22d3ee; --c7:#39ff88; --c8:#f8fafc; --c9:#fde047;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 *{box-sizing:border-box}
@@ -260,7 +260,7 @@ body.glitching .wrap{animation:gshake .1s steps(2) infinite; filter:hue-rotate(8
 .adminbox label{display:block; font-size:12px; color:var(--muted); margin:10px 0 4px}
 .adminbox input,.adminbox select,.adminbox textarea{width:100%; background:var(--panel2); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:7px 9px; font:13px system-ui}
 .adminbox .warn{background:color-mix(in srgb,var(--warn) 12%,var(--panel)); border:1px solid rgba(245,158,11,.5); border-radius:8px; padding:8px 10px; font-size:12.5px; margin:8px 0}
-.pid{font:700 18px var(--mono); letter-spacing:1px; color:var(--c8)}
+.pid{font:700 18px var(--mono); letter-spacing:1px; color:var(--c9)}
 #boostBar{display:none; flex-wrap:wrap; gap:6px; margin:-6px 0 16px}
 #boostBar.show{display:flex}
 .bchip{font-size:12px; padding:5px 10px; border-radius:20px; border:1px solid color-mix(in srgb,var(--tc) 55%,transparent); background:color-mix(in srgb,var(--tc) 10%,var(--panel))}
@@ -617,11 +617,16 @@ body.os::after{content:""; position:fixed; left:0; right:0; top:0; height:3px; b
 [data-t="5"]{box-shadow:inset 0 0 18px -6px var(--c5), 0 0 16px -6px var(--c5)}
 [data-t="5"]::after{animation-duration:2.2s !important}
 [data-t="6"]{animation:hue 4s linear infinite; box-shadow:inset 0 0 20px -6px var(--c6), 0 0 20px -4px var(--c6)}
-[data-t="8"]{box-shadow:0 0 0 1px rgba(253,224,71,.55), 0 0 14px rgba(253,224,71,.35)}
+[data-t="9"]{box-shadow:0 0 0 1px rgba(253,224,71,.55), 0 0 14px rgba(253,224,71,.35)}
 /* Secret: zwart-wit, "geredigeerd", met een glitch */
-[data-t="7"]{position:relative; overflow:hidden; background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 2px,transparent 2px 4px) !important;
+[data-t="8"]{position:relative; overflow:hidden; background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 2px,transparent 2px 4px) !important;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.55), 0 0 22px -4px rgba(255,255,255,.55); animation:secretglitch 3.2s steps(1) infinite}
-[data-t="7"]::after{content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,transparent 0 40%,rgba(255,255,255,.22) 50%,transparent 60%) -150% 0/250% 100% no-repeat; animation:sheen 2.4s linear infinite}
+/* Hacker: groene terminalgloed met scanlines */
+[data-t="7"]{position:relative; overflow:hidden; background-image:repeating-linear-gradient(0deg,rgba(57,255,136,.05) 0 1px,transparent 1px 3px) !important;
+  box-shadow:inset 0 0 0 1px rgba(57,255,136,.55), 0 0 20px -4px rgba(57,255,136,.6); text-shadow:0 0 6px rgba(57,255,136,.45)}
+[data-t="7"]::after{content:""; position:absolute; left:0; right:0; top:-30%; height:30%; pointer-events:none; background:linear-gradient(180deg,transparent,rgba(57,255,136,.18),transparent); animation:hscan 2.6s linear infinite}
+@keyframes hscan{to{top:110%}}
+[data-t="8"]::after{content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,transparent 0 40%,rgba(255,255,255,.22) 50%,transparent 60%) -150% 0/250% 100% no-repeat; animation:sheen 2.4s linear infinite}
 @keyframes secretglitch{0%,92%,100%{filter:none} 93%{filter:invert(1) contrast(1.4)} 95%{filter:hue-rotate(90deg) saturate(3); transform:translateX(1px)} 97%{filter:none; transform:translateX(-1px)}}
 @keyframes sheen{0%,35%{background-position:-150% 0}75%,100%{background-position:150% 0}}
 
@@ -645,7 +650,8 @@ body.os::after{content:""; position:fixed; left:0; right:0; top:0; height:3px; b
 .cspec{font:500 13px var(--mono); color:#b9c7da}
 .cskip{position:absolute; bottom:6vh; font:500 12px var(--mono); color:#6f829c}
 #cine.t6 .ccard{animation:hue 3s linear infinite}
-#cine.t7 .ccard{background:#000; border-color:#fff; animation:secretglitch 1.6s steps(1) infinite}
+#cine.t8 .ccard{background:#000; border-color:#fff; animation:secretglitch 1.6s steps(1) infinite}
+#cine.t7 .ccard{background:#020c06; border-color:#39ff88}
 
 /* ---------- Juice ---------- */
 .fnum{position:fixed; z-index:75; pointer-events:none; transform:translate(-50%,0); font:600 12.5px var(--mono); color:var(--good); text-shadow:0 0 6px rgba(61,220,151,.5); animation:floatup 1.25s ease-out forwards}
@@ -1066,6 +1072,78 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
 .catit.ok .ct{color:var(--tc)} .catit.ok .cn2{color:#eef3fa}
 .kpis.small{grid-template-columns:repeat(3,1fr); text-align:left} .kpis.small b{font-size:14px}
 @media (max-width:900px){ .srow:has(.seg){flex-wrap:wrap} .srow .seg{width:100%} .srow .seg button{flex:1} .kpis{grid-template-columns:repeat(2,1fr)} .tbar{grid-template-columns:80px 1fr 56px 44px} }
+/* workstation.exe */
+#win-pc{--shop:#39ff88}
+#win-pc .wbar .ico{color:#39ff88}
+.pcbody{display:flex; flex-direction:column; gap:12px; padding:12px 14px 16px; background:radial-gradient(ellipse at 0% 0%,rgba(57,255,136,.05),transparent 50%)}
+.pchud{display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; padding:10px 14px; border-radius:12px; border:1px solid #1f3b2c; background:linear-gradient(180deg,#0c1712,#08100c); font:500 12.5px var(--mono); color:#9fb8a8}
+.hud1,.hud2{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.pchud b{color:#e6fff0}
+.pst{display:inline-flex; align-items:center; gap:7px; font-weight:700; letter-spacing:1px} .pst i{width:9px; height:9px; border-radius:50%}
+.pst.ok{color:#39ff88} .pst.ok i{background:#39ff88; box-shadow:0 0 8px #39ff88} .pst.bad{color:var(--bad)} .pst.bad i{background:var(--bad); animation:curblink 1s steps(1) infinite}
+.rcbal{font:700 20px var(--mono); color:#39ff88; text-shadow:0 0 12px rgba(57,255,136,.4)} .rcbal small,.frg small,.heat small{display:block; font:500 9.5px var(--mono); color:#6b8a78; letter-spacing:1px; text-transform:uppercase; text-shadow:none}
+.frg b{font-size:16px}
+.heat{display:flex; align-items:center; gap:8px} .heat i{width:120px; height:8px; border-radius:5px; background:#13241b; overflow:hidden} .heat i b{display:block; height:100%; border-radius:5px; transition:width .5s}
+.heat em{font:700 13px var(--mono); font-style:normal; min-width:24px}
+.pcgrid{display:grid; grid-template-columns:400px 1fr; gap:14px; min-height:0}
+.case{display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:10px; border-radius:14px; border:2px solid #24382c; background:linear-gradient(160deg,#101a15,#070d0a); box-shadow:inset 0 0 30px rgba(0,0,0,.6)}
+.pslot{display:grid; grid-template-columns:28px 1fr; grid-template-rows:auto auto auto; column-gap:8px; text-align:left; padding:8px; border-radius:9px; border:1px dashed #2b4636; background:rgba(0,0,0,.25); color:#7f9a89; cursor:pointer; min-height:62px; position:relative}
+.pslot:last-child{grid-column:1/-1}
+.psico{grid-row:1/4; width:24px; height:24px; color:#4d6b59; align-self:center}
+.pslot.fill{border:1px solid color-mix(in srgb,var(--tc) 55%,#24382c); background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 10%,#0e1913),#0a120e); color:#d8f2e2}
+.pslot.fill .psico{color:var(--tc); filter:drop-shadow(0 0 6px var(--tc))}
+.psl{font:600 10px var(--mono); text-transform:uppercase; letter-spacing:.5px; color:#6b8a78} .psl i{font-style:normal; opacity:.7}
+.psn{font:700 12.5px var(--cond); color:inherit; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.pss{font:500 10.5px var(--mono); color:#8fb09c}
+.post{margin-top:10px; padding:9px 12px; border-radius:10px; font:500 12px var(--mono); background:#050906; border:1px solid #1f3b2c; color:#9fb8a8}
+.post b{display:block; margin-bottom:4px; letter-spacing:1px} .post.ok b{color:#39ff88} .post.bad{border-color:rgba(255,99,99,.4)} .post.bad b{color:var(--bad)}
+.post code{color:var(--vfd); margin-right:6px}
+.ocbox{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; padding:9px 12px; border-radius:10px; border:1px solid #1f3b2c; background:#0a120e}
+.ocl b{display:block; font:700 13px var(--cond); color:#d8f2e2} .ocl small{font-size:11px; color:#7f9a89}
+.pcright{min-width:0}
+.pctabs{display:flex; gap:6px; margin-bottom:10px}
+.pcwarn{padding:9px 12px; margin-bottom:10px; border-radius:9px; border:1px solid rgba(255,99,99,.4); background:rgba(255,99,99,.08); color:#ffb4b4; font-size:12.5px}
+.job{padding:12px; margin-bottom:10px; border-radius:12px; border:1px solid #1f3b2c; background:linear-gradient(180deg,#0e1813,#0a120e)}
+.jh b{display:block; font:700 15px var(--cond); color:#e6fff0} .jh small{display:block; font-size:11.5px; color:#7f9a89; margin:2px 0 8px}
+.jr{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; font:500 12.5px var(--mono); color:#b5d6c1}
+.row3{display:flex; gap:6px}
+.bounties{display:grid; grid-template-columns:repeat(3,1fr); gap:6px}
+.bcont{text-align:left; padding:9px; border-radius:9px; border:1px solid #2b4636; background:#08100c; color:#d8f2e2; cursor:pointer} .bcont:disabled{opacity:.5; cursor:default}
+.bcont b{display:block; font:700 13px var(--cond)} .bcont small{font-size:10.5px; color:#8fb09c}
+.ctf{font:600 16px var(--mono); padding:10px; border-radius:9px; background:#030604; border:1px solid #1f3b2c; margin-bottom:8px}
+.crow{display:flex; justify-content:space-between; align-items:center; padding:3px 0; color:#39ff88} .crow.cur .cg{color:#e6fff0} .cg{letter-spacing:3px}
+.pegs{display:flex; gap:4px} .pegs i{width:11px; height:11px; border-radius:50%; background:#1b2a21} .pegs i.h{background:#39ff88; box-shadow:0 0 6px #39ff88} .pegs i.n{background:var(--vfd)}
+.keys{display:flex; flex-wrap:wrap; gap:5px}
+.key{width:40px; height:38px; border-radius:7px; border:1px solid #2b4636; background:#0c1611; color:#d8f2e2; font:700 15px var(--mono); cursor:pointer} .key:disabled{opacity:.3}
+.key.wide{width:auto; padding:0 12px; font-size:12px} .key.ok{background:#1f9d63; border-color:#39ff88; color:#04130a}
+.plist{display:flex; flex-direction:column; gap:6px}
+.pitem{display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; border:1px solid color-mix(in srgb,var(--tc) 35%,#1f3b2c); border-left:3px solid var(--tc); background:#0b130f}
+.pitem.on{background:linear-gradient(90deg,color-mix(in srgb,var(--tc) 14%,#0b130f),#0b130f)}
+.piico{width:26px; height:26px; color:var(--tc); flex:none}
+.pit{flex:1; min-width:0} .pit b{display:block; font:700 13.5px var(--cond); color:#e6fff0} .pit small{font:500 11px var(--mono); color:#8fb09c} .ptier{font:600 9.5px var(--mono); text-transform:uppercase; letter-spacing:.5px; color:var(--tc)}
+.pib{display:flex; gap:4px}
+.recipes{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px}
+.recipe{display:flex; flex-direction:column; gap:8px; padding:12px; border-radius:12px; border:1px solid rgba(57,255,136,.35); background:#06100a}
+.rh{display:flex; gap:10px; align-items:center} .rh b{display:block; font:700 15px var(--cond); color:#39ff88} .rh small{font:500 10.5px var(--mono); color:#7f9a89}
+.rcico{width:30px; height:30px; color:#39ff88; filter:drop-shadow(0 0 6px #39ff88)}
+.rfx{font-size:12.5px; color:#cfeedd; flex:1}
+.rneed{display:flex; flex-wrap:wrap; gap:5px} .rneed span{font:600 10.5px var(--mono); padding:2px 7px; border-radius:6px; border:1px solid #3a2a2a; color:#d99} .rneed span.ok{border-color:rgba(57,255,136,.4); color:#39ff88}
+.compile{padding:12px; margin-bottom:10px; border-radius:12px; border:1px solid rgba(57,255,136,.4); background:#030a05}
+.cmpt{font-size:13px; color:#cfeedd; margin-bottom:6px} .cmplog{margin:8px 0 0; font:12px var(--mono); color:#39ff88; white-space:pre-wrap}
+.pcico .ico{width:40px; height:40px; color:var(--tc)}
+@media (max-width:900px){ .pcgrid{grid-template-columns:1fr} .bounties{grid-template-columns:1fr} .heat i{width:80px} }
+.devbody{padding:14px 16px 18px; display:flex; flex-direction:column; gap:12px}
+.devrow{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px}
+.devrow select{min-width:120px}
+.inj{padding:12px; margin-bottom:12px; border-radius:12px; border:1px solid rgba(232,121,249,.4); background:linear-gradient(180deg,#140b17,#0b070e)}
+.injrow{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px} .injrow select{flex:1; min-width:180px}
+.injseg{width:max-content}
+.injodds{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px} .injodds span{font:600 11px var(--mono); padding:2px 8px; border-radius:6px; border:1px solid #33465f; color:#9fb0c7}
+.injodds .g{color:var(--good); border-color:rgba(61,220,151,.4)} .injodds .r{color:var(--bad); border-color:rgba(255,99,99,.4)} .injodds .j{color:#e879f9; border-color:rgba(232,121,249,.45)}
+.injlog{margin:6px 0 8px; padding:10px; border-radius:8px; background:#030204; font:12.5px var(--mono); color:#e879f9; white-space:pre-wrap}
+.injbar{display:inline-block; width:160px; height:10px; vertical-align:-1px; border:1px solid #e879f9; background:linear-gradient(90deg,#e879f9,#e879f9) 0 0/0% 100% no-repeat; animation:injfill 2.2s linear forwards}
+@keyframes injfill{to{background-size:100% 100%}}
+.catsec h4 em{font-style:normal; margin-left:6px; text-transform:none}
 </style>
 </head>
 <body class="os" data-tab="home">
@@ -1111,6 +1189,12 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
     <symbol id="g-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m15 15 5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
     <symbol id="g-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M7.5 15l4-4.5 3 3L20 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
     <symbol id="g-book" viewBox="0 0 24 24"><path d="M5 4.5h10.5a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3zM5 17a3 3 0 0 1 3-3h10.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+    <symbol id="g-pc" viewBox="0 0 24 24"><rect x="6.5" y="2.8" width="11" height="18.4" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 6.5h6M9 9h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="16" r="2" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="g-mobo" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="7" width="5" height="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M15 7v6M17.5 7v6M7 16h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+    <symbol id="g-gpu" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="11.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="15.5" cy="11.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 16v2.5M9 16v2.5M13 16v2.5" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="g-psu" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12.5 8.5 9.5 12.5h3l-1 3 3-4h-3z" fill="currentColor"/></symbol>
+    <symbol id="g-fan" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 12c0-3 1-5 3-5s1 3-3 5zm0 0c3 0 5 1 5 3s-3 1-5-3zm0 0c0 3-1 5-3 5s-1-3 3-5zm0 0c-3 0-5-1-5-3s3-1 5 3z" fill="currentColor"/></symbol>
+    <symbol id="g-net" viewBox="0 0 24 24"><path d="M3 9.5a13 13 0 0 1 18 0M6 12.8a8.5 8.5 0 0 1 12 0M9 16a4 4 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="19" r="1.3" fill="currentColor"/></symbol>
     <symbol id="g-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></symbol>
   </defs>
 </svg>
@@ -1122,6 +1206,7 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
     <button class="dicon" data-act="openWin" data-w="inv"><svg class="ico"><use href="#g-box"/></svg><span>Opslag</span></button>
     <button class="dicon" data-act="openWin" data-w="casino"><svg class="ico"><use href="#g-dice"/></svg><span>Casino</span></button>
     <button class="dicon" data-act="career"><svg class="ico"><use href="#g-cap"/></svg><span>Carrière</span></button>
+    <button class="dicon" data-act="openWin" data-w="pc"><svg class="ico"><use href="#g-pc"/></svg><span>Workstation</span></button>
     <button class="dicon" data-act="openWin" data-w="term"><svg class="ico"><use href="#g-term"/></svg><span>Terminal</span></button>
     <button class="dicon" data-act="openWin" data-w="stats"><svg class="ico"><use href="#g-chart"/></svg><span>Stats</span></button>
     <button class="dicon" data-act="openWin" data-w="cat"><svg class="ico"><use href="#g-book"/></svg><span>Catalogus</span></button>
@@ -1251,6 +1336,22 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
     <div class="wbody catbody" id="catBody"></div>
   </section>
 
+  <section class="win float" id="win-pc" hidden aria-label="Workstation">
+    <div class="wbar"><svg class="ico"><use href="#g-pc"/></svg><span class="wt">workstation.exe</span><span class="wmeta" id="pcMeta"></span><span class="wctl"><button data-act="minWin" data-w="pc" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="pc" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody pcbody">
+      <div class="pchud" id="pcHud"></div>
+      <div class="pcgrid">
+        <div class="pcleft" id="pcLeft"></div>
+        <div class="pcright"><div class="pctabs" id="pcTabs"></div><div id="pcMain"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="win float" id="win-dev" hidden aria-label="Test-tools">
+    <div class="wbar"><svg class="ico"><use href="#g-flask"/></svg><span class="wt">testtools.sh</span><span class="wmeta">alleen beta</span><span class="wctl"><button data-act="minWin" data-w="dev" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="dev" aria-label="Sluiten">✕</button></span></div>
+    <div class="wbody devbody" id="devBody"></div>
+  </section>
+
   <section class="win float" id="win-term" hidden aria-label="Terminal">
     <div class="wbar"><svg class="ico"><use href="#g-term"/></svg><span class="wt">terminal</span><span class="wmeta">systeemlog</span><span class="wctl"><button data-act="minWin" data-w="term" aria-label="Minimaliseren">–</button><button data-act="closeWin" data-w="term" aria-label="Sluiten">✕</button></span></div>
     <div class="wbody term"><div id="termlog"></div></div>
@@ -1289,6 +1390,7 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
     <button data-act="openWin" data-w="casino"><svg class="ico"><use href="#g-dice"/></svg>Casino</button>
     <button data-act="career"><svg class="ico"><use href="#g-cap"/></svg>Carrière</button>
     <button data-act="openWin" data-w="term"><svg class="ico"><use href="#g-term"/></svg>Terminal</button>
+    <button data-act="openWin" data-w="pc"><svg class="ico"><use href="#g-pc"/></svg>Workstation</button>
     <button data-act="openWin" data-w="stats"><svg class="ico"><use href="#g-chart"/></svg>Stats</button>
     <button data-act="openWin" data-w="cat"><svg class="ico"><use href="#g-book"/></svg>Catalogus</button>
     <button data-act="redeem"><svg class="ico"><use href="#g-gift"/></svg>Code</button>
@@ -1343,13 +1445,16 @@ const TIERS = [
   { name: 'Legendary', oneIn: 1000,   income: 1000,   sw: 55,  rt: 2.75 },
   { name: 'Mythic',    oneIn: 10000,  income: 12000,  sw: 80,  rt: 3.75 },
   { name: 'Quantum',   oneIn: 100000, income: 200000, sw: 100, rt: 5    },
+  // Hacker: kan NIET gerold worden, alleen gecraft op je eigen PC (workstation.exe). Blijft na afstuderen.
+  { name: 'Hacker',    oneIn: Infinity, income: 1000000, sw: 115, rt: 6, crafted: true },
   // Secret: de naam is geen geheim, de kans wel: die zie je pas nadat je er eentje vond
   { name: 'Secret',    oneIn: 1000000, income: 3500000, sw: 130, rt: 7  },
   // Admin: kan NIET gerold worden, alleen via een admin-code. Waarde zit in het item zelf.
   { name: 'Admin',     oneIn: Infinity, income: 1,      sw: 1,   rt: 2, hidden: true },
 ];
-const ADMIN_TIER = 8;
-const SECRET_TIER = 7;
+const HACKER_TIER = 7;
+const SECRET_TIER = 8;
+const ADMIN_TIER = 9;
 
 const TYPES = {
   cpu:     { label: 'CPU',     short: 'CPU'  },
@@ -1378,7 +1483,7 @@ const CONN = [
 ];
 
 /* Upgrades: kost = base × growth^niveau */
-const pityLimit = () => Math.round(PITY[lvl('pity')] * (pn('lk_super') ? 0.75 : 1));
+const pityLimit = () => Math.round(PITY[lvl('pity')] * (pn('lk_super') ? 0.75 : 1) * (hasFx('pity') ? 0.5 : 1));
 const PITY = [0, 100, 80, 60, 45, 30];
 const UPGRADES = [
   { id: 'luck',     icon: '☕', name: 'Koffie',           base: 100,   growth: 1.6, max: 25,
@@ -1430,7 +1535,27 @@ const MUTATIONS = {
   bitflip: { icon: '💾', name: 'Bit-flip',    color: '#a78bfa', w: 25,            desc: 'willekeurig ×0,5 tot ×6 (vast bij het rollen)' },
   rad:     { icon: '☢️', name: 'Radioactief', color: '#a3e635', w: 15, mult: 2,   desc: '×2 en +10% luck zolang hij in je rack zit' },
   rgb:     { icon: '🌈', name: 'RGB',         color: '#f472b6', w: 15, mult: 1.5, desc: '×1,5 en de hele U krijgt +25%' },
+  hot:     { icon: '🌡️', name: 'Oververhit',  color: '#f97316', w: 12, mult: 2,   desc: '×2, maar elk uur in je rack 1% kans dat hij doorbrandt' },
+  mag:     { icon: '🧲', name: 'Magnetisch',  color: '#ef4444', w: 12, mult: 1.25, desc: '×1,25 en de andere items in dezelfde U +15%' },
+  eco:     { icon: '🪫', name: 'Zuinig',      color: '#84cc16', w: 12, mult: 1.25, desc: '×1,25 en −5% roll-cooldown zolang hij in je rack zit (stapelt)' },
+  sync:    { icon: '📡', name: 'Gesyncd',     color: '#38bdf8', w: 10, mult: 1.5, desc: '×1,5, en ×3 voor de hele U als alle drie de items Gesyncd zijn' },
+  infect:  { icon: '🦠', name: 'Geïnfecteerd', color: '#22c55e', w: 5, mult: 2.5, desc: '×2,5 en verspreidt zich: elk uur 10% kans op een item in een aangrenzende U' },
+  vintage: { icon: '⏳', name: 'Vintage',     color: '#d6b98c', w: 5,             desc: 'start op ×1 en wordt elk uur in je rack +0,1 sterker, tot ×4' },
+  chaos:   { icon: '🎲', name: 'Chaotisch',   color: '#e879f9', w: 5,             desc: 'elke 10 minuten een nieuwe multiplier tussen ×0,5 en ×5' },
+  mirror:  { icon: '🪞', name: 'Gespiegeld',  color: '#cbd5e1', w: 5,             desc: 'kopieert de multiplier van het beste andere item in dezelfde U' },
+  aware:   { icon: '👁️', name: 'Bewust',      color: '#fb7185', w: 1.5, mult: 4,  desc: '×4 en +1% kans dat elke roll een tier hoger uitvalt' },
+  void:    { icon: '🌌', name: 'Void',        color: '#6366f1', w: 1,  mult: 10,  desc: '×10, maar de andere items in dezelfde U verdienen niets' },
 };
+// mutatie geven (met de startwaarde voor mutaties die een eigen waarde hebben)
+function setMut(it, k) {
+  it.mut = k; delete it.mv; delete it.cb;
+  if (k === 'bitflip') it.mv = Math.round((0.5 + Math.random() ** 2 * 5.5) * 100) / 100;   // meestal laag, soms hoog
+  if (k === 'vintage') it.mv = 1;
+  if (k === 'chaos') it.mv = Math.round((0.5 + Math.random() * 4.5) * 100) / 100;
+  if (typeof state !== 'undefined' && state.mutSeen && !state.mutSeen.includes(k)) state.mutSeen.push(k);
+  return it;
+}
+const randMut = (not) => pickWeighted(Object.fromEntries(Object.entries(MUTATIONS).filter(([k]) => k !== not).map(([k, m]) => [k, m.w])));
 const mutChanceAt = l => 0.03 + 0.02 * l;   // 3% basis, +2% per Stralingslab-niveau
 
 /* =====================================================================
@@ -1521,7 +1646,7 @@ const SKINS = [
   { id: 'rgb',     name: 'RGB Gamer',      tier: 4, price: 2e8,   desc: 'Meer RGB = meer FPS. Toch?' },
   { id: 'gold',    name: 'Goud',           tier: 5, price: 2e10,  desc: 'Voor wie wil laten zien dat het kan.' },
   { id: 'quantum', name: 'Quantum',        tier: 6, price: 5e12,  desc: 'Bestaat tegelijk wel en niet.' },
-  { id: 'pionier', name: 'Pionier',        tier: 7, price: Infinity, exclusive: true, desc: 'Exclusief: voor wie afstudeerde vóór de carrière-herbalancering.' },
+  { id: 'pionier', name: 'Pionier',        tier: 8, price: Infinity, exclusive: true, desc: 'Exclusief: voor wie afstudeerde vóór de carrière-herbalancering.' },
 ];
 
 /* Boost-shop: elk vol uur nieuwe voorraad. Elke soort heeft per tier (Common → Quantum) een naam, kracht en duur.
@@ -1584,6 +1709,7 @@ const ITEMS = {
     [['Intel Xeon Platinum 8490H','60C/120T',0.95],['AMD EPYC 9654','96C/192T',1.05],['AMD Threadripper PRO 7995WX','96C/192T · 5,1 GHz',1.15]],
     [['AMD EPYC 9965','192C/384T',1.0],['Experimentele ARM-serverchip','256C · prototype',1.15]],
     [['Quantum Processing Unit','1024 qubits',1.0],['Het brein van je docent','∞ kernen',1.25]],
+    [['Keylogger','Logt elke toetsaanslag',1.0,'thread'],['Brute-forcer','2²⁵⁶ pogingen per seconde',1.1,'pity']],
     [['Prototype zonder naam','██ kernen · onder NDA',1.0],['De chip uit Area 51','Classified',1.2]],
   ],
   ram: [
@@ -1594,6 +1720,7 @@ const ITEMS = {
     [['DDR5 RDIMM 256 GB','5600 MHz',1.0],['DDR5 RDIMM 512 GB','6400 MHz',1.15]],
     [['HBM3 1 TB','819 GB/s',1.0],['CXL-geheugenpool 4 TB','PCIe 6.0',1.15]],
     [['downloadmoreram.com','Onbeperkt RAM',1.0],['Quantumgeheugen','Superpositie-opslag',1.25]],
+    [['Botnet-node','10.000 zombie-pc\'s',1.0,'botnet']],
     [['Geheugen dat niet bestaat','████ TB',1.0],['Het RAM van de Matrix','Read-only realiteit',1.2]],
   ],
   storage: [
@@ -1604,6 +1731,7 @@ const ITEMS = {
     [['NVMe SSD 8 TB','Gen5 · 14 GB/s',1.0],['Enterprise U.2 15 TB','Gen4 · datacenter',1.15]],
     [['Enterprise E3.S 61 TB','Gen5 · datacenter',1.0],['All-flash array 500 TB','Rack-mounted',1.15]],
     [['Glazen archiefopslag','1 PB · 10.000 jaar',1.0],['De hele cloud','Ja, alles',1.25]],
+    [['Zero-day','Nog niet gepatcht',1.0,'zeroday']],
     [['Verzegelde schijf','Inhoud: geheim',1.0],['Het archief dat niemand mag zien','Alles. Over iedereen.',1.2]],
   ],
   switch: [
@@ -1614,6 +1742,7 @@ const ITEMS = {
     [['Arista 7050X','32× 40G',1.0],['Spine-switch','64× 100G',1.1]],
     [['Cisco Nexus 9000','36× 400G',1.0],['Datacenter-core','800G-poorten',1.1]],
     [['Quantumverstrengelde switch','Latency: 0 ms',1.0]],
+    [['Ghost-protocol','Onzichtbaar op het netwerk',1.0,'ghost']],
     [['Switch zonder poorten','Werkt toch',1.0]],
   ],
   router: [
@@ -1624,6 +1753,7 @@ const ITEMS = {
     [['Juniper MX204','4× 100G',1.0]],
     [['Cisco ASR 9000','Carrier-grade',1.0]],
     [['Router van het internet zelf','Alle routes',1.0]],
+    [['Rootkit','Root op alles',1.0,'rootkit']],
     [['Router naar een ander internet','Bestemming: ██████',1.0]],
   ],
 };
@@ -1674,12 +1804,90 @@ function fmtDur(s) {
 }
 const slug = s => s.toLowerCase().normalize('NFD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
+/* =====================================================================
+   🖥️ EIGEN PC (workstation.exe): onderdelen, compatibiliteit, jobs, heat, craften
+   ===================================================================== */
+const PC_KINDS = {
+  mobo: { label: 'Moederbord',      req: true },
+  cpu:  { label: 'Processor',       req: true },
+  gpu:  { label: 'Grafische kaart', req: true },
+  ram:  { label: 'Geheugen',        req: true },
+  psu:  { label: 'Voeding',         req: true },
+  cool: { label: 'Koeling',         req: true },
+  net:  { label: 'Netwerkkaart',    req: false },   // optioneel: laat je Heat sneller zakken
+};
+const SOCKETS = ['AM4', 'AM5', 'LGA1700'];
+const PC_NAMES = {
+  mobo: ['Bord uit de kringwinkel', 'Budget-bord', 'Gaming-bord', 'Aorus Elite', 'ROG Hero', 'Workstation Pro', 'Quantum-bord'],
+  cpu: {
+    AM4:     ['Athlon 3000G', 'Ryzen 3 3100', 'Ryzen 5 5600', 'Ryzen 7 5800X3D', 'Ryzen 9 5950X', 'Ryzen 9 5950X (golden sample)', 'Quantum-Ryzen AM4'],
+    AM5:     ['Ryzen 5 7500F (tweedehands)', 'Ryzen 5 7600', 'Ryzen 7 7700X', 'Ryzen 7 9800X3D', 'Ryzen 9 9950X', 'Ryzen 9 9950X3D', 'Quantum-Ryzen AM5'],
+    LGA1700: ['Celeron G6900', 'Core i3-12100F', 'Core i5-13600K', 'Core i7-14700K', 'Core i9-14900K', 'Core i9-14900KS', 'Quantum-Core'],
+  },
+  gpu:  ['GT 710', 'GTX 1050 Ti', 'RTX 3060', 'RTX 4070 Super', 'RTX 4090', 'RTX 5090', 'Quantum-GPU'],
+  ram:  { DDR4: ['DDR4 8 GB', 'DDR4 16 GB', 'DDR4 32 GB 3600', 'DDR4 64 GB 3600', 'DDR4 128 GB', 'DDR4 256 GB ECC', 'Quantum-DDR4'],
+          DDR5: ['DDR5 16 GB', 'DDR5 32 GB', 'DDR5 32 GB 6000', 'DDR5 64 GB 6400', 'DDR5 128 GB', 'DDR5 256 GB 8000', 'Quantum-DDR5'] },
+  psu:  ['No-name 300W', 'Budget 450W', 'Bronze 650W', 'Gold 850W', 'Platinum 1000W', 'Titanium 1600W', 'Quantum-voeding'],
+  cool: ['Boxed koeler', 'Tower-koeler', 'Dubbele tower', '240mm AIO', '360mm AIO', 'Custom waterloop', 'Vloeibare stikstof'],
+  net:  ['Wifi-dongle', 'Gigabit-kaart', 'VPN-router', 'Tor-node', 'Faraday-kooi', 'Air-gap', 'Quantum-tunnel'],
+};
+const PC_CPU_W  = [65, 65, 105, 125, 170, 200, 250];      // watt = ook de hitte die de koeling moet wegwerken
+const PC_GPU_W  = [30, 75, 170, 220, 450, 575, 700];
+const PC_PSU_W  = [300, 450, 650, 850, 1000, 1600, 3000];
+const PC_COOL   = [90, 130, 180, 230, 290, 360, 500];     // hoeveel watt hitte de koeling aankan
+const PC_PERF   = [10, 22, 50, 110, 240, 520, 1200];      // rekenkracht van CPU/GPU
+const PC_SCRAP  = [1, 2, 5, 10, 25, 60, 150];             // RackCoin bij demonteren
+const PART_MIN  = [3, 6, 12, 25, 50, 100, 200];           // prijs onderdeel in minuten inkomen (vast bij de restock)
+const PART_FLOOR = [500, 2e3, 8e3, 3e4, 1.5e5, 8e5, 5e6];
+const PART_OFFERS = 4, PC_PARTS_MAX = 24;
+const OC_LABEL = ['Stock', 'OC 1', 'OC 2', 'OC 3'];
+// Jobs
+const CTF_LVL = [   // Mastermind in de terminal: kraak de code
+  { name: 'Makkelijk', len: 4, digits: 6,  tries: 8, rc: 40,  frag: 0.15, heat: 8 },
+  { name: 'Normaal',   len: 4, digits: 10, tries: 8, rc: 110, frag: 0.35, heat: 15 },
+  { name: 'Moeilijk',  len: 5, digits: 10, tries: 9, rc: 300, frag: 0.6,  heat: 25 },
+];
+const CTF_COOLDOWN = 180;   // seconden tussen CTF's
+const BOUNTIES = [
+  { name: 'Kleine bug',        min: 30,  rc: 60,   frag: 0.1, heat: 5 },
+  { name: 'SQL-injectie',      min: 120, rc: 280,  frag: 0.3, heat: 15 },
+  { name: 'Remote code exec',  min: 360, rc: 1000, frag: 0.6, heat: 30 },
+];
+// Hacker-recepten (craften op je PC): RackCoin + exploit-fragmenten + één Quantum-item van hetzelfde type + compileertijd
+// Exploit-injector: gok met je items. Kansen per modus (in %): mutatie / niets / tier +1 / gebrickt / duplicaat
+const INJ_MODES = {
+  safe: { name: 'Veilig',     mut: 40, none: 50.5, tier: 7.5, brick: 0,  dup: 2, frag: 1, desc: 'Kost 1 fragment extra. Een brick wordt "niets gebeurd", maar minder kans op tier +1.' },
+  std:  { name: 'Standaard',  mut: 40, none: 25,   tier: 15,  brick: 18, dup: 2, frag: 0, desc: 'De gewone kansen.' },
+  aggr: { name: 'Agressief',  mut: 28, none: 2,    tier: 30,  brick: 35, dup: 5, frag: 0, desc: 'Dubbele kans op tier +1 en meer kans op een duplicaat, maar 35% kans op een brick.' },
+};
+const INJ_COST = [5, 10, 25, 60, 150, 400, 1000, 0, 3000];   // RackCoin per tier
+const INJ_TARGET_FRAG = 3;   // zelf de mutatie kiezen
+const INJ_GROW = 1.5;        // elke injectie op hetzelfde item maakt de volgende ×1,5 duurder
+const injCost = it => Math.round((INJ_COST[it.tier] || 0) * INJ_GROW ** (it.inj || 0));
+const RECIPES = {
+  thread:  { rc: 2500, frag: 3, hours: 8 },
+  pity:    { rc: 2000, frag: 3, hours: 8 },
+  botnet:  { rc: 3000, frag: 3, hours: 8 },
+  zeroday: { rc: 4000, frag: 5, hours: 12 },
+  ghost:   { rc: 3000, frag: 3, hours: 8 },
+  rootkit: { rc: 3500, frag: 4, hours: 10 },
+};
+
+/* Speciale effecten van Hacker-items (werken zolang het item in je rack zit) */
+const HFX = {
+  thread:  'Rolt 1 item extra per roll (zoals Multithreading)',
+  pity:    'Garantiecontract (pity) 2× sneller',
+  botnet:  'De U erboven en eronder verdienen +25%',
+  zeroday: 'Elke 250e roll is gegarandeerd Quantum',
+  ghost:   'Slechte random events slaan je rack over',
+  rootkit: 'Bij elke shop-restock 30% kans op een gratis boost in je kist',
+};
 /* Item-definities met stabiele ID's */
 const DEFS = {}, DEFS_BY = {};
 for (const type in ITEMS) {
-  DEFS_BY[type] = ITEMS[type].map((list, tier) => list.map(([name, spec, q]) => {
+  DEFS_BY[type] = ITEMS[type].map((list, tier) => list.map(([name, spec, q, fx]) => {
     const ref = `${type}-${tier}-${slug(name)}`;
-    DEFS[ref] = { ref, type, tier, name, spec, q };
+    DEFS[ref] = { ref, type, tier, name, spec, q, fx };
     return ref;
   }));
 }
@@ -1692,18 +1900,21 @@ class Item {
   get name() { return this.d.name; }
   get spec() { return this.d.spec; }
   get q() { return this.d.q; }
-  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined, custom: this.custom, mut: this.mut, mv: this.mv }; }
+  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined, custom: this.custom, mut: this.mut, mv: this.mv, inj: this.inj || undefined }; }
 }
 // Laadt een item uit een save. Werkt ook voor v1-saves en hernoemde items.
 function hyd(o) {
   const it = hyd0(o);
   if (it && o.mut && MUTATIONS[o.mut]) { it.mut = o.mut; if (o.mv) it.mv = o.mv; }
+  if (it && o.inj) it.inj = o.inj;
   return it;
 }
 function hyd0(o) {
   if (!o) return null;
-  if (o.custom) { if (o.custom.tier === 7) o.custom.tier = ADMIN_TIER; return new Item(null, o.id ?? null, !!o.oc, o.custom); } // admin-item (oude saves: tier 7 → 8)
+  if (o.custom) { o.custom.tier = ADMIN_TIER; return new Item(null, o.id ?? null, !!o.oc, o.custom); } // admin-item (oude saves hadden tier 7 of 8)
   let ref = o.ref;
+  const mv = ref && !DEFS[ref] && ref.match(/^([a-z]+)-7-(.+)$/);   // Secret was tier 7, nu tier 8
+  if (mv && DEFS[`${mv[1]}-8-${mv[2]}`]) { ref = `${mv[1]}-8-${mv[2]}`; o = Object.assign({}, o, { r: 8 }); }
   if (!DEFS[ref]) {
     const type = o.t || o.type, tier = o.r ?? o.tier;
     const cand = Object.values(DEFS).filter(d => d.type === type && d.tier === tier);
@@ -1725,19 +1936,25 @@ const newPlayerId = () => {
 const isAdminItem = it => it && it.tier === ADMIN_TIER;
 /* BELANGRIJK voor een toekomstige prestige/rebirth: deze items moeten altijd bewaard blijven.
    Een rebirth reset het rack en de opslag, en zet daarna permanentItems() terug in de opslag. */
-const permanentItems = () => [...state.inv, state.router, state.router2, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(isAdminItem);
+const fxCount = k => placedItems().filter(it => it.d && it.d.fx === k).length;
+const hasFx = k => fxCount(k) > 0;
+const isHackerItem = it => it && it.tier === HACKER_TIER;
+const isKeepItem = it => isAdminItem(it) || isHackerItem(it);   // blijft na afstuderen
+const permanentItems = () => [...state.inv, state.router, state.router2, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(isKeepItem);
 const emptyU = () => ({ cpu: null, ram: null, storage: null });
 function newState() {
   return { v: SAVE_VERSION, money: CFG.startMoney, rack: [emptyU()], router: null, switches: [null], inv: [],
            current: null, currentBought: false, conn: 0, rollReadyAt: 0, rolls: 0, nextId: 1,
            lastSave: Date.now(), muted: false, up: {}, pity: 0, autoRoll: false, rollFilter: null,
-           hotSwap: false, rollTiers: [false, false, false, true, true, true, true, true], autoSellTier: -1,
+           hotSwap: false, rollTiers: [false, false, false, true, true, true, true, false, true], autoSellTier: -1,
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
            skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
-           shop: null, boosts: {}, kist: [], seenTiers: [], locked: [], found: [], stats: newStats(), router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
-           prestige: newPrestige(), runV: 1, careerV: 2 };
+           shop: null, boosts: {}, kist: [], seenTiers: [], locked: [], found: [], mutSeen: [], stats: newStats(), pc: newPC(), router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
+           prestige: newPrestige(), runV: 1, careerV: 2, tierV: 2 };
 }
-const newStats = () => ({ tiers: [0, 0, 0, 0, 0, 0, 0, 0, 0], best: null, bought: 0, sold: 0, playMs: 0 });
+const newPC = () => ({ parts: [], build: {}, rc: 0, frag: 0, heat: 0, oc: 0, mining: false, ctfAt: 0, bounty: null,
+  seizedUntil: 0, crashUntil: 0, compile: null, rcTotal: 0, ctfWon: 0, crafted: 0 });
+const newStats = () => ({ inj: { n: 0, mut: 0, tier: 0, brick: 0, dup: 0, none: 0 }, tiers: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], best: null, bought: 0, sold: 0, playMs: 0 });
 // Blijft altijd bewaard bij afstuderen
 const newPrestige = () => ({ count: 0, ects: 0, ectsTotal: 0, nodes: {}, bestRun: 0, fastestRun: 0, totalEarned: 0 });
 function fromJSON(raw) {
@@ -1761,6 +1978,18 @@ function fromJSON(raw) {
   while (s.stats.tiers.length < TIERS.length) s.stats.tiers.push(0);
   s.found = Array.isArray(raw.found) ? raw.found.filter(r => DEFS[r]) : [...new Set([...(raw.inv || []), ...(raw.rack || []).flatMap(u => u ? COMP.map(k => u[k]) : []), raw.router, ...(raw.switches || [])]
     .map(hyd).filter(x => x && x.ref && DEFS[x.ref]).map(x => x.ref))];
+  // Hacker-tier ingevoegd op plek 7: Secret 7 → 8, Admin 8 → 9
+  if (raw.tierV !== 2) {
+    if (raw.stats && Array.isArray(raw.stats.tiers) && raw.stats.tiers.length >= 9) { s.stats.tiers = raw.stats.tiers.slice(0, 9); s.stats.tiers.splice(7, 0, 0); }
+    if (Array.isArray(raw.seenTiers)) s.seenTiers = raw.seenTiers.map(t => t >= 7 ? t + 1 : t);
+    if (Array.isArray(raw.rollTiers)) { const r = raw.rollTiers.slice(); if (r.length === 8) r.splice(7, 0, false); else if (r.length === 7) r.push(false, true); s.rollTiers = r; }
+    if (Array.isArray(raw.found)) s.found = raw.found.map(r => { const m = !DEFS[r] && r.match(/^([a-z]+)-7-(.+)$/); return m && DEFS[`${m[1]}-8-${m[2]}`] ? `${m[1]}-8-${m[2]}` : r; }).filter(r => DEFS[r]);
+    s.tierV = 2;
+  }
+  s.pc = Object.assign(newPC(), raw.pc || {});
+  s.mutSeen = Array.isArray(raw.mutSeen) ? raw.mutSeen.filter(k => MUTATIONS[k]) : [...new Set([...s.inv, ...s.rack.flatMap(u => COMP.map(k => u[k]))].filter(x => x && x.mut).map(x => x.mut))];
+  if (!Array.isArray(s.pc.parts)) s.pc.parts = [];
+  if (!s.pc.build || typeof s.pc.build !== 'object') s.pc.build = {};
   s.locked = Array.isArray(raw.locked) ? raw.locked.filter(x => typeof x === 'number') : [];
   s.kist = (Array.isArray(raw.kist) ? raw.kist : []).filter(x => x && BOOSTS[x.kind] && x.tier >= 0 && x.tier < 7);
   // tiers die je al eens vond (voor de filmische reveal): oude saves vullen we aan met wat je al bezit
@@ -1777,8 +2006,7 @@ function fromJSON(raw) {
     const old = Array.isArray(raw.hotTiers) ? raw.hotTiers : Array.isArray(raw.autoBuyTiers) ? raw.autoBuyTiers : null;
     s.rollTiers = (s.up.autoroll || 0) >= 2 && old && old.length === 7 ? old.slice() : [false, false, false, true, true, true, true];
   }
-  if (Array.isArray(s.rollTiers) && s.rollTiers.length === 7) s.rollTiers.push(true);   // Secret erbij
-  if (!Array.isArray(s.rollTiers) || s.rollTiers.length !== 8) s.rollTiers = newState().rollTiers;
+  if (!Array.isArray(s.rollTiers) || s.rollTiers.length !== 9) s.rollTiers = newState().rollTiers;
   delete s.hotTiers;
   if (s.up.orderbot) { s.money += 10e9 + (s.up.orderbot >= 2 ? 100e9 : 0); delete s.up.orderbot; }
   for (const k of ['autoBuy', 'autoBuyTiers', 'autoBuyPct', 'autoBuyMode', 'autoBuyOnlyUp', 'autoBuyEquip', 'autoBuyMin',
@@ -1839,12 +2067,15 @@ const sellRate   = () => Math.min(1, (CFG.sellRate + 0.05 * lvl('resale')) * evM
 const incomeMult = () => (1 + 0.1 * lvl('income')) * 1.25 ** pn('hw_income') * (1 + 0.02 * pn('inf_hw'))
                    * (pn('ks_mono') ? 1 + 0.002 * state.prestige.ectsTotal : 1);
 const offlineMax = () => CFG.offlineMaxHours + 2 * lvl('ups') + 12 * pn('au_home');
-const cooldown   = () => CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed') * (pn('nw_backbone') ? 0.8 : 1) * 0.99 ** pn('inf_au');
+const cooldown   = () => (IS_BETA && devTurbo ? 0.05 : 1) * 0.95 ** placedItems().filter(x => x.mut === 'eco').length * CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed') * (pn('nw_backbone') ? 0.8 : 1) * 0.99 ** pn('inf_au');
 const unitCost   = () => Math.round(CFG.unitBaseCost * (CFG.unitCostGrowth - (pn('ec_estate') ? 0.5 : 0)) ** (state.rack.length - 1) * (1 - 0.05 * lvl('permit')));
 
 /* Item-waardes */
 const ocM      = it => (it.oc ? (pn('hw_thermal') ? 2 : CFG.ocMult) : 1) * mutM(it);
-const mutM     = it => !it.mut ? 1 : it.mut === 'bitflip' ? (it.mv || 1) : it.mut === 'gold' && pn('hw_gold') ? 5 : MUTATIONS[it.mut].mult;
+const mutM     = it => { if (!it.mut || !MUTATIONS[it.mut]) return 1;
+  if (it.mut === 'bitflip' || it.mut === 'vintage' || it.mut === 'chaos') return it.mv || 1;
+  if (it.mut === 'gold' && pn('hw_gold')) return 5;
+  return MUTATIONS[it.mut].mult || 1; };
 const matchTier = it => it.mut === 'cold' ? Math.min(SECRET_TIER, it.tier + 1) : it.tier;
 const placedItems = () => [state.router, state.router2, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(Boolean);
 const radLuck  = () => 1 + 0.1 * placedItems().filter(x => x.mut === 'rad').length;
@@ -1871,7 +2102,7 @@ function statShort(it) {
   if (it.type === 'router') return `${TIERS[it.tier].name} · ×${fmtNum(rtMult(it))}`;
   return `${TIERS[it.tier].name} · ${fmt(income(it))}/s`;
 }
-const mutLabel = it => it.mut ? `${MUTATIONS[it.mut].name}${it.mut === 'bitflip' ? ' ×' + fmtNum(it.mv) : ''}` : '';
+const mutLabel = it => it.mut && MUTATIONS[it.mut] ? `${MUTATIONS[it.mut].name}${['bitflip', 'vintage', 'chaos'].includes(it.mut) ? ' ×' + fmtNum(it.mv || 1) : ''}` : '';
 const mutHtml  = it => it.mut ? `<span class="mut" style="--mc:${MUTATIONS[it.mut].color}">${MUTATIONS[it.mut].icon} ${mutLabel(it)}</span>` : '';
 const nameHtml = it => (isAdminItem(it) ? '🛠️ ' : '') + mutHtml(it) + (it.oc ? '<span class="oc">OC</span>' : '') + esc(it.name);
 
@@ -1904,22 +2135,24 @@ function rollOne(L, minTier = 0, useFilter = true) {
   const refs = DEFS_BY[type][tier];
   const it = new Item(refs[Math.floor(Math.random() * refs.length)], null, Math.random() < ocChance());
   if (Math.random() < mutChanceAt(lvl('mutlab')) + 0.05 * pn('hw_rad')) {
-    it.mut = pickWeighted(Object.fromEntries(Object.entries(MUTATIONS).map(([k, m]) => [k, m.w])));
-    if (it.mut === 'bitflip') it.mv = Math.round((0.5 + Math.random() ** 2 * 5.5) * 100) / 100; // meestal laag, soms hoog
+    setMut(it, randMut());
   }
   return it;
 }
+let devTurbo = false, devForce = null;   // test-tools (alleen beta)
 function generateRoll() {
   const golden = nextGolden();
   const L = luck() * (golden ? goldenMult() : 1);
   const cands = [];
-  for (let k = 0; k <= lvl('multi') + pn('lk_thread'); k++) cands.push(rollOne(L));
+  for (let k = 0; k <= lvl('multi') + pn('lk_thread') + fxCount('thread'); k++) cands.push(rollOne(L));
   let win = 0;
   cands.forEach((c, i) => { if (price(c) > price(cands[win])) win = i; });
   let best = cands[win], pityHit = false;
+  if (IS_BETA && devForce != null) { best = rollOne(L, devForce); cands[win] = best; devForce = null; }
+  if (hasFx('zeroday') && (state.rolls + 1) % 250 === 0 && best.tier < 6) { best = rollOne(L, 6); cands[win] = best; toast('💀 Zero-day: gegarandeerde Quantum!', 'roll'); }
   if (lvl('pity') && best.tier < 2 && state.pity + 1 >= pityLimit()) { best = rollOne(L, 2); cands[win] = best; pityHit = true; }
   let fwHit = false;
-  if (best.tier < 6 && Math.random() < 0.015 * lvl('firmware') + 0.05 * pn('hw_firm')) {
+  if (best.tier < 6 && Math.random() < 0.015 * lvl('firmware') + 0.05 * pn('hw_firm') + 0.01 * placedItems().filter(x => x.mut === 'aware').length) {
     const refs = DEFS_BY[best.type][best.tier + 1];
     const up = new Item(refs[Math.floor(Math.random() * refs.length)], null, best.oc);
     if (best.mut) { up.mut = best.mut; up.mv = best.mv; }
@@ -1962,12 +2195,24 @@ function matchMult(u) {
   const M = matchTab();
   return hi < 0 ? M[0] : M[Math.min(hi - lo, 3)];
 }
-const uFast = u => {
-  let sum = 0, rgb = 1;
-  for (const k of COMP) { const x = u[k]; if (x) { sum += income(x); if (x.mut === 'rgb') rgb *= 1.25; } }
-  return sum * matchMult(u) * rgb;
-};
-const uBase    = u => COMP.reduce((a, k) => a + (u[k] ? income(u[k]) : 0), 0) * matchInfo(u).mult * 1.25 ** COMP.filter(k => u[k] && u[k].mut === 'rgb').length;
+// som van één U, met de mutaties die op de hele U werken (RGB, Magnetisch, Gesyncd, Gespiegeld, Void)
+function uSum(u) {
+  const xs = [u.cpu, u.ram, u.storage].filter(Boolean);
+  if (!xs.length) return 0;
+  const voids = xs.filter(x => x.mut === 'void'), mags = xs.filter(x => x.mut === 'mag').length;
+  let sum = 0;
+  for (const x of voids.length ? voids : xs) {
+    let v = income(x);
+    if (x.mut === 'mirror') v *= Math.max(1, ...xs.filter(y => y !== x && y.mut !== 'mirror').map(mutM));
+    const m = mags - (x.mut === 'mag' ? 1 : 0); if (m > 0) v *= 1 + 0.15 * m;
+    sum += v;
+  }
+  let f = 1.25 ** xs.filter(x => x.mut === 'rgb').length;
+  if (xs.length === 3 && xs.every(x => x.mut === 'sync')) f *= 3;
+  return sum * f;
+}
+const uFast = u => uSum(u) * matchMult(u);
+const uBase    = u => uSum(u) * matchInfo(u).mult;
 const routerM  = () => {
   const rs = [state.router, pn('nw_router2') ? state.router2 : null].filter(Boolean);
   if (!rs.length) return 1;
@@ -1978,7 +2223,8 @@ const switchB  = () => state.switches.reduce((a, s) => a + (s ? swBonus(s) : 0),
 const steadyMult = () => routerM() * (1 + switchB() / 100) * incomeMult() * clusterM();   // zonder events
 const netMult  = () => steadyMult() * evMod('income') * boostMod('income');
 const steadyIncome = () => baseIncome() * steadyMult();
-const baseIncome = () => state.rack.reduce((a, u) => a + uBase(u), 0);
+const botMult = i => { if (!hasFx('botnet')) return 1; const b = j => !!(state.rack[j] && state.rack[j].ram && state.rack[j].ram.d.fx === 'botnet') ? 1 : 0; return 1 + 0.25 * (b(i - 1) + b(i + 1)); };
+const baseIncome = () => state.rack.reduce((a, u, i) => a + uBase(u) * botMult(i), 0);
 const totalIncome = () => baseIncome() * netMult();
 
 const swEvery = () => pn('nw_lb') ? 4 : CFG.switchEveryU;
@@ -2158,6 +2404,7 @@ function roll() {
   state.currentBought = false;
   state.rolls++;
   trackRoll(item);
+  if (Math.random() < 1 / 400) pcDrop(item.tier);
   state.pity = item.tier >= 2 ? 0 : state.pity + 1;
   if (pn('lk_streak')) { if (state.streak > 0) state.streak--; if (item.tier >= 3) state.streak = 10; }
   state.rollReadyAt = now + cooldown() * 1000;
@@ -2180,7 +2427,7 @@ function roll() {
    Een item dat de auto-verkoop toch meteen zou verkopen, koopt hij niet (anders verlies je geld). */
 const HOT_CAP = 2000;   // max items in de opslag via Hot-Swap, zodat je save niet ontploft
 const isLocked = it => !!it && state.locked.includes(it.id);
-const shouldAutoSell = it => state.autoSellTier >= 0 && it.tier <= state.autoSellTier && !isAdminItem(it) && !it.mut && !isLocked(it);
+const shouldAutoSell = it => state.autoSellTier >= 0 && it.tier <= state.autoSellTier && !isKeepItem(it) && !it.mut && !isLocked(it);
 function toStorage(it, auto) {
   if (auto && (shouldAutoSell(it) || state.inv.length >= HOT_CAP)) { state.money += sellPrice(it); return false; }
   state.inv.push(it); return true;
@@ -2343,7 +2590,7 @@ function buyUpgrade(id) {   // Shift+klik op de knop koopt zoveel niveaus als je
   state.money -= cost;
   state.up[id] = lvl(id) + 1;
   state.stats.bought++;
-  if (id === 'autoroll' && lvl(id) === 2) { state.rollTiers = [false, true, true, true, true, true, true, true]; state.hotSwap = true; }
+  if (id === 'autoroll' && lvl(id) === 2) { state.rollTiers = [false, true, true, true, true, true, true, false, true]; state.hotSwap = true; }
   if (id === 'cache') state.rollReadyAt = Math.min(state.rollReadyAt, Date.now() + cooldown() * 1000);
   toast(`${u.icon} ${u.name} → ${u.eff(lvl(id))}`, 'buy');
   SFX.upgrade();
@@ -2440,7 +2687,7 @@ function placeBest(it) {   // Shift+klik in de opslag
 }
 function bulkSell() {
   const max = +$('bulkTier').value;
-  const list = state.inv.filter(x => x.tier <= max && !isLocked(x));
+  const list = state.inv.filter(x => x.tier <= max && !isLocked(x) && !isKeepItem(x));
   if (!list.length) return toast('Niks om te verkopen');
   const total = list.reduce((a, x) => a + sellPrice(x), 0);
   if (!confirm(`${list.length} items verkopen voor ${fmt(total)}?`)) return;
@@ -2483,6 +2730,7 @@ function importSave() {
    ===================================================================== */
 const randGap = () => (EVENT_GAP[0] + Math.random() * (EVENT_GAP[1] - EVENT_GAP[0])) * 1000;
 function startEvent(def) {
+  if (def.kind === 'bad' && hasFx('ghost')) { toast(`👻 Ghost-protocol: ${def.name} heeft je rack niet gevonden`, 'event'); state.event = null; state.nextEventAt = Date.now() + randGap(); return; }
   let dur = def.dur;
   if (def.id === 'stroom') dur *= 1 - 0.12 * lvl('ups');
   state.event = { id: def.id, until: Date.now() + dur * 1000, fixes: 0 };
@@ -2780,11 +3028,19 @@ function makeOffer() {
 // Nieuwe voorraad bij elk vol uur: 3 boosts
 function ensureShop() {
   const h = curHour();
-  if (state.shop && state.shop.hour === h && state.shop.v === 3) return false;
+  if (state.shop && state.shop.hour === h && state.shop.v === 3) { if (!state.shop.parts) { state.shop.parts = Array.from({ length: PART_OFFERS }, makePartOffer); return true; } return false; }
   const restock = !!state.shop && state.shop.hour !== h;
-  state.shop = { v: 3, hour: h, offers: Array.from({ length: SHOP_OFFERS }, makeOffer) };
+  state.shop = { v: 3, hour: h, offers: Array.from({ length: SHOP_OFFERS }, makeOffer), parts: Array.from({ length: PART_OFFERS }, makePartOffer) };
   if (restock) toast('⚡ Boost-shop heeft nieuwe voorraad!', 'boost');
+  if (restock && hasFx('rootkit') && Math.random() < 0.3 && !kistFull()) {
+    const o = makeOffer(); state.kist.push({ id: state.nextId++, kind: o.kind, tier: o.tier, exp: Date.now() + KIST_TTL });
+    toast(`🦠 Rootkit: ${boostName(o)} gratis meegenomen uit de shop`, 'boost');
+  }
   return true;
+}
+function makePartOffer() {
+  const kinds = Object.keys(PC_KINDS), tier = Math.min(6, rollTier(shopLuck(lvl('supplier'))));
+  return { part: genPart(kinds[Math.floor(Math.random() * kinds.length)], tier), price: Math.round(Math.max(PART_FLOOR[tier], steadyIncome() * 60 * PART_MIN[tier])), sold: false };
 }
 const offerAt = i => state.shop && state.shop.offers ? state.shop.offers[i] : null;
 const boostName = o => BOOSTS[o.kind].names[o.tier];
@@ -3080,8 +3336,8 @@ function graduate() {
   P.totalEarned += old.runEarned;
   P.bestRun = Math.max(P.bestRun, old.runEarned);
   P.fastestRun = P.fastestRun ? Math.min(P.fastestRun, runMs) : runMs;
-  const keep = { prestige: P, careerV: 2, skins: old.skins, skin: old.skin, playerId: old.playerId, redeemed: old.redeemed, muted: old.muted,
-                 seenHelp: true, seenTiers: old.seenTiers, locked: old.locked, found: old.found, stats: old.stats, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
+  const keep = { prestige: P, careerV: 2, pc: old.pc, skins: old.skins, skin: old.skin, playerId: old.playerId, redeemed: old.redeemed, muted: old.muted,
+                 seenHelp: true, seenTiers: old.seenTiers, locked: old.locked, found: old.found, mutSeen: old.mutSeen, stats: old.stats, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
   const admin = permanentItems(), oldUp = old.up;
   state = newState();
   Object.assign(state, keep);
@@ -3240,9 +3496,9 @@ function itemIconId(it) {
 const itemIcon = (it, cls = 'iico') => ico(itemIconId(it), cls);
 
 /* Vensters */
-const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 960, h: 640 }, casino: { w: 940, h: 660 }, career: { w: 1260, h: 760 }, set: { w: 640, h: 640 }, stats: { w: 760, h: 620 }, cat: { w: 980, h: 660 }, term: { w: 620, h: 420 } };
-const WIN_TITLE = { stats: 'stats.exe', cat: 'catalogus.db', set: 'instellingen', career: 'carriere.app', up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
-const WIN_ICON = { stats: 'g-chart', cat: 'g-book', set: 'g-gear', career: 'g-cap', up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
+const WINS = { up: { w: 900, h: 640 }, shop: { w: 940, h: 640 }, inv: { w: 960, h: 640 }, casino: { w: 940, h: 660 }, career: { w: 1260, h: 760 }, pc: { w: 1180, h: 760 }, dev: { w: 760, h: 720 }, set: { w: 640, h: 640 }, stats: { w: 760, h: 620 }, cat: { w: 980, h: 660 }, term: { w: 620, h: 420 } };
+const WIN_TITLE = { dev: 'testtools.sh', pc: 'workstation.exe', stats: 'stats.exe', cat: 'catalogus.db', set: 'instellingen', career: 'carriere.app', up: 'upgrades.app', shop: 'shop.app', inv: 'opslag/', casino: 'casino.exe', term: 'terminal' };
+const WIN_ICON = { dev: 'g-flask', pc: 'g-pc', stats: 'g-chart', cat: 'g-book', set: 'g-gear', career: 'g-cap', up: 'g-up', shop: 'g-shop', inv: 'g-box', casino: 'g-dice', term: 'g-term' };
 const openWins = new Set();
 let zTop = 30, focusedWin = null;
 function openWin(id) {
@@ -3259,6 +3515,8 @@ function openWin(id) {
   if (id === 'set') renderSettings();
   if (id === 'stats') renderStats();
   if (id === 'cat') renderCat();
+  if (id === 'pc') renderPC();
+  if (id === 'dev') renderDev();
   if (id === 'shop') ui.shopSeen = state.shop && state.shop.hour, saveUi();
 }
 function placeWin(el, id) {
@@ -3367,6 +3625,8 @@ function setMobileTab(t) {
   if (t === 'career') renderCareer();
   if (t === 'set') renderSettings();
   if (t === 'stats') renderStats();
+  if (t === 'pc') renderPC();
+  if (t === 'dev') renderDev();
   if (t === 'cat') renderCat();
   if (t === 'shop') { ui.shopSeen = state.shop && state.shop.hour; saveUi(); }
   closeStart();
@@ -3429,6 +3689,422 @@ function renderSettings() {
     </section>`);
 }
 
+/* ---------- Levende mutaties: Vintage groeit, Chaotisch wisselt, Oververhit brandt door, Geïnfecteerd verspreidt ---------- */
+let mutRecalcAt = 0;
+function mutTick(dt) {
+  const now = Date.now(), bucket = Math.floor(now / 600e3);
+  let changed = false;
+  const locs = [{ kind: 'router' }, { kind: 'router2' }, ...state.switches.map((_, i) => ({ kind: 'switch', i })), ...state.rack.flatMap((u, i) => COMP.map(k => ({ kind: 'u', u: i, slot: k })))];
+  for (const loc of locs) {
+    const x = getAt(loc); if (!x || !x.mut) continue;
+    if (x.mut === 'vintage' && (x.mv || 1) < 4) { x.mv = Math.min(4, (x.mv || 1) + 0.1 * dt / 3600); changed = true; }
+    if (x.mut === 'chaos' && x.cb !== bucket) { if (x.cb != null) x.mv = Math.round((0.5 + Math.random() * 4.5) * 100) / 100; x.cb = bucket; changed = true; }
+    if (x.mut === 'hot' && Math.random() < 0.01 / 3600 * dt) { setAt(loc, null); toast(`🌡️ Je oververhitte ${x.name} is doorgebrand!`, 'event'); changed = true; save(); renderAll(); }
+    if (x.mut === 'infect' && loc.kind === 'u' && Math.random() < 0.1 / 3600 * dt) {
+      const cand = [loc.u - 1, loc.u + 1].filter(j => state.rack[j]).flatMap(j => COMP.map(k => state.rack[j][k])).filter(y => y && !y.mut && !isKeepItem(y));
+      if (cand.length) { const y = cand[Math.floor(Math.random() * cand.length)]; setMut(y, 'infect'); toast(`🦠 De infectie verspreidde zich naar ${y.name}`, 'event'); changed = true; save(); renderAll(); }
+    }
+  }
+  if (changed && now - mutRecalcAt > 3000) { mutRecalcAt = now; incomeCache = totalIncome(); renderRack(); }
+}
+
+/* ---------- Eigen PC ---------- */
+const PC = () => state.pc;
+const rnd = (a, b) => a + Math.random() * (b - a);
+const fmtRC = n => '₿' + fmtNum(n, n < 10 ? 2 : n < 100 ? 1 : 0);
+function genPart(kind, tier) {
+  const p = { id: state.nextId++, kind, tier };
+  if (kind === 'mobo') { p.socket = SOCKETS[Math.floor(Math.random() * 3)]; p.mem = p.socket === 'AM4' ? 'DDR4' : p.socket === 'AM5' ? 'DDR5' : Math.random() < 0.5 ? 'DDR4' : 'DDR5';
+    p.name = `${PC_NAMES.mobo[tier]} ${p.socket}`; p.mult = 1 + 0.05 * tier; }
+  if (kind === 'cpu') { p.socket = SOCKETS[Math.floor(Math.random() * 3)]; p.name = PC_NAMES.cpu[p.socket][tier]; p.w = PC_CPU_W[tier]; p.perf = Math.round(PC_PERF[tier] * rnd(0.88, 1.12)); }
+  if (kind === 'gpu') { p.name = PC_NAMES.gpu[tier]; p.w = PC_GPU_W[tier]; p.perf = Math.round(PC_PERF[tier] * 1.1 * rnd(0.88, 1.12)); }
+  if (kind === 'ram') { p.mem = Math.random() < 0.25 + tier * 0.1 ? 'DDR5' : 'DDR4'; p.name = PC_NAMES.ram[p.mem][tier]; p.mult = 1 + 0.08 * tier; }
+  if (kind === 'psu') { p.name = PC_NAMES.psu[tier]; p.cap = PC_PSU_W[tier]; }
+  if (kind === 'cool') { p.name = PC_NAMES.cool[tier]; p.cap = PC_COOL[tier]; }
+  if (kind === 'net') { p.name = PC_NAMES.net[tier]; p.decay = 1 + 0.5 * tier; }
+  return p;
+}
+const PART_SPEC = { mobo: p => `${p.socket} · ${p.mem}`, cpu: p => `${p.socket} · ${p.w}W · ${p.perf} pt`, gpu: p => `${p.w}W · ${p.perf} pt`, ram: p => `${p.mem} · ×${fmtNum(p.mult)}`,
+  psu: p => `${p.cap}W`, cool: p => `koelt ${p.cap}W`, net: p => `Heat zakt ×${fmtNum(p.decay)}` };
+const partSpec = p => PART_SPEC[p.kind](p);
+const part = k => PC().parts.find(p => p.id === PC().build[k]) || null;
+function pcDrop(tier) {
+  if (PC().parts.length >= PC_PARTS_MAX) return;
+  const kinds = Object.keys(PC_KINDS), p = genPart(kinds[Math.floor(Math.random() * kinds.length)], Math.min(6, tier));
+  PC().parts.push(p);
+  toast(`🖥️ Zeldzame vondst: ${TIERS[p.tier].name} ${p.name} voor je eigen PC!`, 'roll');
+}
+// POST: wat houdt je PC tegen? (beep codes)
+function pcErrors() {
+  const e = [], b = k => part(k);
+  if (!b('mobo')) return [['1 lang', 'Geen moederbord gevonden']];
+  if (!b('psu')) e.push(['geen beep', 'Geen voeding: er gebeurt niets']);
+  if (!b('cpu')) e.push(['1 lang, 1 kort', 'Geen processor']);
+  else if (b('cpu').socket !== b('mobo').socket) e.push(['1 lang, 2 kort', `Socket past niet: ${b('cpu').socket}-CPU op een ${b('mobo').socket}-bord`]);
+  if (!b('ram')) e.push(['3 kort', 'Geen geheugen']);
+  else if (b('ram').mem !== b('mobo').mem) e.push(['3 kort', `Verkeerd geheugen: ${b('ram').mem} in een ${b('mobo').mem}-bord`]);
+  if (!b('gpu')) e.push(['1 lang, 3 kort', 'Geen grafische kaart']);
+  if (!b('cool')) e.push(['5 kort', 'Geen koeling: de CPU wordt te heet']);
+  if (b('psu') && b('psu').cap < pcWatt()) e.push(['knal', `Voeding te zwak: ${pcWatt()}W nodig, ${b('psu').cap}W beschikbaar`]);
+  return e;
+}
+const pcWatt = () => Math.round(((part('cpu') || {}).w || 0) * (1 + 0.15 * PC().oc) + ((part('gpu') || {}).w || 0) * (1 + 0.1 * PC().oc) + 60);
+const pcHot = () => ((part('cpu') || {}).w || 0) * (1 + 0.15 * PC().oc);      // hitte die de koeling moet wegwerken
+const pcThrottle = () => { const c = part('cool'); return c ? Math.min(1, c.cap / Math.max(1, pcHot())) : 0; };
+const pcBoots = () => !pcErrors().length;
+const pcStatus = () => { const now = Date.now(), P = PC();
+  if (P.seizedUntil > now) return 'seized'; if (P.crashUntil > now) return 'crash'; return pcBoots() ? 'on' : 'post'; };
+function pcScore() {
+  if (!pcBoots()) return 0;
+  const c = part('cpu'), g = part('gpu');
+  return Math.round((c.perf + g.perf) * part('ram').mult * part('mobo').mult * (1 + 0.25 * PC().oc) * pcThrottle());
+}
+const pcOnline = () => pcStatus() === 'on';
+const mineRate = () => pcOnline() && PC().mining ? pcScore() / 2000 : 0;   // RackCoin per seconde
+function gainRC(n, why) { PC().rc += n; PC().rcTotal += n; return n; }
+function addHeat(n) { PC().heat = Math.max(0, Math.min(100, PC().heat + n)); }
+function giveFrag(ch) { if (Math.random() < ch) { PC().frag++; toast('🧩 Exploit-fragment gevonden!', 'roll'); return true; } return false; }
+// elke seconde
+function pcTick(dt) {
+  const P = PC(), now = Date.now();
+  if (!P) return;
+  const r = mineRate(); if (r) gainRC(r * dt);
+  // Heat zakt langzaam (sneller met een netwerkkaart)
+  const net = part('net'); addHeat(-(2 / 60) * dt * (net ? net.decay : 1));
+  // overklokken: kans op crash of een doorgebrand onderdeel (alleen als de PC werkt)
+  if (pcOnline() && P.oc && (P.mining || P.bounty)) {
+    if (Math.random() < P.oc * 0.005 / 60 * dt) { P.crashUntil = now + 5 * 60e3; toast('💥 Blue screen! Je PC crashte door het overklokken en herstart over 5 min.', 'event'); }
+    else if (Math.random() < P.oc * P.oc * 0.0002 / 60 * dt) {
+      const k = Math.random() < 0.5 ? 'cpu' : 'gpu', p = part(k);
+      if (p) { P.parts = P.parts.filter(x => x.id !== p.id); delete P.build[k]; toast(`🔥 Je ${p.name} is doorgebrand door het overklokken!`, 'event'); beep([200, 120], 0.2, 'sawtooth'); }
+    }
+  }
+  // inval bij hoge Heat
+  if (P.heat > 60 && P.seizedUntil < now && Math.random() < (P.heat - 60) / 500 / 60 * dt) {
+    const lost = P.rc * 0.2; P.rc -= lost; P.seizedUntil = now + 30 * 60e3; P.heat = 10; P.mining = false;
+    toast(`🚨 INVAL! De Computer Crime Unit nam je PC 30 min in beslag (−${fmtRC(lost)}).`, 'event'); flash(5); shake();
+  }
+  // bounty klaar
+  if (P.bounty && now >= P.bounty.until) finishBounty();
+  // craften klaar
+  if (P.compile && now >= P.compile.until) finishCompile();
+}
+function finishBounty() {
+  const P = PC(), b = BOUNTIES[P.bounty.i], got = gainRC(Math.round(b.rc * (1 + P.bounty.score / 1000)));
+  P.bounty = null; addHeat(b.heat);
+  toast(`🐛 Bug bounty "${b.name}" afgerond: +${fmtRC(got)}`, 'roll');
+  giveFrag(b.frag);
+}
+function startBounty(i) {
+  const P = PC(); if (P.bounty || !pcOnline()) return;
+  const b = BOUNTIES[i], score = pcScore(), dur = b.min * 60e3 * Math.max(0.25, 300 / (score + 300) * 2);
+  P.bounty = { i, until: Date.now() + dur, start: Date.now(), score };
+  toast(`🐛 Bezig met "${b.name}": klaar over ${fmtDur(dur / 1000)}`); save(); renderPC();
+}
+// CTF: Mastermind
+let ctf = null;
+function startCTF(lv) {
+  const P = PC(), L = CTF_LVL[lv];
+  if (!pcOnline() || ctf || Date.now() < P.ctfAt) return;
+  const pool = Array.from({ length: L.digits }, (_, i) => i).sort(() => Math.random() - 0.5);
+  ctf = { lv, code: pool.slice(0, L.len), rows: [], cur: [], done: false };
+  renderPC();
+}
+function ctfInput(d) {
+  if (!ctf || ctf.done) return;
+  const L = CTF_LVL[ctf.lv];
+  if (d === 'del') ctf.cur.pop();
+  else if (d === 'ok') {
+    if (ctf.cur.length !== L.len) return;
+    const g = ctf.cur.slice(); let hit = 0, near = 0;
+    g.forEach((x, i) => { if (x === ctf.code[i]) hit++; else if (ctf.code.includes(x)) near++; });
+    ctf.rows.push({ g, hit, near }); ctf.cur = [];
+    if (hit === L.len) {
+      const left = L.tries - ctf.rows.length, got = gainRC(Math.round(L.rc * (1 + pcScore() / 500) * (1 + left * 0.15)));
+      ctf.done = 'win'; ctf.got = got; PC().ctfWon++; addHeat(L.heat); giveFrag(L.frag); PC().ctfAt = Date.now() + CTF_COOLDOWN * 1000;
+      beep([660, 880, 1320], 0.08); toast(`🎯 CTF gekraakt: +${fmtRC(got)}`);
+    } else if (ctf.rows.length >= L.tries) { ctf.done = 'lose'; addHeat(L.heat / 2); PC().ctfAt = Date.now() + CTF_COOLDOWN * 1000; beep([300, 200], 0.1, 'triangle'); }
+  } else if (ctf.cur.length < L.len && !ctf.cur.includes(+d)) ctf.cur.push(+d);
+  save(); renderPC();
+}
+// onderdelen
+function installPart(id) {
+  const P = PC(), p = P.parts.find(x => x.id === id); if (!p) return;
+  if (P.build[p.kind] === id) delete P.build[p.kind]; else P.build[p.kind] = id;
+  save(); renderPC();
+  if (p.kind !== 'net' && pcBoots() && P.build[p.kind] === id) { beep([880], 0.06); toast(`✅ POST geslaagd: je PC start op (${pcScore()} punten)`); }
+}
+function scrapPart(id) {
+  const P = PC(), p = P.parts.find(x => x.id === id); if (!p) return;
+  if (p.tier >= 4 && !confirm(`${p.name} demonteren voor ${fmtRC(PC_SCRAP[p.tier])}?`)) return;
+  P.parts = P.parts.filter(x => x.id !== id); if (P.build[p.kind] === id) delete P.build[p.kind];
+  gainRC(PC_SCRAP[p.tier]); toast(`🔧 ${p.name} gedemonteerd: +${fmtRC(PC_SCRAP[p.tier])}`); save(); renderPC();
+}
+function buyPart(i) {
+  const o = state.shop.parts && state.shop.parts[i]; if (!o || o.sold || state.money < o.price) return;
+  if (PC().parts.length >= PC_PARTS_MAX) return toast(`Je onderdelenbak zit vol (${PC_PARTS_MAX}). Demonteer eerst iets.`);
+  state.money -= o.price; o.sold = true; PC().parts.push(o.part);
+  toast(`🖥️ ${o.part.name} gekocht: staat in workstation.exe`, 'buy'); SFX.upgrade(); save(); renderAll();
+}
+// craften
+const hackerDefs = () => Object.values(DEFS).filter(d => d.tier === HACKER_TIER);
+const sacrificeFor = d => state.inv.find(x => x.type === d.type && x.tier === 6 && !isLocked(x) && !isKeepItem(x));
+function startCompile(ref) {
+  const P = PC(), d = DEFS[ref], r = d && RECIPES[d.fx]; if (!r || P.compile) return;
+  if (!pcOnline()) return toast('Je PC moet online zijn om te compileren');
+  const sac = sacrificeFor(d);
+  if (P.rc < r.rc || P.frag < r.frag || !sac) return;
+  if (!confirm(`${d.name} compileren?\n\nKost: ${fmtRC(r.rc)}, ${r.frag} fragmenten en je Quantum ${sac.name} (verdwijnt).\nDuurt ${r.hours} uur.`)) return;
+  P.rc -= r.rc; P.frag -= r.frag; state.inv = state.inv.filter(x => x.id !== sac.id);
+  P.compile = { ref, start: Date.now(), until: Date.now() + r.hours * 3600e3 };
+  toast(`⚙️ ${d.name} wordt gecompileerd…`); save(); renderAll();
+}
+function finishCompile() {
+  const P = PC(), d = DEFS[P.compile.ref]; P.compile = null;
+  if (!d) return;
+  const it = new Item(d.ref, state.nextId++); state.inv.push(it); P.crafted++;
+  if (!state.found.includes(d.ref)) state.found.push(d.ref);
+  toast(`💚 ${d.name} is klaar! Hij staat in je opslag en blijft na afstuderen.`, 'roll');
+  cinematic(it); save(); renderAll();
+}
+
+/* ---------- Exploit-injector ---------- */
+let injSel = null, injMode = 'std', injTarget = '', injBusy = null, injResult = null;
+const injOk = it => it && !isAdminItem(it) && !isHackerItem(it) && !isLocked(it);
+const injFrag = () => INJ_MODES[injMode].frag + (injTarget ? INJ_TARGET_FRAG : 0);
+function startInject() {
+  const P = PC(), it = state.inv.find(x => x.id === injSel);
+  if (!injOk(it) || injBusy || !pcOnline()) return;
+  const cost = injCost(it), fr = injFrag();
+  if (P.rc < cost) return toast('Niet genoeg RackCoin'); if (P.frag < fr) return toast('Niet genoeg fragmenten');
+  if (it.tier >= 4 && injMode !== 'safe' && !confirm(`${TIERS[it.tier].name} ${it.name} injecteren? Er is ${INJ_MODES[injMode].brick}% kans dat hij vernietigd wordt.`)) return;
+  P.rc -= cost; P.frag -= fr; addHeat(5);
+  injBusy = { id: it.id, until: Date.now() + 2200 }; injResult = null;
+  beep([300, 420, 560], 0.05, 'square'); renderPC();
+  setTimeout(finishInject, 2200);
+}
+function finishInject() {
+  const b = injBusy; injBusy = null; if (!b) return;
+  const it = state.inv.find(x => x.id === b.id); if (!it) return renderPC();
+  const M = INJ_MODES[injMode], S = state.stats.inj;
+  let o = pickWeighted({ mut: M.mut, none: M.none, tier: M.tier, brick: M.brick, dup: M.dup });
+  if (o === 'tier' && it.tier >= 6) o = 'mut';   // hoger dan Quantum kan niet: dan maar een mutatie
+  S.n++; S[o]++;
+  it.inj = (it.inj || 0) + 1;
+  const mutOf = x => setMut(x, injTarget && MUTATIONS[injTarget] ? injTarget : randMut(x.mut));
+  if (o === 'mut') { mutOf(it); injResult = { o, txt: `🧬 Mutatie: ${it.name} is nu ${mutLabel(it)}!`, cls: 'win' }; flashColor(MUTATIONS[it.mut].color); }
+  if (o === 'none') injResult = { o, txt: '❌ Patch geweigerd: er gebeurde niets.', cls: 'push' };
+  if (o === 'tier') {
+    const refs = DEFS_BY[it.type][it.tier + 1], nw = new Item(refs[Math.floor(Math.random() * refs.length)], it.id, it.oc);
+    if (it.mut) { nw.mut = it.mut; if (it.mv) nw.mv = it.mv; }
+    nw.inj = it.inj;
+    state.inv[state.inv.indexOf(it)] = nw; trackFound(nw);
+    injResult = { o, txt: `⬆️ Tier +1: ${it.name} werd ${TIERS[nw.tier].name} ${nw.name}!`, cls: 'win' }; flash(nw.tier); SFX.tier(nw.tier);
+  }
+  if (o === 'brick') {
+    state.inv = state.inv.filter(x => x !== it); const sc = Math.round(injCost(it) / 2); gainRC(sc);
+    injResult = { o, txt: `💀 Gebrickt! ${it.name} is vernietigd (schroot: +${fmtRC(sc)}).`, cls: 'lose' }; injSel = null; shake(); beep([200, 110], 0.25, 'sawtooth');
+  }
+  if (o === 'dup') {
+    const cp = new Item(it.ref, state.nextId++, it.oc); cp.inj = it.inj; mutOf(it); mutOf(cp); state.inv.push(cp);
+    injResult = { o, txt: `👾 GLITCH-JACKPOT! ${it.name} is gedupliceerd, en allebei kregen ze een mutatie!`, cls: 'win' }; glitchFx && glitchFx(it); SFX.perfect();
+  }
+  toast(injResult.txt, o === 'none' ? 'sys' : 'roll'); save(); renderAll(); renderPC();
+}
+const trackFound = it => { if (it.ref && !state.found.includes(it.ref)) state.found.push(it.ref); };
+function injectorHtml() {
+  const P = PC(), list = state.inv.filter(injOk).sort((a, b) => b.tier - a.tier || basePrice(b) - basePrice(a)), it = list.find(x => x.id === injSel);
+  const M = INJ_MODES[injMode], cost = it ? injCost(it) : 0, fr = injFrag(), S = state.stats.inj;
+  let h = `<div class="inj"><div class="jh"><b>💉 Exploit-injector</b><small>Injecteer een exploit in een item uit je opslag. Je kunt een mutatie krijgen, een tier omhoog gaan, het item dupliceren… of het compleet bricken. Vergrendelde items 🔒 kunnen niet. Elke injectie op hetzelfde item maakt de volgende ×1,5 duurder.</small></div>
+    <div class="injrow"><select id="injSel"><option value="">— kies een item —</option>${list.map(x => `<option value="${x.id}" ${x.id === injSel ? 'selected' : ''}>${TIERS[x.tier].name} · ${esc(x.name)}${x.mut ? ' · ' + mutLabel(x) : ''}${x.inj ? ` · ${x.inj}× geïnjecteerd` : ''}</option>`).join('')}</select>
+      <select id="injTarget"><option value="">Mutatie: willekeurig</option>${Object.entries(MUTATIONS).map(([k, m]) => `<option value="${k}" ${injTarget === k ? 'selected' : ''}>${m.icon} ${m.name} (+${INJ_TARGET_FRAG} 🧩)</option>`).join('')}</select></div>
+    <div class="seg injseg">${Object.entries(INJ_MODES).map(([k, m]) => `<button class="${injMode === k ? 'on' : ''}" data-act="injMode" data-v="${k}">${m.name}</button>`).join('')}</div>
+    <div class="sub" style="margin:6px 0">${M.desc}</div>
+    <div class="injodds"><span class="g">🧬 ${M.mut}%</span><span>❌ ${M.none}%</span><span class="g">⬆️ ${M.tier}%</span><span class="r">💀 ${M.brick}%</span><span class="j">👾 ${M.dup}%</span></div>`;
+  if (injBusy) h += `<pre class="injlog">$ ./inject --payload=${injMode} --target=${it ? slug(it.name) : '?'}\nInjecting payload… <span class="injbar"></span></pre>`;
+  else if (injResult) h += `<div class="cres ${injResult.cls}">${esc(injResult.txt)}</div>`;
+  h += `<div class="jr"><span>${it ? `Kost ${fmtRC(cost)}${fr ? ` + ${fr} 🧩` : ''} · +5 Heat${it.inj ? ` · al ${it.inj}× geïnjecteerd, volgende keer ${fmtRC(Math.round(cost * INJ_GROW))}` : ''}` : 'Kies eerst een item'}</span><button class="btn" data-act="inject" ${!it || injBusy || !pcOnline() || P.rc < cost || P.frag < fr ? 'disabled' : ''}>Injecteer</button></div>
+    ${S.n ? `<div class="sub" style="margin-top:6px">Log: ${S.n}× geïnjecteerd · ${S.mut} mutaties · ${S.tier} tier-ups · ${S.dup} jackpots · ${S.brick} bricks</div>` : ''}</div>`;
+  return h;
+}
+
+/* workstation.exe */
+let pcTab = 'jobs', pcKind = 'all';
+const PC_ICON = { mobo: 'g-mobo', cpu: 'i-cpu', gpu: 'g-gpu', ram: 'i-ram', psu: 'g-psu', cool: 'g-fan', net: 'g-net' };
+const pcIcon = (k, cls = 'ico') => ico(PC_ICON[k], cls);
+function renderPC() {
+  const w = $('win-pc'); if (!w || w.hidden) return;
+  const P = PC(), st = pcStatus(), now = Date.now(), score = pcScore(), errs = pcErrors();
+  const stTxt = { on: ['ONLINE', 'ok'], post: ['GEEN POST', 'bad'], crash: ['CRASH · herstart ' + mmss(P.crashUntil - now), 'bad'], seized: ['IN BESLAG · ' + mmss(P.seizedUntil - now), 'bad'] }[st];
+  const hc = P.heat > 60 ? 'var(--bad)' : P.heat > 35 ? 'var(--vfd)' : 'var(--good)';
+  setHTML($('pcHud'), `<div class="hud1"><span class="pst ${stTxt[1]}"><i></i>${stTxt[0]}</span><span>Benchmark <b>${fmtNum(score, 0)}</b></span><span>${P.mining && st === 'on' ? `⛏️ <b>${fmtRC(mineRate() * 3600)}</b>/u` : 'minen uit'}</span></div>
+    <div class="hud2"><span class="rcbal">${fmtRC(P.rc)}<small>RackCoin</small></span><span class="frg">🧩 <b>${P.frag}</b><small>fragmenten</small></span>
+    <span class="heat"><small>HEAT</small><i><b style="width:${P.heat}%;background:${hc}"></b></i><em style="color:${hc}">${Math.round(P.heat)}</em></span></div>`);
+  // kast
+  const slots = Object.keys(PC_KINDS).map(k => { const p = part(k);
+    return `<button class="pslot ${p ? 'fill' : ''}" data-act="pcSlot" data-k="${k}" ${p ? `data-t="${p.tier}" style="--tc:var(--c${p.tier})"` : ''} title="${p ? 'Klik om te verwijderen' : 'Klik om een onderdeel te kiezen'}">
+      ${pcIcon(k, 'psico')}<span class="psl">${PC_KINDS[k].label}${PC_KINDS[k].req ? '' : ' <i>optioneel</i>'}</span>
+      <span class="psn">${p ? esc(p.name) : '— leeg —'}</span>${p ? `<span class="pss">${partSpec(p)}</span>` : ''}</button>`; }).join('');
+  const post = errs.length ? `<div class="post bad"><b>POST mislukt</b>${errs.map(([b, t]) => `<div><code>${b}</code> ${esc(t)}</div>`).join('')}</div>`
+    : `<div class="post ok"><b>POST OK</b><div>${part('psu').cap}W voeding · ${pcWatt()}W verbruik · koeling ${Math.round(pcThrottle() * 100)}%${pcThrottle() < 1 ? ' <span style="color:var(--vfd)">(throttling!)</span>' : ''}</div></div>`;
+  const risk = ['Geen risico', 'Kleine kans op een crash', 'Crashes, en soms brandt er iets door', 'Veel risico: onderdelen branden door'][P.oc];
+  setHTML($('pcLeft'), `<div class="case">${slots}</div>${post}
+    <div class="ocbox"><div class="ocl"><b>Overklokken</b><small>+${P.oc * 25}% rekenkracht · ${risk}</small></div><div class="seg">${OC_LABEL.map((l, i) => `<button class="${P.oc === i ? 'on' : ''}" data-act="pcOC" data-v="${i}">${l}</button>`).join('')}</div></div>`);
+  setHTML($('pcTabs'), [['jobs', '⚡ Jobs'], ['parts', `🧰 Onderdelen (${P.parts.length}/${PC_PARTS_MAX})`], ['craft', '💚 Hacker-lab & injector']].map(([k, n]) => `<button class="chip ${pcTab === k ? 'on' : ''}" data-act="pcTab" data-t="${k}">${n}</button>`).join(''));
+  let h = '';
+  if (pcTab === 'jobs') {
+    const off = st !== 'on', offTxt = { post: 'Je PC start niet op: bouw hem eerst af (zie POST).', crash: 'Je PC herstart na een crash…', seized: 'Je PC is in beslag genomen. Laat je Heat volgende keer niet zo oplopen!' }[st];
+    if (off) h += `<div class="pcwarn">${offTxt}</div>`;
+    h += `<div class="job"><div class="jh"><b>⛏️ Minen</b><small>Passief: je PC mint RackCoin, ook als je offline bent. Geen Heat.</small></div>
+      <div class="jr"><span>${fmtRC(score / 2000 * 3600)} per uur</span><button class="btn ${P.mining ? 'sec' : ''}" data-act="pcMine" ${off ? 'disabled' : ''}>${P.mining ? 'Stoppen' : 'Start minen'}</button></div></div>`;
+    // CTF
+    h += `<div class="job"><div class="jh"><b>🎯 Capture the Flag</b><small>Kraak de code in de terminal. Groen = juist cijfer op de juiste plek, geel = juist cijfer op een andere plek. Elk cijfer komt maar één keer voor.</small></div>`;
+    if (ctf) {
+      const L = CTF_LVL[ctf.lv];
+      h += `<div class="ctf"><div class="ctfrows">${ctf.rows.map(r => `<div class="crow"><span class="cg">${r.g.join(' ')}</span><span class="pegs">${'<i class="h"></i>'.repeat(r.hit)}${'<i class="n"></i>'.repeat(r.near)}${'<i></i>'.repeat(L.len - r.hit - r.near)}</span></div>`).join('')}
+        ${ctf.done ? '' : `<div class="crow cur"><span class="cg">${Array.from({ length: L.len }, (_, i) => ctf.cur[i] ?? '_').join(' ')}</span><span class="sub">poging ${ctf.rows.length + 1}/${L.tries}</span></div>`}</div>`;
+      if (ctf.done) h += `<div class="cres ${ctf.done === 'win' ? 'win' : 'lose'}">${ctf.done === 'win' ? `ACCESS GRANTED · +${fmtRC(ctf.got)}` : `ACCESS DENIED · de code was ${ctf.code.join(' ')}`}</div><button class="btn sec" data-act="ctfClose">Sluiten</button>`;
+      else h += `<div class="keys">${Array.from({ length: L.digits }, (_, d) => `<button class="key" data-act="ctfKey" data-v="${d}" ${ctf.cur.includes(d) ? 'disabled' : ''}>${d}</button>`).join('')}<button class="key wide" data-act="ctfKey" data-v="del">⌫</button><button class="key wide ok" data-act="ctfKey" data-v="ok">ENTER</button></div>`;
+    } else {
+      const wait = P.ctfAt - now;
+      h += `<div class="jr">${wait > 0 ? `<span>Volgende CTF over ${mmss(wait)}</span>` : '<span>Kies een moeilijkheid</span>'}<span class="row3">${CTF_LVL.map((L, i) => `<button class="btn sm ${i ? 'sec' : ''}" data-act="ctfStart" data-v="${i}" ${off || wait > 0 ? 'disabled' : ''} title="~${fmtRC(L.rc * (1 + score / 500))} · ${Math.round(L.frag * 100)}% kans op een fragment · +${L.heat} Heat">${L.name}</button>`).join('')}</span></div>`;
+    }
+    h += '</div>';
+    // bounty
+    h += `<div class="job"><div class="jh"><b>🐛 Bug bounty</b><small>Je PC werkt een contract af, ook offline. Hoe hoger je benchmark, hoe sneller. Eén tegelijk.</small></div>`;
+    if (P.bounty) { const b = BOUNTIES[P.bounty.i], pct = Math.min(100, (now - P.bounty.start) / (P.bounty.until - P.bounty.start) * 100);
+      h += `<div class="jr"><span>${b.name} · nog ${fmtDur((P.bounty.until - now) / 1000)}</span></div><div class="gradbar"><div style="width:${pct}%"></div></div>`; }
+    else h += `<div class="bounties">${BOUNTIES.map((b, i) => `<button class="bcont" data-act="bounty" data-v="${i}" ${off ? 'disabled' : ''}><b>${b.name}</b><small>${fmtDur(b.min * 60 * Math.max(0.25, 300 / (score + 300) * 2))} · ~${fmtRC(b.rc * (1 + score / 1000))} · ${Math.round(b.frag * 100)}% fragment · +${b.heat} Heat</small></button>`).join('')}</div>`;
+    h += '</div><div class="snote">🚨 <b>Heat</b> stijgt door CTF\'s en bounties en zakt langzaam (sneller met een netwerkkaart). Boven 60 kan de Computer Crime Unit binnenvallen: je verliest 20% RackCoin en je PC ligt 30 minuten stil.</div>';
+  }
+  if (pcTab === 'parts') {
+    const kinds = ['all', ...Object.keys(PC_KINDS)], list = P.parts.filter(p => pcKind === 'all' || p.kind === pcKind).sort((a, b) => a.kind.localeCompare(b.kind) || b.tier - a.tier);
+    h += `<div class="cattabs">${kinds.map(k => `<button class="chip ${pcKind === k ? 'on' : ''}" data-act="pcKind" data-k="${k}">${k === 'all' ? 'Alles' : PC_KINDS[k].label}</button>`).join('')}</div>`;
+    h += list.length ? `<div class="plist">${list.map(p => { const on = P.build[p.kind] === p.id;
+      return `<div class="pitem ${on ? 'on' : ''}" data-t="${p.tier}" style="--tc:var(--c${p.tier})">${pcIcon(p.kind, 'piico')}<div class="pit"><span class="ptier">${TIERS[p.tier].name} · ${PC_KINDS[p.kind].label}</span><b>${esc(p.name)}</b><small>${partSpec(p)}</small></div>
+        <div class="pib"><button class="btn sm ${on ? 'sec' : ''}" data-act="pcPart" data-id="${p.id}">${on ? 'Eruit' : 'Installeer'}</button><button class="ghost sm" data-act="pcScrap" data-id="${p.id}" title="Demonteren voor ${fmtRC(PC_SCRAP[p.tier])}">${ico('g-trash')}</button></div></div>`; }).join('')}</div>`
+      : `<div class="sub" style="padding:20px 0">Nog geen onderdelen. Koop ze in de <b>Shop → PC-onderdelen</b> (elk uur nieuwe voorraad), of vind er af en toe een bij het rollen.</div>`;
+  }
+  if (pcTab === 'craft') {
+    h += injectorHtml();
+    if (P.compile) { const d = DEFS[P.compile.ref], pct = Math.min(100, (now - P.compile.start) / (P.compile.until - P.compile.start) * 100);
+      h += `<div class="compile"><div class="cmpt">⚙️ <b>${esc(d.name)}</b> wordt gecompileerd… nog ${fmtDur((P.compile.until - now) / 1000)}</div><div class="gradbar"><div style="width:${pct}%;background:linear-gradient(90deg,#1f9d63,#39ff88)"></div></div><pre class="cmplog">$ gcc -O3 ${slug(d.name)}.c -o ${slug(d.name)}\n[${'#'.repeat(Math.round(pct / 5)).padEnd(20, '.')}] ${Math.round(pct)}%</pre></div>`; }
+    h += `<div class="sub" style="margin:4px 0 10px">Hacker-items zijn de sterkste items naast Secret, met een uniek effect. Ze <b>blijven na afstuderen</b>. Elk recept kost RackCoin, exploit-fragmenten en één <b>Quantum-item van hetzelfde type</b> uit je opslag (dat verdwijnt).</div><div class="recipes">`;
+    for (const d of hackerDefs()) {
+      const r = RECIPES[d.fx], sac = sacrificeFor(d), okRC = P.rc >= r.rc, okF = P.frag >= r.frag, ok = okRC && okF && sac && !P.compile && st === 'on';
+      h += `<div class="recipe" data-t="7" style="--tc:var(--c7)"><div class="rh">${itemIcon(d, 'rcico')}<div><b>${esc(d.name)}</b><small>${TYPES[d.type].label} · Hacker · ${statText(new Item(d.ref, 0))}</small></div></div>
+        <div class="rfx">${HFX[d.fx]}</div>
+        <div class="rneed"><span class="${okRC ? 'ok' : ''}">${fmtRC(r.rc)}</span><span class="${okF ? 'ok' : ''}">🧩 ${r.frag}</span><span class="${sac ? 'ok' : ''}">Quantum ${TYPES[d.type].label}${sac ? ' ✓' : ''}</span><span>⏱ ${r.hours}u</span></div>
+        <button class="btn" data-act="compile" data-ref="${d.ref}" ${ok ? '' : 'disabled'}>Compileer</button></div>`;
+    }
+    h += '</div>';
+  }
+  setHTML($('pcMain'), h);
+  $('pcMeta').textContent = `${fmtRC(P.rc)} · ${stTxt[0].toLowerCase()}`;
+}
+
+/* ---------- Test-tools (alleen beta) ---------- */
+const devItem = (type, tier) => { const refs = DEFS_BY[type][tier]; return refs && refs.length ? new Item(refs[Math.floor(Math.random() * refs.length)], state.nextId++) : null; };
+function devFill(n, tierFn) {   // rack vullen met n U's
+  state.rack = Array.from({ length: n }, (_, i) => ({ cpu: devItem('cpu', tierFn(i)), ram: devItem('ram', tierFn(i)), storage: devItem('storage', tierFn(i)) }));
+  state.router = devItem('router', tierFn(0)); ensureSwitchSlots(); state.switches = state.switches.map((_, i) => devItem('switch', tierFn(i)));
+}
+function devPC(t) {   // een werkende PC bouwen van tier t
+  const P = PC(), sock = SOCKETS[Math.floor(Math.random() * 3)], mk = (k, o) => { const p = Object.assign(genPart(k, t), o || {}); P.parts.push(p); P.build[k] = p.id; return p; };
+  const mb = mk('mobo', { socket: sock }); mb.name = `${PC_NAMES.mobo[t]} ${sock}`;
+  const c = mk('cpu', { socket: sock }); c.name = PC_NAMES.cpu[sock][t];
+  const r = mk('ram', { mem: mb.mem }); r.name = PC_NAMES.ram[mb.mem][t];
+  mk('gpu'); const ps = mk('psu'); ps.cap = Math.max(ps.cap, pcWatt() + 100); mk('cool', { cap: Math.max(PC_COOL[t], c.w * 1.6) }); mk('net');
+  P.seizedUntil = 0; P.crashUntil = 0;
+}
+function devSkip(h) {   // tijd vooruitspoelen
+  const ms = h * 3600e3, P = PC(), back = o => o && (o.until -= ms, o.start && (o.start -= ms));
+  state.money += incomeCache * h * 3600; state.runEarned += incomeCache * h * 3600;
+  const r = mineRate(); if (r) gainRC(r * h * 3600);
+  addHeat(-(2 / 60) * h * 3600);
+  back(P.bounty); back(P.compile); P.ctfAt -= ms; P.seizedUntil -= ms; P.crashUntil -= ms;
+  for (const k in state.boosts) state.boosts[k].until -= ms;
+  state.kist.forEach(x => x.exp -= ms);
+  if (state.event) state.event.until -= ms;
+  state.rollReadyAt -= ms;
+}
+function devPreset(k) {
+  if (!confirm('Je huidige beta-save wordt overschreven met dit test-profiel. Doorgaan?')) return;
+  const keep = { playerId: state.playerId, seenHelp: true, muted: state.muted };
+  state = newState(); Object.assign(state, keep);
+  const all = v => UPGRADES.forEach(u => state.up[u.id] = Math.ceil(u.max * v));
+  if (k === 'early') { state.money = 1e6; devFill(6, () => 2); all(0.3); state.conn = 5; }
+  if (k === 'mid')   { state.money = 1e10; devFill(15, i => i < 5 ? 4 : 3); all(0.6); state.conn = 9; state.prestige.count = 3; state.prestige.ects = 60; }
+  if (k === 'late')  { state.money = 1e13; state.runEarned = 2e12; devFill(28, i => i < 8 ? 6 : 5); all(1); state.conn = CONN.length - 1; state.prestige.count = 10; state.prestige.ects = 250; devPC(4); PC().rc = 3000; PC().frag = 4; }
+  if (k === 'end')   { state.money = 1e16; state.runEarned = 1e15; devFill(42, () => 6); all(1); state.conn = CONN.length - 1; state.prestige.count = 25; state.prestige.ects = 1200; state.prestige.ectsTotal = 2000;
+    NODES.forEach(n => { if (n.max !== Infinity && Math.random() < 0.6) state.prestige.nodes[n.id] = n.max; });
+    devPC(6); PC().rc = 25000; PC().frag = 20; COMP.concat(['switch', 'router']).forEach(t => state.inv.push(devItem(t, 6))); }
+  state.hotSwap = lvl('autoroll') >= 2; state.rollTiers = newState().rollTiers;
+  ensureSwitchSlots(); ensureShop(); incomeCache = totalIncome();
+  bj = cr = null; sel = null; rolling = false; lastSpin = null; ctf = null;
+  save(); renderAll(); renderGame(); renderStaticReels(); renderDev(); toast('🧪 Test-profiel geladen');
+}
+function devAct(a, v) {
+  const P = PC(), sv = () => { save(); renderAll(); renderPC(); renderDev(); };
+  switch (a) {
+    case 'preset': return devPreset(v);
+    case 'money': state.money += +v; toast('🧪 +' + fmt(+v)); break;
+    case 'money100': state.money *= 100; toast('🧪 Saldo ×100'); break;
+    case 'skip': devSkip(+v); toast(`🧪 ${v} uur vooruitgespoeld`); break;
+    case 'turbo': devTurbo = !devTurbo; state.rollReadyAt = 0; toast(`🧪 Turbo-rolls ${devTurbo ? 'aan' : 'uit'}`); break;
+    case 'maxup': UPGRADES.forEach(u => state.up[u.id] = u.max); state.rollTiers = [false, true, true, true, true, true, true, false, true]; state.hotSwap = true; toast('🧪 Alle upgrades max'); break;
+    case 'fiber': state.conn = CONN.length - 1; state.rollReadyAt = 0; toast('🧪 Glasvezel'); break;
+    case 'item': { const it = devItem($('devType').value, +$('devTier').value); if (it) { if ($('devMut').value) setMut(it, $('devMut').value); state.inv.push(it); toast(`🧪 ${TIERS[it.tier].name} ${it.name} in je opslag`); } break; }
+    case 'quantumAll': COMP.concat(['switch', 'router']).forEach(t => state.inv.push(devItem(t, 6))); toast('🧪 1 Quantum van elk type in je opslag'); break;
+    case 'hackerAll': hackerDefs().forEach(d => state.inv.push(new Item(d.ref, state.nextId++))); toast('🧪 Alle Hacker-items in je opslag'); break;
+    case 'force': devForce = +$('devTier').value; toast(`🧪 Volgende roll wordt ${TIERS[devForce].name}`); break;
+    case 'run': state.runEarned += gradReq(); toast('🧪 +' + fmt(gradReq()) + ' run-verdiend (genoeg om af te studeren)'); break;
+    case 'ects': state.prestige.ects += 100; state.prestige.ectsTotal += 100; toast('🧪 +100 ECTS'); break;
+    case 'grads': state.prestige.count += 5; toast(`🧪 Rang: ${rankName()}`); break;
+    case 'careerReset': state.prestige = newPrestige(); toast('🧪 Carrière gereset'); break;
+    case 'pc': devPC(+$('devPcTier').value); toast('🧪 Werkende PC gebouwd'); break;
+    case 'parts': for (let i = 0; i < 8 && P.parts.length < PC_PARTS_MAX; i++) { const k = Object.keys(PC_KINDS); P.parts.push(genPart(k[Math.floor(Math.random() * k.length)], Math.floor(Math.random() * 7))); } toast('🧪 Random onderdelen erbij'); break;
+    case 'rc': gainRC(+v); toast('🧪 +' + fmtRC(+v)); break;
+    case 'frag': P.frag += +v; toast(`🧪 +${v} fragmenten`); break;
+    case 'heat': P.heat = +v; toast(`🧪 Heat = ${v}`); break;
+    case 'finish': if (P.bounty) P.bounty.until = Date.now() - 1; if (P.compile) P.compile.until = Date.now() - 1; P.ctfAt = 0; P.seizedUntil = 0; P.crashUntil = 0; toast('🧪 Timers van je PC klaar'); break;
+    case 'ctfCode': if (ctf) toast(`🧪 CTF-code: ${ctf.code.join(' ')}`); else toast('Er loopt geen CTF'); break;
+    case 'restock': state.shop = null; ensureShop(); toast('🧪 Shop opnieuw gevuld'); break;
+    case 'event': { const d = EVENTS.find(e => e.id === $('devEvent').value); if (d) startEvent(d); break; }
+    case 'copyMain': { const raw = localStorage.getItem('rackrng-save-v1'); if (!raw) return toast('Geen echte save gevonden in deze browser');
+      if (!confirm('Je beta-save wordt vervangen door een kopie van je echte save. Doorgaan?')) return;
+      state = fromJSON(JSON.parse(raw)); ensureSwitchSlots(); sel = null; toast('🧪 Echte save gekopieerd'); renderStaticReels(); break; }
+    case 'wipe': if (!confirm('Beta-save wissen?')) return; localStorage.removeItem(SAVE_KEY); state = newState(); state.seenHelp = true; sel = null; renderStaticReels(); toast('🧪 Beta-save gewist'); break;
+  }
+  incomeCache = totalIncome(); sv();
+}
+const devBtn = (a, label, v = '', cls = 'sec') => `<button class="btn sm ${cls}" data-act="dev" data-a="${a}" data-v="${v}">${label}</button>`;
+function renderDev() {
+  const b = $('devBody'); if (!b || $('win-dev').hidden) return;
+  const tiers = TIERS.map((t, i) => t.hidden ? '' : `<option value="${i}" ${i === 6 ? 'selected' : ''}>${t.name}</option>`).join('');
+  setHTML(b, `<div class="sub" style="margin-bottom:10px">Alleen in de beta. Alles hier raakt alleen je beta-save. Gebruik een profiel om meteen late-game features te testen.</div>
+    <section class="sgrp"><h4>🚀 Snelstart-profielen</h4><div class="devrow">
+      ${devBtn('preset', 'Vroeg', 'early')}${devBtn('preset', 'Midden', 'mid')}${devBtn('preset', 'Laat', 'late')}${devBtn('preset', 'Endgame', 'end', '')}</div>
+      <div class="sub">Vroeg: 6U Rare · Midden: 15U Epic/Legendary, 3 diploma's · Laat: 28U Mythic/Quantum, 10 diploma's, werkende PC · Endgame: 42U Quantum, 25 diploma's, top-PC, ₿25.000, 20 fragmenten en een Quantum van elk type.</div></section>
+    <section class="sgrp"><h4>💶 Geld & tijd</h4><div class="devrow">
+      ${devBtn('money', '+€1M', 1e6)}${devBtn('money', '+€1B', 1e9)}${devBtn('money', '+€1T', 1e12)}${devBtn('money100', 'Saldo ×100')}</div><div class="devrow">
+      ${devBtn('skip', '+1 uur', 1)}${devBtn('skip', '+8 uur', 8)}${devBtn('skip', '+24 uur', 24)}${devBtn('turbo', devTurbo ? 'Turbo-rolls: AAN' : 'Turbo-rolls: uit', '', devTurbo ? '' : 'sec')}</div>
+      <div class="sub">Vooruitspoelen geeft inkomen en mining, en laat bounties, compileren, boosts en kist-items verder aflopen.</div></section>
+    <section class="sgrp"><h4>🎲 Items & rolls</h4><div class="devrow">
+      <select id="devType">${Object.keys(TYPES).map(t => `<option value="${t}">${TYPES[t].label}</option>`).join('')}</select><select id="devTier">${tiers}</select><select id="devMut"><option value="">geen mutatie</option>${Object.entries(MUTATIONS).map(([k, m]) => `<option value="${k}">${m.icon} ${m.name}</option>`).join('')}</select>
+      ${devBtn('item', 'Geef item', '', '')}${devBtn('force', 'Volgende roll = deze tier')}</div><div class="devrow">
+      ${devBtn('quantumAll', '1 Quantum van elk type')}${devBtn('hackerAll', 'Alle Hacker-items')}${devBtn('maxup', 'Alle upgrades max')}${devBtn('fiber', 'Glasvezel')}</div></section>
+    <section class="sgrp"><h4>🎓 Carrière</h4><div class="devrow">
+      ${devBtn('run', 'Genoeg voor diploma')}${devBtn('ects', '+100 ECTS')}${devBtn('grads', '+5 diploma’s')}${devBtn('careerReset', 'Reset carrière')}</div></section>
+    <section class="sgrp"><h4>🖥️ Eigen PC</h4><div class="devrow">
+      <select id="devPcTier">${TIERS.slice(0, 7).map((t, i) => `<option value="${i}" ${i === 4 ? 'selected' : ''}>${t.name}</option>`).join('')}</select>${devBtn('pc', 'Bouw werkende PC', '', '')}${devBtn('parts', '+8 random onderdelen')}</div><div class="devrow">
+      ${devBtn('rc', '+₿1.000', 1000)}${devBtn('rc', '+₿10.000', 10000)}${devBtn('frag', '+5 fragmenten', 5)}${devBtn('finish', 'Timers klaar')}</div><div class="devrow">
+      ${devBtn('heat', 'Heat 0', 0)}${devBtn('heat', 'Heat 90', 90)}${devBtn('ctfCode', 'Toon CTF-code')}</div></section>
+    <section class="sgrp"><h4>⚡ Shop & events</h4><div class="devrow">
+      ${devBtn('restock', 'Shop nu restocken')}<select id="devEvent">${EVENTS.map(e => `<option value="${e.id}">${e.icon} ${e.name}</option>`).join('')}</select>${devBtn('event', 'Start event')}</div></section>
+    <section class="sgrp"><h4>💾 Save</h4><div class="devrow">${devBtn('copyMain', 'Kopieer echte save')}${devBtn('wipe', 'Beta-save wissen')}</div></section>`);
+}
+
 /* Statistieken */
 const incHist = [];
 setInterval(() => { incHist.push(incomeCache); if (incHist.length > 90) incHist.shift(); if (!$('win-stats').hidden) renderStats(); }, 10000);
@@ -3448,7 +4124,7 @@ function renderStats() {
       <svg class="incsvg" viewBox="0 0 400 120" preserveAspectRatio="none"><path d="${path}L400,120L0,120Z" fill="rgba(61,220,151,.15)"/><path d="${path}" fill="none" stroke="var(--good)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
       <div class="sub">Piek ${fmt(hi)}/s · elke 10 seconden een meting, zolang de game open staat</div></div>
     <div class="sgrp"><h4>${ico('g-roll')} Rolls per rarity</h4>
-      ${TIERS.map((t, i) => t.hidden && !S.tiers[i] ? '' : `<div class="tbar" style="--tc:var(--c${i})"><span>${t.name}</span><i><b style="width:${S.tiers[i] / mx * 100}%"></b></i><em>${fmtNum(S.tiers[i] || 0, 0)}</em><small>${i === SECRET_TIER && !secretKnown() ? '???' : S.tiers[i] ? (S.tiers[i] / tot * 100 < 0.1 ? '<0,1' : fmtNum(S.tiers[i] / tot * 100, 1)) + '%' : ''}</small></div>`).join('')}
+      ${TIERS.map((t, i) => (t.hidden || t.crafted) && !S.tiers[i] ? '' : `<div class="tbar" style="--tc:var(--c${i})"><span>${t.name}</span><i><b style="width:${S.tiers[i] / mx * 100}%"></b></i><em>${fmtNum(S.tiers[i] || 0, 0)}</em><small>${i === SECRET_TIER && !secretKnown() ? '???' : S.tiers[i] ? (S.tiers[i] / tot * 100 < 0.1 ? '<0,1' : fmtNum(S.tiers[i] / tot * 100, 1)) + '%' : ''}</small></div>`).join('')}
     </div>
     <div class="sgrp"><h4>${ico('g-box')} Overig</h4>
       <div class="kv"><span>Beste vondst ooit</span><b style="color:var(--c${best ? best.tier : 0})">${best ? `${TIERS[best.tier].name} ${esc(best.name)}` : '–'}</b></div>
@@ -3470,6 +4146,8 @@ function renderCat() {
     return `<button class="chip ${catType === t ? 'on' : ''}" data-act="catType" data-t="${t}">${t === 'all' ? 'Alles' : TYPES[t].label} <em>${f}/${refs.length}</em></button>`; }).join('')}</div>`;
   const pct = Math.round(found.size / all * 100);
   let h = `<div class="cathead"><div><b>${found.size}</b> van ${all} items ontdekt</div><div class="catbar"><i style="width:${pct}%"></i></div><span>${pct}%</span></div>` + tabs;
+  if (catType === 'all') h += `<div class="catsec"><h4>🧬 Mutaties <em class="sub">${state.mutSeen.length}/${Object.keys(MUTATIONS).length}</em></h4><div class="catgrid">${Object.entries(MUTATIONS).map(([k, m]) => { const ok = state.mutSeen.includes(k);
+    return `<div class="catit ${ok ? 'ok' : ''}" style="--tc:${m.color}" title="${ok ? esc(m.desc) : 'Nog niet ontdekt'}"><span class="ct">${ok ? m.icon : '?'} mutatie</span><span class="cn2">${ok ? m.name : '???'}</span>${ok ? `<span class="cs">${esc(m.desc)}</span>` : ''}</div>`; }).join('')}</div></div>`;
   for (const t of types) {
     if (catType !== 'all' && catType !== t) continue;
     h += `<div class="catsec"><h4>${ico(itemIconId({ type: t, d: {} }), 'ico')} ${TYPES[t].label}</h4><div class="catgrid">`;
@@ -3649,6 +4327,7 @@ function showHelp() {
       <p>🗄️ Elke <b>U</b> in je rack heeft een CPU-, RAM- en storage-slot. Alle drie dezelfde tier = <b>Perfect match ×2</b>.</p>
       <p>🌐 Een <b>router</b> (×) en <b>switches</b> (+%) versterken je hele rack.</p>
       <p>📶 Upgrade je <b>verbinding</b> voor snellere rolls, koop <b>upgrades</b> in de Upgrades-app, en <b>boosts</b> en <b>skins</b> in de shop.</p>
+      <p>🖥️ Bouw je <b>eigen PC</b> in Workstation met onderdelen uit de shop. Let op socket, DDR-generatie en watt. Mine RackCoin, kraak CTF's en craft <b>Hacker-items</b> die na afstuderen blijven.</p>
       <p>🔒 <b>Vergrendel</b> je beste items, dan worden ze nooit per ongeluk verkocht. Te veel meldingen? Zet ze uit in <b>Instellingen</b>.</p>
       <p>🎰 In het <b>casino</b> speel je met je in-game geld. Hogere tafels = hogere inzet.</p>
       <p>⚡ Af en toe gebeurt er een <b>event</b>, goed of slecht. Hou de balk bovenaan in de gaten.</p>
@@ -3762,7 +4441,7 @@ function renderRack() {
   </div>`;
   state.rack.forEach((u, i) => {
     const m = matchInfo(u);
-    const inc = uBase(u) * nm;
+    const inc = uBase(u) * botMult(i) * nm;
     // status-LED's: knipperen sneller naarmate deze U meer verdient
     const blink = inc > 0 ? Math.max(0.16, Math.min(1.8, 1.8 - Math.log10(inc + 1) * 0.22)).toFixed(2) : 0;
     h += `<div class="u ${m.perfect ? 'perfect' : ''} ${inc > 0 ? 'live' : ''} ${celebrate.has(i) ? 'celebrate' : ''} ${newU === i ? 'slidein' : ''}" data-inc="${inc}" style="--blink:${blink}s">
@@ -3844,7 +4523,7 @@ function renderRollMeta() {
   if (lvl('autoroll')) {
     const buy = hotActive();
     t += `<span style="flex-basis:100%"></span><span class="sub">${buy ? '🔥 koop:' : '⏹️ stop bij:'}</span>`
-      + TIERS.filter(x => !x.hidden).map((x, i) => `<button class="chip rar ${state.rollTiers[i] ? 'on' : ''}" style="--tc:var(--c${i})" data-act="rollTier" data-i="${i}" title="${buy ? 'Hot-Swap koopt' : 'Auto-roll stopt bij'} ${x.name}">${x.name}</button>`).join('');
+      + TIERS.map((x, i) => x.hidden || x.crafted ? '' : `<button class="chip rar ${state.rollTiers[i] ? 'on' : ''}" style="--tc:var(--c${i})" data-act="rollTier" data-i="${i}" title="${buy ? 'Hot-Swap koopt' : 'Auto-roll stopt bij'} ${x.name}">${x.name}</button>`).join('');
   }
   if (lvl('autoroll') && lvl('filter')) t += '<span style="flex-basis:100%"></span>';
   if (lvl('filter')) t += `<span class="sub" style="margin-left:4px">🔑 Rol:</span>` +
@@ -3865,6 +4544,7 @@ let shopTab = 'boosts';
 let careerBranch = 'hw';
 const SHOP_TABS = [
   { id: 'boosts', icon: 'g-bolt',  name: 'Boosts',     sub: 'Elk vol uur 3 nieuwe boosts, de prijs staat vast tot de restock' },
+  { id: 'parts',  icon: 'g-pc',    name: 'PC-onderdelen', sub: 'Elk vol uur 4 onderdelen voor je eigen PC (workstation.exe). Let op: niet alles past samen!' },
   { id: 'skins',  icon: 'g-brush', name: 'Rack-skins', sub: 'Puur cosmetisch: geef je rack een nieuwe look' },
   { id: 'soon',   icon: 'g-home',  name: 'Binnenkort', sub: 'Nieuwe categorieën zijn in de maak', soon: true },
 ];
@@ -3876,8 +4556,20 @@ function renderShop() {
   if (shopTab === 'skins') meta = `${state.skins.length}/${SKINS.length} skins`;
   setHTML($('shopHead'), `<div class="shico">${ico(T.icon)}</div><div><h3>${T.name}</h3><div class="sub">${T.sub}</div></div>` +
     (shopTab === 'boosts' ? `<div class="shmeta">restock over<b id="shopTimer2">${shopTimerTxt()}</b></div>` : meta ? `<div class="shmeta">${meta}</div>` : ''));
-  $('ups').className = 'ups ' + (shopTab === 'boosts' ? 'dealgrid' : shopTab === 'soon' ? 'soongrid' : '');
+  $('ups').className = 'ups ' + (shopTab === 'boosts' || shopTab === 'parts' ? 'dealgrid' : shopTab === 'soon' ? 'soongrid' : '');
   if (shopTab === 'boosts') return renderBoostShop();
+  if (shopTab === 'parts') {
+    ensureShop();
+    setHTML($('ups'), state.shop.parts.map((o, i) => { const p = o.part;
+      return `<div class="deal ${o.sold ? 'sold' : ''}" data-t="${p.tier}" style="--tc:var(--c${p.tier})">
+        <div class="dtier">${TIERS[p.tier].name}</div><div class="dico pcico">${pcIcon(p.kind)}</div>
+        <div class="dname">${esc(p.name)}</div><div class="dkind">${PC_KINDS[p.kind].label}</div>
+        <div class="dnote" style="color:#9fb0c7">${partSpec(p)}</div>
+        ${o.sold ? '<div class="dsold">Uitverkocht</div>' : `<div class="dprice">${fmt(o.price)}</div><div class="dbtns" style="grid-template-columns:1fr"><button class="btn" data-act="buyPart" data-i="${i}">Kopen</button></div>`}
+      </div>`; }).join('') + `<div class="snote">Gekochte onderdelen gaan naar <b>workstation.exe</b>. Een CPU past alleen op een moederbord met dezelfde <b>socket</b>, het geheugen moet de juiste <b>DDR-generatie</b> hebben, en je voeding moet genoeg <b>watt</b> leveren. Je onderdelenbak: ${PC().parts.length}/${PC_PARTS_MAX}.</div>`);
+    $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
+    return;
+  }
   if (shopTab === 'soon') {
     setHTML($('ups'), `<div class="soon">
       <svg class="soonart"><use href="#g-home"/></svg>
@@ -3988,7 +4680,7 @@ function renderSel() {
 const secretKnown = () => state.seenTiers.includes(SECRET_TIER) || (state.stats.tiers[SECRET_TIER] || 0) > 0;
 function renderOdds() {
   const o = oddsFor(luck());
-  setHTML($('odds'), TIERS.map((t, i) => t.hidden ? '' : `<span><b style="color:var(--c${i})">${t.name}</b> ${i === SECRET_TIER && !secretKnown() ? '???' : oddsText(o[i])}</span>`).join(''));
+  setHTML($('odds'), TIERS.map((t, i) => t.hidden || t.crafted ? '' : `<span><b style="color:var(--c${i})">${t.name}</b> ${i === SECRET_TIER && !secretKnown() ? '???' : oddsText(o[i])}</span>`).join(''));
 }
 
 function updateAfford() {
@@ -3998,6 +4690,7 @@ function updateAfford() {
   if (cb && nx) cb.disabled = state.money < nx.cost;
   document.querySelectorAll('[data-act="up"]').forEach(b => { b.disabled = state.money < upCost(upDef(b.dataset.id)); });
   document.querySelectorAll('[data-act="buySkin"]').forEach(b => { b.disabled = state.money < SKINS.find(x => x.id === b.dataset.id).price; });
+  document.querySelectorAll('[data-act="buyPart"]').forEach(b => { const o = state.shop.parts && state.shop.parts[+b.dataset.i]; if (o) b.disabled = state.money < o.price; });
   document.querySelectorAll('[data-act="buyBoost"]').forEach(b => {
     const o = offerAt(+b.dataset.i), st = b.dataset.m === 'store';
     if (!o) return;
@@ -4036,11 +4729,14 @@ function frame() {
   requestAnimationFrame(frame);
 }
 
-let lastTick = Date.now();
+let lastTick = Date.now(), pcRenderAt = 0;
 setInterval(() => {
   const now = Date.now();
   const gain = incomeCache * (now - lastTick) / 1000;
   state.money += gain; state.runEarned += gain;
+  pcTick(Math.min(5, (now - lastTick) / 1000));
+  mutTick(Math.min(5, (now - lastTick) / 1000));
+  if (now - pcRenderAt > 1000 && !$('win-pc').hidden) { pcRenderAt = now; renderPC(); }
   if (!document.hidden) state.stats.playMs += Math.min(1000, now - lastTick);
   lastTick = now;
   renderBadges();
@@ -4053,7 +4749,7 @@ setInterval(() => {
   if (state.kist.length && pruneKist()) { save(); renderAll(); }
   if (invView === 'kist') document.querySelectorAll('[data-exp]').forEach(el => { el.textContent = hhmm(+el.dataset.exp - now); });
   { const t = $('shopTimer'), t2 = $('shopTimer2'); if (t) t.textContent = shopTimerTxt(); if (t2) t2.textContent = shopTimerTxt(); }
-  if (shopTab === 'boosts') $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
+  if (shopTab === 'boosts' || shopTab === 'parts') $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
   crTick();
 }, 200);
 setInterval(save, 5000);
@@ -4094,13 +4790,28 @@ document.addEventListener('click', e => {
       let n = 0; while (lvl(u.id) < u.max && state.money >= upCost(u) && n < 500) { state.money -= upCost(u); state.up[u.id] = lvl(u.id) + 1; n++; }
       if (!n) break;
       state.stats.bought += n;
-      if (u.id === 'autoroll' && l0 < 2 && lvl('autoroll') >= 2) { state.rollTiers = [false, true, true, true, true, true, true, true]; state.hotSwap = true; }
+      if (u.id === 'autoroll' && l0 < 2 && lvl('autoroll') >= 2) { state.rollTiers = [false, true, true, true, true, true, true, false, true]; state.hotSwap = true; }
       toast(`${u.icon} ${u.name} ×${n} → ${u.eff(lvl(u.id))}`, 'buy'); SFX.upgrade(); save(); renderAll(); break;
     }
     case 'shopTab': shopTab = el.dataset.t; renderShop(); updateAfford(); break;
     case 'buySkin': buySkin(el.dataset.id); break;
     case 'useSkin': useSkin(el.dataset.id); break;
     case 'buyBoost': buyBoost(+el.dataset.i, el.dataset.m); break;
+    case 'buyPart': buyPart(+el.dataset.i); break;
+    case 'pcTab': pcTab = el.dataset.t; renderPC(); break;
+    case 'pcPart': installPart(+el.dataset.id); break;
+    case 'pcScrap': scrapPart(+el.dataset.id); break;
+    case 'pcSlot': { const id = PC().build[el.dataset.k]; if (id) installPart(id); else { pcTab = 'parts'; pcKind = el.dataset.k; renderPC(); } break; }
+    case 'pcKind': pcKind = el.dataset.k; renderPC(); break;
+    case 'pcOC': PC().oc = +el.dataset.v; save(); renderPC(); break;
+    case 'pcMine': if (pcOnline()) { PC().mining = !PC().mining; save(); renderPC(); } break;
+    case 'ctfStart': startCTF(+el.dataset.v); break;
+    case 'ctfKey': ctfInput(el.dataset.v === 'del' || el.dataset.v === 'ok' ? el.dataset.v : +el.dataset.v); break;
+    case 'ctfClose': ctf = null; renderPC(); break;
+    case 'bounty': startBounty(+el.dataset.v); break;
+    case 'compile': startCompile(el.dataset.ref); break;
+    case 'inject': startInject(); break;
+    case 'injMode': injMode = el.dataset.v; renderPC(); break;
     case 'useKist': useKist(+el.dataset.id); break;
     case 'tossKist': tossKist(+el.dataset.id); break;
     case 'invView': invView = el.dataset.v; renderInv(); updateAfford(); break;
@@ -4149,7 +4860,8 @@ document.addEventListener('click', e => {
     case 'pnode': careerSel = el.dataset.id; renderCareer(); break;
     case 'buyNode': buyNode(el.dataset.id); break;
     case 'graduate': graduate(); break;
-    case 'betaPanel': if (!IS_BETA) break; closeStart(); showBetaPanel(); break;
+    case 'betaPanel': if (!IS_BETA) break; closeStart(); openWin('dev'); break;
+    case 'dev': if (IS_BETA) devAct(el.dataset.a, el.dataset.v); break;
     case 'betaMoney': state.money += +el.dataset.v; save(); renderAll(); toast('🧪 +' + fmt(+el.dataset.v)); break;
     case 'betaRun': state.runEarned += 1e12; save(); renderAll(); toast('🧪 +1T run-verdiend'); break;
     case 'betaEcts': state.prestige.ects += 100; state.prestige.ectsTotal += 100; save(); renderAll(); toast('🧪 +100 ECTS'); break;
@@ -4199,6 +4911,8 @@ document.addEventListener('input', e => {
   if (e.target.id === 'invQ') { invQ = e.target.value; renderInv(); }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'injSel') { injSel = +e.target.value || null; injResult = null; renderPC(); }
+  if (e.target.id === 'injTarget') { injTarget = e.target.value; renderPC(); }
   if (e.target.id === 'invSort') { invSort = e.target.value; renderInv(); }
   if (e.target.id === 'autoSell') { state.autoSellTier = +e.target.value; save(); toast(state.autoSellTier < 0 ? 'Auto-verkoop uit' : `Auto-verkoop: ${$('autoSell').selectedOptions[0].text}`); }
   if (e.target.id === 'admKind') { const m = e.target.value === 'money'; $('admItemF').style.display = m ? 'none' : ''; $('admMoneyF').style.display = m ? '' : 'none'; }
@@ -4229,7 +4943,7 @@ window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() =
 /* =====================================================================
    START
    ===================================================================== */
-$('bulkTier').innerHTML = TIERS.map((t, i) => t.hidden ? '' : `<option value="${i}">${t.name}</option>`).join('');
+$('bulkTier').innerHTML = TIERS.map((t, i) => t.hidden || t.crafted ? '' : `<option value="${i}">${t.name}</option>`).join('');
 if (state.event && Date.now() >= state.event.until) { state.event = null; state.nextEventAt = 0; }
 if (state.careerReset) {
   delete state.careerReset;
@@ -4248,6 +4962,10 @@ if (state.casinoPending > 0) { // pagina gesloten tijdens een casino-spel: inzet
 ensureShop();
 if (new URLSearchParams(location.search).has('admin')) { $('adminBtn').hidden = false; setTimeout(showAdmin, 50); }
 incomeCache = totalIncome();
+{ // eigen PC offline: minen loopt door (zelfde maximum als offline inkomen), Heat zakt
+  const away = Math.min(Date.now() - state.lastSave, offlineMax() * 3600e3) / 1000;
+  if (away > 30) { const r = mineRate(); if (r) { const g = gainRC(r * away); setTimeout(() => toast(`⛏️ Je PC minede offline ${fmtRC(g)}`), 600); } addHeat(-(2 / 60) * away); }
+}
 {
   const elapsedMs = Date.now() - state.lastSave;
   const maxMs = offlineMax() * 3600e3;
@@ -4268,6 +4986,7 @@ incomeCache = totalIncome();
   }
 }
 renderClock();
+if (IS_BETA) { const n = document.querySelector('.dicons'); if (n) n.insertAdjacentHTML('beforeend', '<button class="dicon" data-act="openWin" data-w="dev"><svg class="ico"><use href="#g-flask"/></svg><span>Test-tools</span></button>'); }
 if (isMobile()) setMobileTab('home');
 renderAll();
 $('betIn').value = Math.max(10, Math.floor(maxBet() / 10));
