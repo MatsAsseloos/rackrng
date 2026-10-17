@@ -1135,6 +1135,15 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
 .devbody{padding:14px 16px 18px; display:flex; flex-direction:column; gap:12px}
 .devrow{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px}
 .devrow select{min-width:120px}
+.inj{padding:12px; margin-bottom:12px; border-radius:12px; border:1px solid rgba(232,121,249,.4); background:linear-gradient(180deg,#140b17,#0b070e)}
+.injrow{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px} .injrow select{flex:1; min-width:180px}
+.injseg{width:max-content}
+.injodds{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px} .injodds span{font:600 11px var(--mono); padding:2px 8px; border-radius:6px; border:1px solid #33465f; color:#9fb0c7}
+.injodds .g{color:var(--good); border-color:rgba(61,220,151,.4)} .injodds .r{color:var(--bad); border-color:rgba(255,99,99,.4)} .injodds .j{color:#e879f9; border-color:rgba(232,121,249,.45)}
+.injlog{margin:6px 0 8px; padding:10px; border-radius:8px; background:#030204; font:12.5px var(--mono); color:#e879f9; white-space:pre-wrap}
+.injbar{display:inline-block; width:160px; height:10px; vertical-align:-1px; border:1px solid #e879f9; background:linear-gradient(90deg,#e879f9,#e879f9) 0 0/0% 100% no-repeat; animation:injfill 2.2s linear forwards}
+@keyframes injfill{to{background-size:100% 100%}}
+.catsec h4 em{font-style:normal; margin-left:6px; text-transform:none}
 </style>
 </head>
 <body class="os" data-tab="home">
@@ -1528,7 +1537,27 @@ const MUTATIONS = {
   bitflip: { icon: '💾', name: 'Bit-flip',    color: '#a78bfa', w: 25,            desc: 'willekeurig ×0,5 tot ×6 (vast bij het rollen)' },
   rad:     { icon: '☢️', name: 'Radioactief', color: '#a3e635', w: 15, mult: 2,   desc: '×2 en +10% luck zolang hij in je rack zit' },
   rgb:     { icon: '🌈', name: 'RGB',         color: '#f472b6', w: 15, mult: 1.5, desc: '×1,5 en de hele U krijgt +25%' },
+  hot:     { icon: '🌡️', name: 'Oververhit',  color: '#f97316', w: 12, mult: 2,   desc: '×2, maar elk uur in je rack 1% kans dat hij doorbrandt' },
+  mag:     { icon: '🧲', name: 'Magnetisch',  color: '#ef4444', w: 12, mult: 1.25, desc: '×1,25 en de andere items in dezelfde U +15%' },
+  eco:     { icon: '🪫', name: 'Zuinig',      color: '#84cc16', w: 12, mult: 1.25, desc: '×1,25 en −5% roll-cooldown zolang hij in je rack zit (stapelt)' },
+  sync:    { icon: '📡', name: 'Gesyncd',     color: '#38bdf8', w: 10, mult: 1.5, desc: '×1,5, en ×3 voor de hele U als alle drie de items Gesyncd zijn' },
+  infect:  { icon: '🦠', name: 'Geïnfecteerd', color: '#22c55e', w: 5, mult: 2.5, desc: '×2,5 en verspreidt zich: elk uur 10% kans op een item in een aangrenzende U' },
+  vintage: { icon: '⏳', name: 'Vintage',     color: '#d6b98c', w: 5,             desc: 'start op ×1 en wordt elk uur in je rack +0,1 sterker, tot ×4' },
+  chaos:   { icon: '🎲', name: 'Chaotisch',   color: '#e879f9', w: 5,             desc: 'elke 10 minuten een nieuwe multiplier tussen ×0,5 en ×5' },
+  mirror:  { icon: '🪞', name: 'Gespiegeld',  color: '#cbd5e1', w: 5,             desc: 'kopieert de multiplier van het beste andere item in dezelfde U' },
+  aware:   { icon: '👁️', name: 'Bewust',      color: '#fb7185', w: 1.5, mult: 4,  desc: '×4 en +1% kans dat elke roll een tier hoger uitvalt' },
+  void:    { icon: '🌌', name: 'Void',        color: '#6366f1', w: 1,  mult: 10,  desc: '×10, maar de andere items in dezelfde U verdienen niets' },
 };
+// mutatie geven (met de startwaarde voor mutaties die een eigen waarde hebben)
+function setMut(it, k) {
+  it.mut = k; delete it.mv; delete it.cb;
+  if (k === 'bitflip') it.mv = Math.round((0.5 + Math.random() ** 2 * 5.5) * 100) / 100;   // meestal laag, soms hoog
+  if (k === 'vintage') it.mv = 1;
+  if (k === 'chaos') it.mv = Math.round((0.5 + Math.random() * 4.5) * 100) / 100;
+  if (typeof state !== 'undefined' && state.mutSeen && !state.mutSeen.includes(k)) state.mutSeen.push(k);
+  return it;
+}
+const randMut = (not) => pickWeighted(Object.fromEntries(Object.entries(MUTATIONS).filter(([k]) => k !== not).map(([k, m]) => [k, m.w])));
 const mutChanceAt = l => 0.03 + 0.02 * l;   // 3% basis, +2% per Stralingslab-niveau
 
 /* =====================================================================
@@ -1827,6 +1856,14 @@ const BOUNTIES = [
   { name: 'Remote code exec',  min: 360, rc: 1000, frag: 0.6, heat: 30 },
 ];
 // Hacker-recepten (craften op je PC): RackCoin + exploit-fragmenten + één Quantum-item van hetzelfde type + compileertijd
+// Exploit-injector: gok met je items. Kansen per modus (in %): mutatie / niets / tier +1 / gebrickt / duplicaat
+const INJ_MODES = {
+  safe: { name: 'Veilig',     mut: 40, none: 50.5, tier: 7.5, brick: 0,  dup: 2, frag: 1, desc: 'Kost 1 fragment extra. Een brick wordt "niets gebeurd", maar minder kans op tier +1.' },
+  std:  { name: 'Standaard',  mut: 40, none: 25,   tier: 15,  brick: 18, dup: 2, frag: 0, desc: 'De gewone kansen.' },
+  aggr: { name: 'Agressief',  mut: 28, none: 2,    tier: 30,  brick: 35, dup: 5, frag: 0, desc: 'Dubbele kans op tier +1 en meer kans op een duplicaat, maar 35% kans op een brick.' },
+};
+const INJ_COST = [5, 10, 25, 60, 150, 400, 1000, 0, 3000];   // RackCoin per tier
+const INJ_TARGET_FRAG = 3;   // zelf de mutatie kiezen
 const RECIPES = {
   thread:  { rc: 2500, frag: 3, hours: 8 },
   pity:    { rc: 2000, frag: 3, hours: 8 },
@@ -1911,12 +1948,12 @@ function newState() {
            hotSwap: false, rollTiers: [false, false, false, true, true, true, true, false, true], autoSellTier: -1,
            event: null, nextEventAt: 0, casinoNet: 0, casinoPending: 0, table: 0,
            skins: ['default'], skin: 'default', seenHelp: false, playerId: newPlayerId(), redeemed: [],
-           shop: null, boosts: {}, kist: [], seenTiers: [], locked: [], found: [], stats: newStats(), pc: newPC(), router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
+           shop: null, boosts: {}, kist: [], seenTiers: [], locked: [], found: [], mutSeen: [], stats: newStats(), pc: newPC(), router2: null, runEarned: 0, runStart: Date.now(), streak: 0,
            prestige: newPrestige(), runV: 1, careerV: 2, tierV: 2 };
 }
 const newPC = () => ({ parts: [], build: {}, rc: 0, frag: 0, heat: 0, oc: 0, mining: false, ctfAt: 0, bounty: null,
   seizedUntil: 0, crashUntil: 0, compile: null, rcTotal: 0, ctfWon: 0, crafted: 0 });
-const newStats = () => ({ tiers: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], best: null, bought: 0, sold: 0, playMs: 0 });
+const newStats = () => ({ inj: { n: 0, mut: 0, tier: 0, brick: 0, dup: 0, none: 0 }, tiers: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], best: null, bought: 0, sold: 0, playMs: 0 });
 // Blijft altijd bewaard bij afstuderen
 const newPrestige = () => ({ count: 0, ects: 0, ectsTotal: 0, nodes: {}, bestRun: 0, fastestRun: 0, totalEarned: 0 });
 function fromJSON(raw) {
@@ -1949,6 +1986,7 @@ function fromJSON(raw) {
     s.tierV = 2;
   }
   s.pc = Object.assign(newPC(), raw.pc || {});
+  s.mutSeen = Array.isArray(raw.mutSeen) ? raw.mutSeen.filter(k => MUTATIONS[k]) : [...new Set([...s.inv, ...s.rack.flatMap(u => COMP.map(k => u[k]))].filter(x => x && x.mut).map(x => x.mut))];
   if (!Array.isArray(s.pc.parts)) s.pc.parts = [];
   if (!s.pc.build || typeof s.pc.build !== 'object') s.pc.build = {};
   s.locked = Array.isArray(raw.locked) ? raw.locked.filter(x => typeof x === 'number') : [];
@@ -2028,12 +2066,15 @@ const sellRate   = () => Math.min(1, (CFG.sellRate + 0.05 * lvl('resale')) * evM
 const incomeMult = () => (1 + 0.1 * lvl('income')) * 1.25 ** pn('hw_income') * (1 + 0.02 * pn('inf_hw'))
                    * (pn('ks_mono') ? 1 + 0.002 * state.prestige.ectsTotal : 1);
 const offlineMax = () => CFG.offlineMaxHours + 2 * lvl('ups') + 12 * pn('au_home');
-const cooldown   = () => (IS_BETA && devTurbo ? 0.05 : 1) * CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed') * (pn('nw_backbone') ? 0.8 : 1) * 0.99 ** pn('inf_au');
+const cooldown   = () => (IS_BETA && devTurbo ? 0.05 : 1) * 0.95 ** placedItems().filter(x => x.mut === 'eco').length * CONN[state.conn].cd * 0.95 ** lvl('cache') * evMod('cd') * boostMod('speed') * (pn('nw_backbone') ? 0.8 : 1) * 0.99 ** pn('inf_au');
 const unitCost   = () => Math.round(CFG.unitBaseCost * (CFG.unitCostGrowth - (pn('ec_estate') ? 0.5 : 0)) ** (state.rack.length - 1) * (1 - 0.05 * lvl('permit')));
 
 /* Item-waardes */
 const ocM      = it => (it.oc ? (pn('hw_thermal') ? 2 : CFG.ocMult) : 1) * mutM(it);
-const mutM     = it => !it.mut ? 1 : it.mut === 'bitflip' ? (it.mv || 1) : it.mut === 'gold' && pn('hw_gold') ? 5 : MUTATIONS[it.mut].mult;
+const mutM     = it => { if (!it.mut || !MUTATIONS[it.mut]) return 1;
+  if (it.mut === 'bitflip' || it.mut === 'vintage' || it.mut === 'chaos') return it.mv || 1;
+  if (it.mut === 'gold' && pn('hw_gold')) return 5;
+  return MUTATIONS[it.mut].mult || 1; };
 const matchTier = it => it.mut === 'cold' ? Math.min(SECRET_TIER, it.tier + 1) : it.tier;
 const placedItems = () => [state.router, state.router2, ...state.switches, ...state.rack.flatMap(u => COMP.map(k => u[k]))].filter(Boolean);
 const radLuck  = () => 1 + 0.1 * placedItems().filter(x => x.mut === 'rad').length;
@@ -2060,7 +2101,7 @@ function statShort(it) {
   if (it.type === 'router') return `${TIERS[it.tier].name} · ×${fmtNum(rtMult(it))}`;
   return `${TIERS[it.tier].name} · ${fmt(income(it))}/s`;
 }
-const mutLabel = it => it.mut ? `${MUTATIONS[it.mut].name}${it.mut === 'bitflip' ? ' ×' + fmtNum(it.mv) : ''}` : '';
+const mutLabel = it => it.mut && MUTATIONS[it.mut] ? `${MUTATIONS[it.mut].name}${['bitflip', 'vintage', 'chaos'].includes(it.mut) ? ' ×' + fmtNum(it.mv || 1) : ''}` : '';
 const mutHtml  = it => it.mut ? `<span class="mut" style="--mc:${MUTATIONS[it.mut].color}">${MUTATIONS[it.mut].icon} ${mutLabel(it)}</span>` : '';
 const nameHtml = it => (isAdminItem(it) ? '🛠️ ' : '') + mutHtml(it) + (it.oc ? '<span class="oc">OC</span>' : '') + esc(it.name);
 
@@ -2093,8 +2134,7 @@ function rollOne(L, minTier = 0, useFilter = true) {
   const refs = DEFS_BY[type][tier];
   const it = new Item(refs[Math.floor(Math.random() * refs.length)], null, Math.random() < ocChance());
   if (Math.random() < mutChanceAt(lvl('mutlab')) + 0.05 * pn('hw_rad')) {
-    it.mut = pickWeighted(Object.fromEntries(Object.entries(MUTATIONS).map(([k, m]) => [k, m.w])));
-    if (it.mut === 'bitflip') it.mv = Math.round((0.5 + Math.random() ** 2 * 5.5) * 100) / 100; // meestal laag, soms hoog
+    setMut(it, randMut());
   }
   return it;
 }
@@ -2111,7 +2151,7 @@ function generateRoll() {
   if (hasFx('zeroday') && (state.rolls + 1) % 250 === 0 && best.tier < 6) { best = rollOne(L, 6); cands[win] = best; toast('💀 Zero-day: gegarandeerde Quantum!', 'roll'); }
   if (lvl('pity') && best.tier < 2 && state.pity + 1 >= pityLimit()) { best = rollOne(L, 2); cands[win] = best; pityHit = true; }
   let fwHit = false;
-  if (best.tier < 6 && Math.random() < 0.015 * lvl('firmware') + 0.05 * pn('hw_firm')) {
+  if (best.tier < 6 && Math.random() < 0.015 * lvl('firmware') + 0.05 * pn('hw_firm') + 0.01 * placedItems().filter(x => x.mut === 'aware').length) {
     const refs = DEFS_BY[best.type][best.tier + 1];
     const up = new Item(refs[Math.floor(Math.random() * refs.length)], null, best.oc);
     if (best.mut) { up.mut = best.mut; up.mv = best.mv; }
@@ -2154,12 +2194,24 @@ function matchMult(u) {
   const M = matchTab();
   return hi < 0 ? M[0] : M[Math.min(hi - lo, 3)];
 }
-const uFast = u => {
-  let sum = 0, rgb = 1;
-  for (const k of COMP) { const x = u[k]; if (x) { sum += income(x); if (x.mut === 'rgb') rgb *= 1.25; } }
-  return sum * matchMult(u) * rgb;
-};
-const uBase    = u => COMP.reduce((a, k) => a + (u[k] ? income(u[k]) : 0), 0) * matchInfo(u).mult * 1.25 ** COMP.filter(k => u[k] && u[k].mut === 'rgb').length;
+// som van één U, met de mutaties die op de hele U werken (RGB, Magnetisch, Gesyncd, Gespiegeld, Void)
+function uSum(u) {
+  const xs = [u.cpu, u.ram, u.storage].filter(Boolean);
+  if (!xs.length) return 0;
+  const voids = xs.filter(x => x.mut === 'void'), mags = xs.filter(x => x.mut === 'mag').length;
+  let sum = 0;
+  for (const x of voids.length ? voids : xs) {
+    let v = income(x);
+    if (x.mut === 'mirror') v *= Math.max(1, ...xs.filter(y => y !== x && y.mut !== 'mirror').map(mutM));
+    const m = mags - (x.mut === 'mag' ? 1 : 0); if (m > 0) v *= 1 + 0.15 * m;
+    sum += v;
+  }
+  let f = 1.25 ** xs.filter(x => x.mut === 'rgb').length;
+  if (xs.length === 3 && xs.every(x => x.mut === 'sync')) f *= 3;
+  return sum * f;
+}
+const uFast = u => uSum(u) * matchMult(u);
+const uBase    = u => uSum(u) * matchInfo(u).mult;
 const routerM  = () => {
   const rs = [state.router, pn('nw_router2') ? state.router2 : null].filter(Boolean);
   if (!rs.length) return 1;
@@ -3284,7 +3336,7 @@ function graduate() {
   P.bestRun = Math.max(P.bestRun, old.runEarned);
   P.fastestRun = P.fastestRun ? Math.min(P.fastestRun, runMs) : runMs;
   const keep = { prestige: P, careerV: 2, pc: old.pc, skins: old.skins, skin: old.skin, playerId: old.playerId, redeemed: old.redeemed, muted: old.muted,
-                 seenHelp: true, seenTiers: old.seenTiers, locked: old.locked, found: old.found, stats: old.stats, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
+                 seenHelp: true, seenTiers: old.seenTiers, locked: old.locked, found: old.found, mutSeen: old.mutSeen, stats: old.stats, autoSellTier: old.autoSellTier, rollTiers: old.rollTiers, table: old.table, nextId: old.nextId };
   const admin = permanentItems(), oldUp = old.up;
   state = newState();
   Object.assign(state, keep);
@@ -3636,6 +3688,25 @@ function renderSettings() {
     </section>`);
 }
 
+/* ---------- Levende mutaties: Vintage groeit, Chaotisch wisselt, Oververhit brandt door, Geïnfecteerd verspreidt ---------- */
+let mutRecalcAt = 0;
+function mutTick(dt) {
+  const now = Date.now(), bucket = Math.floor(now / 600e3);
+  let changed = false;
+  const locs = [{ kind: 'router' }, { kind: 'router2' }, ...state.switches.map((_, i) => ({ kind: 'switch', i })), ...state.rack.flatMap((u, i) => COMP.map(k => ({ kind: 'u', u: i, slot: k })))];
+  for (const loc of locs) {
+    const x = getAt(loc); if (!x || !x.mut) continue;
+    if (x.mut === 'vintage' && (x.mv || 1) < 4) { x.mv = Math.min(4, (x.mv || 1) + 0.1 * dt / 3600); changed = true; }
+    if (x.mut === 'chaos' && x.cb !== bucket) { if (x.cb != null) x.mv = Math.round((0.5 + Math.random() * 4.5) * 100) / 100; x.cb = bucket; changed = true; }
+    if (x.mut === 'hot' && Math.random() < 0.01 / 3600 * dt) { setAt(loc, null); toast(`🌡️ Je oververhitte ${x.name} is doorgebrand!`, 'event'); changed = true; save(); renderAll(); }
+    if (x.mut === 'infect' && loc.kind === 'u' && Math.random() < 0.1 / 3600 * dt) {
+      const cand = [loc.u - 1, loc.u + 1].filter(j => state.rack[j]).flatMap(j => COMP.map(k => state.rack[j][k])).filter(y => y && !y.mut && !isKeepItem(y));
+      if (cand.length) { const y = cand[Math.floor(Math.random() * cand.length)]; setMut(y, 'infect'); toast(`🦠 De infectie verspreidde zich naar ${y.name}`, 'event'); changed = true; save(); renderAll(); }
+    }
+  }
+  if (changed && now - mutRecalcAt > 3000) { mutRecalcAt = now; incomeCache = totalIncome(); renderRack(); }
+}
+
 /* ---------- Eigen PC ---------- */
 const PC = () => state.pc;
 const rnd = (a, b) => a + Math.random() * (b - a);
@@ -3796,6 +3867,64 @@ function finishCompile() {
   cinematic(it); save(); renderAll();
 }
 
+/* ---------- Exploit-injector ---------- */
+let injSel = null, injMode = 'std', injTarget = '', injBusy = null, injResult = null;
+const injOk = it => it && !isAdminItem(it) && !isHackerItem(it) && !isLocked(it);
+const injFrag = () => INJ_MODES[injMode].frag + (injTarget ? INJ_TARGET_FRAG : 0);
+function startInject() {
+  const P = PC(), it = state.inv.find(x => x.id === injSel);
+  if (!injOk(it) || injBusy || !pcOnline()) return;
+  const cost = INJ_COST[it.tier] || 0, fr = injFrag();
+  if (P.rc < cost) return toast('Niet genoeg RackCoin'); if (P.frag < fr) return toast('Niet genoeg fragmenten');
+  if (it.tier >= 4 && injMode !== 'safe' && !confirm(`${TIERS[it.tier].name} ${it.name} injecteren? Er is ${INJ_MODES[injMode].brick}% kans dat hij vernietigd wordt.`)) return;
+  P.rc -= cost; P.frag -= fr; addHeat(5);
+  injBusy = { id: it.id, until: Date.now() + 2200 }; injResult = null;
+  beep([300, 420, 560], 0.05, 'square'); renderPC();
+  setTimeout(finishInject, 2200);
+}
+function finishInject() {
+  const b = injBusy; injBusy = null; if (!b) return;
+  const it = state.inv.find(x => x.id === b.id); if (!it) return renderPC();
+  const M = INJ_MODES[injMode], S = state.stats.inj;
+  let o = pickWeighted({ mut: M.mut, none: M.none, tier: M.tier, brick: M.brick, dup: M.dup });
+  if (o === 'tier' && it.tier >= 6) o = 'mut';   // hoger dan Quantum kan niet: dan maar een mutatie
+  S.n++; S[o]++;
+  const mutOf = x => setMut(x, injTarget && MUTATIONS[injTarget] ? injTarget : randMut(x.mut));
+  if (o === 'mut') { mutOf(it); injResult = { o, txt: `🧬 Mutatie: ${it.name} is nu ${mutLabel(it)}!`, cls: 'win' }; flashColor(MUTATIONS[it.mut].color); }
+  if (o === 'none') injResult = { o, txt: '❌ Patch geweigerd: er gebeurde niets.', cls: 'push' };
+  if (o === 'tier') {
+    const refs = DEFS_BY[it.type][it.tier + 1], nw = new Item(refs[Math.floor(Math.random() * refs.length)], it.id, it.oc);
+    if (it.mut) { nw.mut = it.mut; if (it.mv) nw.mv = it.mv; }
+    state.inv[state.inv.indexOf(it)] = nw; trackFound(nw);
+    injResult = { o, txt: `⬆️ Tier +1: ${it.name} werd ${TIERS[nw.tier].name} ${nw.name}!`, cls: 'win' }; flash(nw.tier); SFX.tier(nw.tier);
+  }
+  if (o === 'brick') {
+    state.inv = state.inv.filter(x => x !== it); const sc = Math.round((INJ_COST[it.tier] || 0) / 2); gainRC(sc);
+    injResult = { o, txt: `💀 Gebrickt! ${it.name} is vernietigd (schroot: +${fmtRC(sc)}).`, cls: 'lose' }; injSel = null; shake(); beep([200, 110], 0.25, 'sawtooth');
+  }
+  if (o === 'dup') {
+    const cp = new Item(it.ref, state.nextId++, it.oc); mutOf(it); mutOf(cp); state.inv.push(cp);
+    injResult = { o, txt: `👾 GLITCH-JACKPOT! ${it.name} is gedupliceerd, en allebei kregen ze een mutatie!`, cls: 'win' }; glitchFx && glitchFx(it); SFX.perfect();
+  }
+  toast(injResult.txt, o === 'none' ? 'sys' : 'roll'); save(); renderAll(); renderPC();
+}
+const trackFound = it => { if (it.ref && !state.found.includes(it.ref)) state.found.push(it.ref); };
+function injectorHtml() {
+  const P = PC(), list = state.inv.filter(injOk).sort((a, b) => b.tier - a.tier || basePrice(b) - basePrice(a)), it = list.find(x => x.id === injSel);
+  const M = INJ_MODES[injMode], cost = it ? INJ_COST[it.tier] || 0 : 0, fr = injFrag(), S = state.stats.inj;
+  let h = `<div class="inj"><div class="jh"><b>💉 Exploit-injector</b><small>Injecteer een exploit in een item uit je opslag. Je kunt een mutatie krijgen, een tier omhoog gaan, het item dupliceren… of het compleet bricken. Vergrendelde items 🔒 kunnen niet.</small></div>
+    <div class="injrow"><select id="injSel"><option value="">— kies een item —</option>${list.map(x => `<option value="${x.id}" ${x.id === injSel ? 'selected' : ''}>${TIERS[x.tier].name} · ${esc(x.name)}${x.mut ? ' · ' + mutLabel(x) : ''}</option>`).join('')}</select>
+      <select id="injTarget"><option value="">Mutatie: willekeurig</option>${Object.entries(MUTATIONS).map(([k, m]) => `<option value="${k}" ${injTarget === k ? 'selected' : ''}>${m.icon} ${m.name} (+${INJ_TARGET_FRAG} 🧩)</option>`).join('')}</select></div>
+    <div class="seg injseg">${Object.entries(INJ_MODES).map(([k, m]) => `<button class="${injMode === k ? 'on' : ''}" data-act="injMode" data-v="${k}">${m.name}</button>`).join('')}</div>
+    <div class="sub" style="margin:6px 0">${M.desc}</div>
+    <div class="injodds"><span class="g">🧬 ${M.mut}%</span><span>❌ ${M.none}%</span><span class="g">⬆️ ${M.tier}%</span><span class="r">💀 ${M.brick}%</span><span class="j">👾 ${M.dup}%</span></div>`;
+  if (injBusy) h += `<pre class="injlog">$ ./inject --payload=${injMode} --target=${it ? slug(it.name) : '?'}\nInjecting payload… <span class="injbar"></span></pre>`;
+  else if (injResult) h += `<div class="cres ${injResult.cls}">${esc(injResult.txt)}</div>`;
+  h += `<div class="jr"><span>${it ? `Kost ${fmtRC(cost)}${fr ? ` + ${fr} 🧩` : ''} · +5 Heat` : 'Kies eerst een item'}</span><button class="btn" data-act="inject" ${!it || injBusy || !pcOnline() || P.rc < cost || P.frag < fr ? 'disabled' : ''}>Injecteer</button></div>
+    ${S.n ? `<div class="sub" style="margin-top:6px">Log: ${S.n}× geïnjecteerd · ${S.mut} mutaties · ${S.tier} tier-ups · ${S.dup} jackpots · ${S.brick} bricks</div>` : ''}</div>`;
+  return h;
+}
+
 /* workstation.exe */
 let pcTab = 'jobs', pcKind = 'all';
 const PC_ICON = { mobo: 'g-mobo', cpu: 'i-cpu', gpu: 'g-gpu', ram: 'i-ram', psu: 'g-psu', cool: 'g-fan', net: 'g-net' };
@@ -3818,7 +3947,7 @@ function renderPC() {
   const risk = ['Geen risico', 'Kleine kans op een crash', 'Crashes, en soms brandt er iets door', 'Veel risico: onderdelen branden door'][P.oc];
   setHTML($('pcLeft'), `<div class="case">${slots}</div>${post}
     <div class="ocbox"><div class="ocl"><b>Overklokken</b><small>+${P.oc * 25}% rekenkracht · ${risk}</small></div><div class="seg">${OC_LABEL.map((l, i) => `<button class="${P.oc === i ? 'on' : ''}" data-act="pcOC" data-v="${i}">${l}</button>`).join('')}</div></div>`);
-  setHTML($('pcTabs'), [['jobs', '⚡ Jobs'], ['parts', `🧰 Onderdelen (${P.parts.length}/${PC_PARTS_MAX})`], ['craft', '💚 Hacker-lab']].map(([k, n]) => `<button class="chip ${pcTab === k ? 'on' : ''}" data-act="pcTab" data-t="${k}">${n}</button>`).join(''));
+  setHTML($('pcTabs'), [['jobs', '⚡ Jobs'], ['parts', `🧰 Onderdelen (${P.parts.length}/${PC_PARTS_MAX})`], ['craft', '💚 Hacker-lab & injector']].map(([k, n]) => `<button class="chip ${pcTab === k ? 'on' : ''}" data-act="pcTab" data-t="${k}">${n}</button>`).join(''));
   let h = '';
   if (pcTab === 'jobs') {
     const off = st !== 'on', offTxt = { post: 'Je PC start niet op: bouw hem eerst af (zie POST).', crash: 'Je PC herstart na een crash…', seized: 'Je PC is in beslag genomen. Laat je Heat volgende keer niet zo oplopen!' }[st];
@@ -3854,6 +3983,7 @@ function renderPC() {
       : `<div class="sub" style="padding:20px 0">Nog geen onderdelen. Koop ze in de <b>Shop → PC-onderdelen</b> (elk uur nieuwe voorraad), of vind er af en toe een bij het rollen.</div>`;
   }
   if (pcTab === 'craft') {
+    h += injectorHtml();
     if (P.compile) { const d = DEFS[P.compile.ref], pct = Math.min(100, (now - P.compile.start) / (P.compile.until - P.compile.start) * 100);
       h += `<div class="compile"><div class="cmpt">⚙️ <b>${esc(d.name)}</b> wordt gecompileerd… nog ${fmtDur((P.compile.until - now) / 1000)}</div><div class="gradbar"><div style="width:${pct}%;background:linear-gradient(90deg,#1f9d63,#39ff88)"></div></div><pre class="cmplog">$ gcc -O3 ${slug(d.name)}.c -o ${slug(d.name)}\n[${'#'.repeat(Math.round(pct / 5)).padEnd(20, '.')}] ${Math.round(pct)}%</pre></div>`; }
     h += `<div class="sub" style="margin:4px 0 10px">Hacker-items zijn de sterkste items naast Secret, met een uniek effect. Ze <b>blijven na afstuderen</b>. Elk recept kost RackCoin, exploit-fragmenten en één <b>Quantum-item van hetzelfde type</b> uit je opslag (dat verdwijnt).</div><div class="recipes">`;
@@ -3921,7 +4051,7 @@ function devAct(a, v) {
     case 'turbo': devTurbo = !devTurbo; state.rollReadyAt = 0; toast(`🧪 Turbo-rolls ${devTurbo ? 'aan' : 'uit'}`); break;
     case 'maxup': UPGRADES.forEach(u => state.up[u.id] = u.max); state.rollTiers = [false, true, true, true, true, true, true, false, true]; state.hotSwap = true; toast('🧪 Alle upgrades max'); break;
     case 'fiber': state.conn = CONN.length - 1; state.rollReadyAt = 0; toast('🧪 Glasvezel'); break;
-    case 'item': { const it = devItem($('devType').value, +$('devTier').value); if (it) { state.inv.push(it); toast(`🧪 ${TIERS[it.tier].name} ${it.name} in je opslag`); } break; }
+    case 'item': { const it = devItem($('devType').value, +$('devTier').value); if (it) { if ($('devMut').value) setMut(it, $('devMut').value); state.inv.push(it); toast(`🧪 ${TIERS[it.tier].name} ${it.name} in je opslag`); } break; }
     case 'quantumAll': COMP.concat(['switch', 'router']).forEach(t => state.inv.push(devItem(t, 6))); toast('🧪 1 Quantum van elk type in je opslag'); break;
     case 'hackerAll': hackerDefs().forEach(d => state.inv.push(new Item(d.ref, state.nextId++))); toast('🧪 Alle Hacker-items in je opslag'); break;
     case 'force': devForce = +$('devTier').value; toast(`🧪 Volgende roll wordt ${TIERS[devForce].name}`); break;
@@ -3958,7 +4088,7 @@ function renderDev() {
       ${devBtn('skip', '+1 uur', 1)}${devBtn('skip', '+8 uur', 8)}${devBtn('skip', '+24 uur', 24)}${devBtn('turbo', devTurbo ? 'Turbo-rolls: AAN' : 'Turbo-rolls: uit', '', devTurbo ? '' : 'sec')}</div>
       <div class="sub">Vooruitspoelen geeft inkomen en mining, en laat bounties, compileren, boosts en kist-items verder aflopen.</div></section>
     <section class="sgrp"><h4>🎲 Items & rolls</h4><div class="devrow">
-      <select id="devType">${Object.keys(TYPES).map(t => `<option value="${t}">${TYPES[t].label}</option>`).join('')}</select><select id="devTier">${tiers}</select>
+      <select id="devType">${Object.keys(TYPES).map(t => `<option value="${t}">${TYPES[t].label}</option>`).join('')}</select><select id="devTier">${tiers}</select><select id="devMut"><option value="">geen mutatie</option>${Object.entries(MUTATIONS).map(([k, m]) => `<option value="${k}">${m.icon} ${m.name}</option>`).join('')}</select>
       ${devBtn('item', 'Geef item', '', '')}${devBtn('force', 'Volgende roll = deze tier')}</div><div class="devrow">
       ${devBtn('quantumAll', '1 Quantum van elk type')}${devBtn('hackerAll', 'Alle Hacker-items')}${devBtn('maxup', 'Alle upgrades max')}${devBtn('fiber', 'Glasvezel')}</div></section>
     <section class="sgrp"><h4>🎓 Carrière</h4><div class="devrow">
@@ -4013,6 +4143,8 @@ function renderCat() {
     return `<button class="chip ${catType === t ? 'on' : ''}" data-act="catType" data-t="${t}">${t === 'all' ? 'Alles' : TYPES[t].label} <em>${f}/${refs.length}</em></button>`; }).join('')}</div>`;
   const pct = Math.round(found.size / all * 100);
   let h = `<div class="cathead"><div><b>${found.size}</b> van ${all} items ontdekt</div><div class="catbar"><i style="width:${pct}%"></i></div><span>${pct}%</span></div>` + tabs;
+  if (catType === 'all') h += `<div class="catsec"><h4>🧬 Mutaties <em class="sub">${state.mutSeen.length}/${Object.keys(MUTATIONS).length}</em></h4><div class="catgrid">${Object.entries(MUTATIONS).map(([k, m]) => { const ok = state.mutSeen.includes(k);
+    return `<div class="catit ${ok ? 'ok' : ''}" style="--tc:${m.color}" title="${ok ? esc(m.desc) : 'Nog niet ontdekt'}"><span class="ct">${ok ? m.icon : '?'} mutatie</span><span class="cn2">${ok ? m.name : '???'}</span>${ok ? `<span class="cs">${esc(m.desc)}</span>` : ''}</div>`; }).join('')}</div></div>`;
   for (const t of types) {
     if (catType !== 'all' && catType !== t) continue;
     h += `<div class="catsec"><h4>${ico(itemIconId({ type: t, d: {} }), 'ico')} ${TYPES[t].label}</h4><div class="catgrid">`;
@@ -4600,6 +4732,7 @@ setInterval(() => {
   const gain = incomeCache * (now - lastTick) / 1000;
   state.money += gain; state.runEarned += gain;
   pcTick(Math.min(5, (now - lastTick) / 1000));
+  mutTick(Math.min(5, (now - lastTick) / 1000));
   if (now - pcRenderAt > 1000 && !$('win-pc').hidden) { pcRenderAt = now; renderPC(); }
   if (!document.hidden) state.stats.playMs += Math.min(1000, now - lastTick);
   lastTick = now;
@@ -4674,6 +4807,8 @@ document.addEventListener('click', e => {
     case 'ctfClose': ctf = null; renderPC(); break;
     case 'bounty': startBounty(+el.dataset.v); break;
     case 'compile': startCompile(el.dataset.ref); break;
+    case 'inject': startInject(); break;
+    case 'injMode': injMode = el.dataset.v; renderPC(); break;
     case 'useKist': useKist(+el.dataset.id); break;
     case 'tossKist': tossKist(+el.dataset.id); break;
     case 'invView': invView = el.dataset.v; renderInv(); updateAfford(); break;
@@ -4773,6 +4908,8 @@ document.addEventListener('input', e => {
   if (e.target.id === 'invQ') { invQ = e.target.value; renderInv(); }
 });
 document.addEventListener('change', e => {
+  if (e.target.id === 'injSel') { injSel = +e.target.value || null; injResult = null; renderPC(); }
+  if (e.target.id === 'injTarget') { injTarget = e.target.value; renderPC(); }
   if (e.target.id === 'invSort') { invSort = e.target.value; renderInv(); }
   if (e.target.id === 'autoSell') { state.autoSellTier = +e.target.value; save(); toast(state.autoSellTier < 0 ? 'Auto-verkoop uit' : `Auto-verkoop: ${$('autoSell').selectedOptions[0].text}`); }
   if (e.target.id === 'admKind') { const m = e.target.value === 'money'; $('admItemF').style.display = m ? 'none' : ''; $('admMoneyF').style.display = m ? '' : 'none'; }
