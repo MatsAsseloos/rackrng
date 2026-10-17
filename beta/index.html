@@ -1561,11 +1561,11 @@ const randMut = (not) => pickWeighted(Object.fromEntries(Object.entries(MUTATION
 const mutChanceAt = l => 0.03 + 0.02 * l;   // 3% basis, +2% per Stralingslab-niveau
 
 /* =====================================================================
-   🎓 CARRIÈRE (prestige). Afstuderen vanaf 1T verdiend in één run.
+   🎓 CARRIÈRE (prestige). Afstuderen vanaf 10T verdiend in één run (elk diploma ×1,5).
    ECTS = 10 × √(verdiend deze run ÷ 1T). Rang = aantal keer afgestudeerd.
    ===================================================================== */
-const GRAD_MIN = 1e12;     // eerste diploma: €1T
-const GRAD_GROW = 1.3;     // elke keer dat je afstudeert wordt de eis ×1,3 (na 25 diploma's ~€700T)
+const GRAD_MIN = 10e12;    // eerste diploma: €10T
+const GRAD_GROW = 1.5;     // elke keer dat je afstudeert wordt de eis ×1,5 (25e diploma ~€170Qa)
 const gradReq = (c = state.prestige.count) => GRAD_MIN * GRAD_GROW ** c;
 // ECTS: (10 + 2 per diploma) × (1 + log10(verdiend ÷ eis)): precies de eis = basis, 10× = dubbel, 1000× = vier keer
 const ectsBase = () => 10 + 2 * state.prestige.count;
@@ -4951,7 +4951,7 @@ if (state.careerReset) {
   delete state.careerReset;
   setTimeout(() => showModal(`<div style="font-weight:700;font-size:18px">🎓 Carrière herbalanceerd</div>
     <div class="help"><p>Afstuderen was veel te sterk. Daarom is de carrière opnieuw gebalanceerd en is iedereens skill tree, ECTS en aantal diploma's gereset.</p>
-    <p>Nieuw: elk diploma vraagt <b>×1,3 meer</b> dan het vorige (start bij €1T), je krijgt meer ECTS naarmate je rang stijgt, en de sterkste nodes zijn afgezwakt.</p>
+    <p>Nieuw: elk diploma vraagt <b>×1,5 meer</b> dan het vorige (start bij €10T), je krijgt meer ECTS naarmate je rang stijgt, en de sterkste nodes zijn afgezwakt.</p>
     <p>Als bedankje voor het testen krijg je de exclusieve rack-skin <b>Pionier</b>. Je vindt hem bij Shop → Rack-skins.</p></div>
     <button class="btn full" data-act="closeModal">Top</button>`, true, 'changelog.txt'), 400);
 }
