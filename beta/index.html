@@ -1864,6 +1864,8 @@ const INJ_MODES = {
 };
 const INJ_COST = [5, 10, 25, 60, 150, 400, 1000, 0, 3000];   // RackCoin per tier
 const INJ_TARGET_FRAG = 3;   // zelf de mutatie kiezen
+const INJ_GROW = 1.5;        // elke injectie op hetzelfde item maakt de volgende ×1,5 duurder
+const injCost = it => Math.round((INJ_COST[it.tier] || 0) * INJ_GROW ** (it.inj || 0));
 const RECIPES = {
   thread:  { rc: 2500, frag: 3, hours: 8 },
   pity:    { rc: 2000, frag: 3, hours: 8 },
@@ -1900,12 +1902,13 @@ class Item {
   get name() { return this.d.name; }
   get spec() { return this.d.spec; }
   get q() { return this.d.q; }
-  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined, custom: this.custom, mut: this.mut, mv: this.mv }; }
+  toJSON() { return { id: this.id, ref: this.ref, t: this.type, r: this.tier, oc: this.oc || undefined, custom: this.custom, mut: this.mut, mv: this.mv, inj: this.inj || undefined }; }
 }
 // Laadt een item uit een save. Werkt ook voor v1-saves en hernoemde items.
 function hyd(o) {
   const it = hyd0(o);
   if (it && o.mut && MUTATIONS[o.mut]) { it.mut = o.mut; if (o.mv) it.mv = o.mv; }
+  if (it && o.inj) it.inj = o.inj;
   return it;
 }
 function hyd0(o) {
@@ -3874,7 +3877,7 @@ const injFrag = () => INJ_MODES[injMode].frag + (injTarget ? INJ_TARGET_FRAG : 0
 function startInject() {
   const P = PC(), it = state.inv.find(x => x.id === injSel);
   if (!injOk(it) || injBusy || !pcOnline()) return;
-  const cost = INJ_COST[it.tier] || 0, fr = injFrag();
+  const cost = injCost(it), fr = injFrag();
   if (P.rc < cost) return toast('Niet genoeg RackCoin'); if (P.frag < fr) return toast('Niet genoeg fragmenten');
   if (it.tier >= 4 && injMode !== 'safe' && !confirm(`${TIERS[it.tier].name} ${it.name} injecteren? Er is ${INJ_MODES[injMode].brick}% kans dat hij vernietigd wordt.`)) return;
   P.rc -= cost; P.frag -= fr; addHeat(5);
@@ -3889,21 +3892,23 @@ function finishInject() {
   let o = pickWeighted({ mut: M.mut, none: M.none, tier: M.tier, brick: M.brick, dup: M.dup });
   if (o === 'tier' && it.tier >= 6) o = 'mut';   // hoger dan Quantum kan niet: dan maar een mutatie
   S.n++; S[o]++;
+  it.inj = (it.inj || 0) + 1;
   const mutOf = x => setMut(x, injTarget && MUTATIONS[injTarget] ? injTarget : randMut(x.mut));
   if (o === 'mut') { mutOf(it); injResult = { o, txt: `🧬 Mutatie: ${it.name} is nu ${mutLabel(it)}!`, cls: 'win' }; flashColor(MUTATIONS[it.mut].color); }
   if (o === 'none') injResult = { o, txt: '❌ Patch geweigerd: er gebeurde niets.', cls: 'push' };
   if (o === 'tier') {
     const refs = DEFS_BY[it.type][it.tier + 1], nw = new Item(refs[Math.floor(Math.random() * refs.length)], it.id, it.oc);
     if (it.mut) { nw.mut = it.mut; if (it.mv) nw.mv = it.mv; }
+    nw.inj = it.inj;
     state.inv[state.inv.indexOf(it)] = nw; trackFound(nw);
     injResult = { o, txt: `⬆️ Tier +1: ${it.name} werd ${TIERS[nw.tier].name} ${nw.name}!`, cls: 'win' }; flash(nw.tier); SFX.tier(nw.tier);
   }
   if (o === 'brick') {
-    state.inv = state.inv.filter(x => x !== it); const sc = Math.round((INJ_COST[it.tier] || 0) / 2); gainRC(sc);
+    state.inv = state.inv.filter(x => x !== it); const sc = Math.round(injCost(it) / 2); gainRC(sc);
     injResult = { o, txt: `💀 Gebrickt! ${it.name} is vernietigd (schroot: +${fmtRC(sc)}).`, cls: 'lose' }; injSel = null; shake(); beep([200, 110], 0.25, 'sawtooth');
   }
   if (o === 'dup') {
-    const cp = new Item(it.ref, state.nextId++, it.oc); mutOf(it); mutOf(cp); state.inv.push(cp);
+    const cp = new Item(it.ref, state.nextId++, it.oc); cp.inj = it.inj; mutOf(it); mutOf(cp); state.inv.push(cp);
     injResult = { o, txt: `👾 GLITCH-JACKPOT! ${it.name} is gedupliceerd, en allebei kregen ze een mutatie!`, cls: 'win' }; glitchFx && glitchFx(it); SFX.perfect();
   }
   toast(injResult.txt, o === 'none' ? 'sys' : 'roll'); save(); renderAll(); renderPC();
@@ -3911,16 +3916,16 @@ function finishInject() {
 const trackFound = it => { if (it.ref && !state.found.includes(it.ref)) state.found.push(it.ref); };
 function injectorHtml() {
   const P = PC(), list = state.inv.filter(injOk).sort((a, b) => b.tier - a.tier || basePrice(b) - basePrice(a)), it = list.find(x => x.id === injSel);
-  const M = INJ_MODES[injMode], cost = it ? INJ_COST[it.tier] || 0 : 0, fr = injFrag(), S = state.stats.inj;
-  let h = `<div class="inj"><div class="jh"><b>💉 Exploit-injector</b><small>Injecteer een exploit in een item uit je opslag. Je kunt een mutatie krijgen, een tier omhoog gaan, het item dupliceren… of het compleet bricken. Vergrendelde items 🔒 kunnen niet.</small></div>
-    <div class="injrow"><select id="injSel"><option value="">— kies een item —</option>${list.map(x => `<option value="${x.id}" ${x.id === injSel ? 'selected' : ''}>${TIERS[x.tier].name} · ${esc(x.name)}${x.mut ? ' · ' + mutLabel(x) : ''}</option>`).join('')}</select>
+  const M = INJ_MODES[injMode], cost = it ? injCost(it) : 0, fr = injFrag(), S = state.stats.inj;
+  let h = `<div class="inj"><div class="jh"><b>💉 Exploit-injector</b><small>Injecteer een exploit in een item uit je opslag. Je kunt een mutatie krijgen, een tier omhoog gaan, het item dupliceren… of het compleet bricken. Vergrendelde items 🔒 kunnen niet. Elke injectie op hetzelfde item maakt de volgende ×1,5 duurder.</small></div>
+    <div class="injrow"><select id="injSel"><option value="">— kies een item —</option>${list.map(x => `<option value="${x.id}" ${x.id === injSel ? 'selected' : ''}>${TIERS[x.tier].name} · ${esc(x.name)}${x.mut ? ' · ' + mutLabel(x) : ''}${x.inj ? ` · ${x.inj}× geïnjecteerd` : ''}</option>`).join('')}</select>
       <select id="injTarget"><option value="">Mutatie: willekeurig</option>${Object.entries(MUTATIONS).map(([k, m]) => `<option value="${k}" ${injTarget === k ? 'selected' : ''}>${m.icon} ${m.name} (+${INJ_TARGET_FRAG} 🧩)</option>`).join('')}</select></div>
     <div class="seg injseg">${Object.entries(INJ_MODES).map(([k, m]) => `<button class="${injMode === k ? 'on' : ''}" data-act="injMode" data-v="${k}">${m.name}</button>`).join('')}</div>
     <div class="sub" style="margin:6px 0">${M.desc}</div>
     <div class="injodds"><span class="g">🧬 ${M.mut}%</span><span>❌ ${M.none}%</span><span class="g">⬆️ ${M.tier}%</span><span class="r">💀 ${M.brick}%</span><span class="j">👾 ${M.dup}%</span></div>`;
   if (injBusy) h += `<pre class="injlog">$ ./inject --payload=${injMode} --target=${it ? slug(it.name) : '?'}\nInjecting payload… <span class="injbar"></span></pre>`;
   else if (injResult) h += `<div class="cres ${injResult.cls}">${esc(injResult.txt)}</div>`;
-  h += `<div class="jr"><span>${it ? `Kost ${fmtRC(cost)}${fr ? ` + ${fr} 🧩` : ''} · +5 Heat` : 'Kies eerst een item'}</span><button class="btn" data-act="inject" ${!it || injBusy || !pcOnline() || P.rc < cost || P.frag < fr ? 'disabled' : ''}>Injecteer</button></div>
+  h += `<div class="jr"><span>${it ? `Kost ${fmtRC(cost)}${fr ? ` + ${fr} 🧩` : ''} · +5 Heat${it.inj ? ` · al ${it.inj}× geïnjecteerd, volgende keer ${fmtRC(Math.round(cost * INJ_GROW))}` : ''}` : 'Kies eerst een item'}</span><button class="btn" data-act="inject" ${!it || injBusy || !pcOnline() || P.rc < cost || P.frag < fr ? 'disabled' : ''}>Injecteer</button></div>
     ${S.n ? `<div class="sub" style="margin-top:6px">Log: ${S.n}× geïnjecteerd · ${S.mut} mutaties · ${S.tier} tier-ups · ${S.dup} jackpots · ${S.brick} bricks</div>` : ''}</div>`;
   return h;
 }
