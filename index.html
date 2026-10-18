@@ -1547,14 +1547,15 @@ const MUTATIONS = {
   void:    { icon: '🌌', name: 'Void',        color: '#6366f1', w: 1,  mult: 10,  desc: '×10, maar de andere items in dezelfde U verdienen niets' },
 };
 // mutatie geven (met de startwaarde voor mutaties die een eigen waarde hebben)
-function setMut(it, k) {
+function setMut(it, k, record = true) {
   it.mut = k; delete it.mv; delete it.cb;
   if (k === 'bitflip') it.mv = Math.round((0.5 + Math.random() ** 2 * 5.5) * 100) / 100;   // meestal laag, soms hoog
   if (k === 'vintage') it.mv = 1;
   if (k === 'chaos') it.mv = Math.round((0.5 + Math.random() * 4.5) * 100) / 100;
-  if (typeof state !== 'undefined' && state.mutSeen && !state.mutSeen.includes(k)) state.mutSeen.push(k);
+  if (record) markMutSeen(k);
   return it;
 }
+const markMutSeen = k => { if (typeof state !== 'undefined' && state.mutSeen && k && !state.mutSeen.includes(k)) state.mutSeen.push(k); };
 const randMut = (not) => pickWeighted(Object.fromEntries(Object.entries(MUTATIONS).filter(([k]) => k !== not).map(([k, m]) => [k, m.w])));
 const mutChanceAt = l => 0.03 + 0.02 * l;   // 3% basis, +2% per Stralingslab-niveau
 
@@ -2136,7 +2137,7 @@ function rollOne(L, minTier = 0, useFilter = true) {
   const refs = DEFS_BY[type][tier];
   const it = new Item(refs[Math.floor(Math.random() * refs.length)], null, Math.random() < ocChance());
   if (Math.random() < mutChanceAt(lvl('mutlab')) + 0.05 * pn('hw_rad')) {
-    setMut(it, randMut());
+    setMut(it, randMut(), false);   // pas in de catalogus als je hem echt rolt (trackRoll), niet voor de kaartjes op de reel
   }
   return it;
 }
@@ -2392,6 +2393,7 @@ function afterChange(before) {
 
 function trackRoll(it) {   // statistieken + catalogus
   const S = state.stats;
+  if (it.mut) markMutSeen(it.mut);
   S.tiers[it.tier] = (S.tiers[it.tier] || 0) + 1;
   if (!S.best || it.tier > S.best.tier || (it.tier === S.best.tier && basePrice(it) > S.best.v)) S.best = { name: it.name, tier: it.tier, type: it.type, v: basePrice(it), mut: it.mut || null };
   if (it.ref && !state.found.includes(it.ref)) { state.found.push(it.ref); if (it.tier >= 2) toast(`📖 Nieuw in je catalogus: ${it.name}`, 'roll'); }
@@ -3824,7 +3826,8 @@ let ctf = null;
 function startCTF(lv) {
   const P = PC(), L = CTF_LVL[lv];
   if (!pcOnline() || ctf || Date.now() < P.ctfAt) return;
-  const pool = Array.from({ length: L.digits }, (_, i) => i).sort(() => Math.random() - 0.5);
+  const pool = Array.from({ length: L.digits }, (_, i) => i);
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }   // Fisher-Yates: elk cijfer even vaak op elke plek
   ctf = { lv, code: pool.slice(0, L.len), rows: [], cur: [], done: false };
   renderPC();
 }
