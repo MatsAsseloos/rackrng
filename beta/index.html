@@ -2398,9 +2398,14 @@ function trackRoll(it) {   // statistieken + catalogus
   if (!S.best || it.tier > S.best.tier || (it.tier === S.best.tier && basePrice(it) > S.best.v)) S.best = { name: it.name, tier: it.tier, type: it.type, v: basePrice(it), mut: it.mut || null };
   if (it.ref && !state.found.includes(it.ref)) { state.found.push(it.ref); if (it.tier >= 2) toast(`📖 Nieuw in je catalogus: ${it.name}`, 'roll'); }
 }
-function roll() {
+// Op de achtergrond (tabblad verborgen, venster geminimaliseerd of bedekt) rolt de game zonder animatie,
+// en haalt hij rolls in die door de browser-vertraging gemist zijn.
+const bgMode = () => document.hidden;
+let reelsDirty = false;
+function roll(at) {
   const now = Date.now();
   if (rolling || now < state.rollReadyAt) return;
+  const bg = bgMode();
   const { item, cands, win, golden, pityHit, fwHit } = generateRoll();
   lastSpin = { cands, win };
   state.current = item;
@@ -2410,7 +2415,14 @@ function roll() {
   if (Math.random() < 1 / 400) pcDrop(item.tier);
   state.pity = item.tier >= 2 ? 0 : state.pity + 1;
   if (pn('lk_streak')) { if (state.streak > 0) state.streak--; if (item.tier >= 3) state.streak = 10; }
-  state.rollReadyAt = now + cooldown() * 1000;
+  state.rollReadyAt = (at != null ? Math.max(at, now - 3600e3) : now) + cooldown() * 1000;
+  if (bg) {   // geen animatie, meteen klaar
+    if (golden) toast(`🪙 Gouden roll! (luck ×${fmtNum(luck() * goldenMult())})`, 'roll');
+    if (pityHit) toast('📜 Garantiecontract: gegarandeerde Rare+!', 'roll');
+    reveal(item); autoAfterRoll(item);
+    reelsDirty = true;
+    return;
+  }
   rolling = true;
   SFX.roll();
   const dur = Math.max(0.45, Math.min(1.8, cooldown() * 0.6)) * (pn('au_anim') ? 0.5 : 1);
@@ -2455,14 +2467,19 @@ function hotSwapTry(item) {
   buyCurrent(up ? 'place' : 'store', true);
 }
 function tryAutoRoll() {
-  if (state.autoRoll && lvl('autoroll') && !rolling && !cineActive && Date.now() >= state.rollReadyAt && !$('modal').innerHTML) roll();
+  if (!state.autoRoll || !lvl('autoroll') || rolling || cineActive || $('modal').innerHTML || Date.now() < state.rollReadyAt) return;
+  if (!bgMode()) return roll();
+  // achtergrond: alle gemiste rolls inhalen (max 300 per keer), elk op zijn eigen tijdstip
+  let n = 0;
+  while (state.autoRoll && n < 300 && Date.now() >= state.rollReadyAt) { roll(state.rollReadyAt); n++; }
+  if (n) { incomeCache = totalIncome(); save(); }
 }
 function reveal(it) {
   SFX.tier(it.tier);
   resultFx = it.tier === 2 ? 'fx-beam' : it.tier === 3 ? 'fx-rise' : it.tier >= 4 ? 'fx-rise' : '';
   setTimeout(() => { resultFx = ''; }, 1400);
   if (it.tier >= 3) buzz(it.tier >= 5 ? [60, 40, 140] : 40);
-  cinematic(it);
+  if (!bgMode()) cinematic(it);
   if (it.tier >= 3) flash(it.tier);
   if (it.tier >= ui.nTier) toast(`🎉 ${TIERS[it.tier].name}! ${it.oc ? '⚡OC ' : ''}${it.name}`, 'roll');
   else if (it.oc) toast(`⚡ Overclocked ${it.name}!`, 'roll');
@@ -4733,8 +4750,11 @@ function frame() {
 }
 
 let lastTick = Date.now(), pcRenderAt = 0;
-setInterval(() => {
+let lastTickRun = 0;
+function gameTick() {
   const now = Date.now();
+  if (now - lastTickRun < 150) return;
+  lastTickRun = now;
   const gain = incomeCache * (now - lastTick) / 1000;
   state.money += gain; state.runEarned += gain;
   pcTick(Math.min(5, (now - lastTick) / 1000));
@@ -4754,10 +4774,20 @@ setInterval(() => {
   { const t = $('shopTimer'), t2 = $('shopTimer2'); if (t) t.textContent = shopTimerTxt(); if (t2) t2.textContent = shopTimerTxt(); }
   if (shopTab === 'boosts' || shopTab === 'parts') $('upCount').textContent = `Nieuwe voorraad over ${shopTimerTxt()}`;
   crTick();
-}, 200);
+}
+setInterval(gameTick, 200);
+// Een Web Worker-timer wordt door de browser niet afgeremd zoals een gewone timer op een verborgen tabblad
+try {
+  const wk = new Worker(URL.createObjectURL(new Blob(['setInterval(() => postMessage(0), 250);'], { type: 'text/javascript' })));
+  wk.onmessage = gameTick;
+} catch (e) {}
 setInterval(save, 5000);
 setInterval(rackFloats, 2600);
-document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return save();
+  if (reelsDirty) { reelsDirty = false; renderStaticReels(); }   // terug op het tabblad: alles bijwerken
+  incomeCache = totalIncome(); renderAll();
+});
 window.addEventListener('pagehide', save);
 
 document.addEventListener('click', e => {
