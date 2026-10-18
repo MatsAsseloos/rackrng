@@ -1144,6 +1144,19 @@ kbd{font:600 11px var(--mono); padding:1px 6px; border-radius:4px; border:1px so
 .injbar{display:inline-block; width:160px; height:10px; vertical-align:-1px; border:1px solid #e879f9; background:linear-gradient(90deg,#e879f9,#e879f9) 0 0/0% 100% no-repeat; animation:injfill 2.2s linear forwards}
 @keyframes injfill{to{background-size:100% 100%}}
 .catsec h4 em{font-style:normal; margin-left:6px; text-transform:none}
+.wgrid{display:flex; flex-direction:column; gap:5px; align-items:center; margin:6px 0 10px}
+.wrow{display:flex; gap:5px}
+.wl{width:40px; height:40px; display:grid; place-items:center; border-radius:7px; border:2px solid #1f3b2c; background:#030604; font:700 18px var(--mono); font-style:normal; color:#e6fff0; text-transform:uppercase}
+.wrow.cur .wl:not(:empty){border-color:#39ff88}
+.wl.g{background:#1f9d63; border-color:#39ff88; color:#04130a} .wl.y{background:#a16207; border-color:#facc15; color:#140d00} .wl.x{background:#18241d; border-color:#24382c; color:#5c7768}
+.wl.g,.wl.y,.wl.x{animation:wflip .35s ease both}
+@keyframes wflip{0%{transform:rotateX(90deg)}100%{transform:none}}
+.wkeys{display:flex; flex-direction:column; gap:5px; align-items:center}
+.wkrow{display:flex; gap:4px}
+.wk{min-width:30px; height:38px; padding:0 6px; border-radius:6px; border:1px solid #2b4636; background:#0c1611; color:#d8f2e2; font:700 13px var(--mono); cursor:pointer}
+.wk.wide{min-width:56px; font-size:11px} .wk.ok{background:#1f9d63; border-color:#39ff88; color:#04130a}
+.wk.g{background:#1f9d63; color:#04130a} .wk.y{background:#a16207; color:#140d00} .wk.x{background:#111a15; color:#4d6b59}
+@media (max-width:540px){ .wl{width:34px; height:34px; font-size:15px} .wk{min-width:26px; padding:0 3px} .wk.wide{min-width:46px} }
 </style>
 </head>
 <body class="os" data-tab="home">
@@ -1844,11 +1857,29 @@ const PART_FLOOR = [500, 2e3, 8e3, 3e4, 1.5e5, 8e5, 5e6];
 const PART_OFFERS = 4, PC_PARTS_MAX = 24;
 const OC_LABEL = ['Stock', 'OC 1', 'OC 2', 'OC 3'];
 // Jobs
-const CTF_LVL = [   // Mastermind in de terminal: kraak de code
-  { name: 'Makkelijk', len: 4, digits: 6,  tries: 8, rc: 40,  frag: 0.15, heat: 8 },
-  { name: 'Normaal',   len: 4, digits: 10, tries: 8, rc: 110, frag: 0.35, heat: 15 },
-  { name: 'Moeilijk',  len: 5, digits: 10, tries: 9, rc: 300, frag: 0.6,  heat: 25 },
+// CTF: raad het IT-woord, zoals Wordle. Groen = juiste letter op de juiste plek, geel = zit in het woord, grijs = zit er niet in.
+const CTF_LVL = [
+  { name: 'Makkelijk', len: 4, tries: 7, rc: 40,  frag: 0.15, heat: 8 },
+  { name: 'Normaal',   len: 5, tries: 6, rc: 110, frag: 0.35, heat: 15 },
+  { name: 'Moeilijk',  len: 6, tries: 6, rc: 300, frag: 0.6,  heat: 25 },
 ];
+const CTF_WORDS = {
+  4: ['BYTE', 'CODE', 'DISK', 'PORT', 'ROOT', 'HACK', 'BOOT', 'CHIP', 'LINK', 'NODE', 'PING', 'HASH', 'JAVA', 'RUST', 'BASH', 'WIFI', 'FILE', 'LOOP',
+      'BIOS', 'SUDO', 'KILL', 'PIPE', 'SYNC', 'DATA', 'VOID', 'NULL', 'BUGS', 'CHAT', 'MAIL', 'SPAM', 'LOGS', 'USER', 'HOST', 'FONT', 'ICON', 'MENU', 'TECH', 'GRID', 'BITS', 'COPY'],
+  5: ['LINUX', 'ROUTE', 'PROXY', 'MODEM', 'CACHE', 'CLOUD', 'PIXEL', 'LOGIN', 'ADMIN', 'SHELL', 'PATCH', 'VIRUS', 'TOKEN', 'BLOCK', 'QUERY', 'ARRAY',
+      'DEBUG', 'MUTEX', 'STACK', 'QUEUE', 'CHMOD', 'MOUSE', 'BOARD', 'FIBER', 'CRASH', 'CLONE', 'MERGE', 'PRINT', 'INPUT', 'CABLE', 'WATTS', 'LOGIC', 'CLOCK',
+      'FRAME', 'RESET', 'SPOOF', 'EMAIL', 'GHOST', 'NERDS', 'BYTES', 'RADIO', 'SOLAR', 'MICRO', 'MACRO', 'SCRUM'],
+  6: ['SERVER', 'KERNEL', 'ROUTER', 'SWITCH', 'PYTHON', 'BINARY', 'PACKET', 'CIPHER', 'DOCKER', 'GITHUB', 'SCRIPT', 'BACKUP', 'SOCKET', 'DRIVER', 'MEMORY',
+      'BUFFER', 'SYNTAX', 'LAPTOP', 'TROJAN', 'CURSOR', 'DOMAIN', 'BRIDGE', 'CLIENT', 'COOKIE', 'STREAM', 'THREAD', 'UPLOAD', 'VECTOR', 'WIDGET', 'DEPLOY',
+      'COMMIT', 'BRANCH', 'LOGOUT', 'FIBERS', 'HACKER', 'SECRET', 'GADGET', 'PLUGIN', 'SCREEN', 'SENSOR'],
+};
+// per letter: 2 = juist, 1 = zit erin (rekening houdend met dubbele letters), 0 = niet
+function ctfMarks(guess, word) {
+  const m = Array(word.length).fill(0), left = {};
+  for (let i = 0; i < word.length; i++) { if (guess[i] === word[i]) m[i] = 2; else left[word[i]] = (left[word[i]] || 0) + 1; }
+  for (let i = 0; i < word.length; i++) if (m[i] !== 2 && left[guess[i]]) { m[i] = 1; left[guess[i]]--; }
+  return m;
+}
 const CTF_COOLDOWN = 180;   // seconden tussen CTF's
 const BOUNTIES = [
   { name: 'Kleine bug',        min: 30,  rc: 60,   frag: 0.1, heat: 5 },
@@ -3821,31 +3852,29 @@ function startBounty(i) {
   P.bounty = { i, until: Date.now() + dur, start: Date.now(), score };
   toast(`🐛 Bezig met "${b.name}": klaar over ${fmtDur(dur / 1000)}`); save(); renderPC();
 }
-// CTF: Mastermind
+// CTF: woord raden
 let ctf = null;
 function startCTF(lv) {
   const P = PC(), L = CTF_LVL[lv];
   if (!pcOnline() || ctf || Date.now() < P.ctfAt) return;
-  const pool = Array.from({ length: L.digits }, (_, i) => i);
-  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }   // Fisher-Yates: elk cijfer even vaak op elke plek
-  ctf = { lv, code: pool.slice(0, L.len), rows: [], cur: [], done: false };
+  const list = CTF_WORDS[L.len];
+  ctf = { lv, word: list[Math.floor(Math.random() * list.length)], rows: [], cur: '', done: false };
   renderPC();
 }
-function ctfInput(d) {
+function ctfInput(k) {
   if (!ctf || ctf.done) return;
   const L = CTF_LVL[ctf.lv];
-  if (d === 'del') ctf.cur.pop();
-  else if (d === 'ok') {
+  if (k === 'del') ctf.cur = ctf.cur.slice(0, -1);
+  else if (k === 'ok') {
     if (ctf.cur.length !== L.len) return;
-    const g = ctf.cur.slice(); let hit = 0, near = 0;
-    g.forEach((x, i) => { if (x === ctf.code[i]) hit++; else if (ctf.code.includes(x)) near++; });
-    ctf.rows.push({ g, hit, near }); ctf.cur = [];
-    if (hit === L.len) {
+    const g = ctf.cur, marks = ctfMarks(g, ctf.word);
+    ctf.rows.push({ g, marks }); ctf.cur = '';
+    if (g === ctf.word) {
       const left = L.tries - ctf.rows.length, got = gainRC(Math.round(L.rc * (1 + pcScore() / 500) * (1 + left * 0.15)));
       ctf.done = 'win'; ctf.got = got; PC().ctfWon++; addHeat(L.heat); giveFrag(L.frag); PC().ctfAt = Date.now() + CTF_COOLDOWN * 1000;
       beep([660, 880, 1320], 0.08); toast(`🎯 CTF gekraakt: +${fmtRC(got)}`);
     } else if (ctf.rows.length >= L.tries) { ctf.done = 'lose'; addHeat(L.heat / 2); PC().ctfAt = Date.now() + CTF_COOLDOWN * 1000; beep([300, 200], 0.1, 'triangle'); }
-  } else if (ctf.cur.length < L.len && !ctf.cur.includes(+d)) ctf.cur.push(+d);
+  } else if (/^[A-Z]$/.test(k) && ctf.cur.length < L.len) ctf.cur += k;
   save(); renderPC();
 }
 // onderdelen
@@ -3979,13 +4008,18 @@ function renderPC() {
     h += `<div class="job"><div class="jh"><b>⛏️ Minen</b><small>Passief: je PC mint RackCoin, ook als je offline bent. Geen Heat.</small></div>
       <div class="jr"><span>${fmtRC(score / 2000 * 3600)} per uur</span><button class="btn ${P.mining ? 'sec' : ''}" data-act="pcMine" ${off ? 'disabled' : ''}>${P.mining ? 'Stoppen' : 'Start minen'}</button></div></div>`;
     // CTF
-    h += `<div class="job"><div class="jh"><b>🎯 Capture the Flag</b><small>Kraak de code in de terminal. Groen = juist cijfer op de juiste plek, geel = juist cijfer op een andere plek. Elk cijfer komt maar één keer voor.</small></div>`;
+    h += `<div class="job"><div class="jh"><b>🎯 Capture the Flag</b><small>Raad het IT-woord, zoals Wordle. 🟩 = juiste letter op de juiste plek, 🟨 = de letter zit in het woord, ⬛ = zit er niet in. Typen kan ook met je toetsenbord.</small></div>`;
     if (ctf) {
       const L = CTF_LVL[ctf.lv];
-      h += `<div class="ctf"><div class="ctfrows">${ctf.rows.map(r => `<div class="crow"><span class="cg">${r.g.join(' ')}</span><span class="pegs">${'<i class="h"></i>'.repeat(r.hit)}${'<i class="n"></i>'.repeat(r.near)}${'<i></i>'.repeat(L.len - r.hit - r.near)}</span></div>`).join('')}
-        ${ctf.done ? '' : `<div class="crow cur"><span class="cg">${Array.from({ length: L.len }, (_, i) => ctf.cur[i] ?? '_').join(' ')}</span><span class="sub">poging ${ctf.rows.length + 1}/${L.tries}</span></div>`}</div>`;
-      if (ctf.done) h += `<div class="cres ${ctf.done === 'win' ? 'win' : 'lose'}">${ctf.done === 'win' ? `ACCESS GRANTED · +${fmtRC(ctf.got)}` : `ACCESS DENIED · de code was ${ctf.code.join(' ')}`}</div><button class="btn sec" data-act="ctfClose">Sluiten</button>`;
-      else h += `<div class="keys">${Array.from({ length: L.digits }, (_, d) => `<button class="key" data-act="ctfKey" data-v="${d}" ${ctf.cur.includes(d) ? 'disabled' : ''}>${d}</button>`).join('')}<button class="key wide" data-act="ctfKey" data-v="del">⌫</button><button class="key wide ok" data-act="ctfKey" data-v="ok">ENTER</button></div>`;
+      const best = {};   // beste kleur per letter voor het toetsenbord
+      ctf.rows.forEach(r => r.g.split('').forEach((c, i) => { best[c] = Math.max(best[c] ?? -1, r.marks[i]); }));
+      const cell = (c, m) => `<i class="wl ${m === 2 ? 'g' : m === 1 ? 'y' : m === 0 ? 'x' : ''}">${c || ''}</i>`;
+      let grid = ctf.rows.map(r => `<div class="wrow">${r.g.split('').map((c, i) => cell(c, r.marks[i])).join('')}</div>`).join('');
+      if (!ctf.done) grid += `<div class="wrow cur">${Array.from({ length: L.len }, (_, i) => cell(ctf.cur[i], -1)).join('')}</div>`;
+      for (let i = ctf.rows.length + (ctf.done ? 0 : 1); i < L.tries; i++) grid += `<div class="wrow">${Array.from({ length: L.len }, () => cell('', -1)).join('')}</div>`;
+      h += `<div class="wgrid">${grid}</div>`;
+      if (ctf.done) h += `<div class="cres ${ctf.done === 'win' ? 'win' : 'lose'}">${ctf.done === 'win' ? `ACCESS GRANTED · +${fmtRC(ctf.got)}` : `ACCESS DENIED · het woord was ${ctf.word}`}</div><button class="btn sec" data-act="ctfClose">Sluiten</button>`;
+      else h += `<div class="wkeys">${['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'].map((row, ri) => `<div class="wkrow">${ri === 2 ? '<button class="wk wide ok" data-act="ctfKey" data-v="ok">ENTER</button>' : ''}${row.split('').map(c => `<button class="wk ${best[c] === 2 ? 'g' : best[c] === 1 ? 'y' : best[c] === 0 ? 'x' : ''}" data-act="ctfKey" data-v="${c}">${c}</button>`).join('')}${ri === 2 ? '<button class="wk wide" data-act="ctfKey" data-v="del">⌫</button>' : ''}</div>`).join('')}</div>`;
     } else {
       const wait = P.ctfAt - now;
       h += `<div class="jr">${wait > 0 ? `<span>Volgende CTF over ${mmss(wait)}</span>` : '<span>Kies een moeilijkheid</span>'}<span class="row3">${CTF_LVL.map((L, i) => `<button class="btn sm ${i ? 'sec' : ''}" data-act="ctfStart" data-v="${i}" ${off || wait > 0 ? 'disabled' : ''} title="~${fmtRC(L.rc * (1 + score / 500))} · ${Math.round(L.frag * 100)}% kans op een fragment · +${L.heat} Heat">${L.name}</button>`).join('')}</span></div>`;
@@ -4089,7 +4123,7 @@ function devAct(a, v) {
     case 'frag': P.frag += +v; toast(`🧪 +${v} fragmenten`); break;
     case 'heat': P.heat = +v; toast(`🧪 Heat = ${v}`); break;
     case 'finish': if (P.bounty) P.bounty.until = Date.now() - 1; if (P.compile) P.compile.until = Date.now() - 1; P.ctfAt = 0; P.seizedUntil = 0; P.crashUntil = 0; toast('🧪 Timers van je PC klaar'); break;
-    case 'ctfCode': if (ctf) toast(`🧪 CTF-code: ${ctf.code.join(' ')}`); else toast('Er loopt geen CTF'); break;
+    case 'ctfCode': if (ctf) toast(`🧪 CTF-woord: ${ctf.word}`); else toast('Er loopt geen CTF'); break;
     case 'restock': state.shop = null; ensureShop(); toast('🧪 Shop opnieuw gevuld'); break;
     case 'event': { const d = EVENTS.find(e => e.id === $('devEvent').value); if (d) startEvent(d); break; }
     case 'copyMain': { const raw = localStorage.getItem('rackrng-save-v1'); if (!raw) return toast('Geen echte save gevonden in deze browser');
@@ -4120,7 +4154,7 @@ function renderDev() {
     <section class="sgrp"><h4>🖥️ Eigen PC</h4><div class="devrow">
       <select id="devPcTier">${TIERS.slice(0, 7).map((t, i) => `<option value="${i}" ${i === 4 ? 'selected' : ''}>${t.name}</option>`).join('')}</select>${devBtn('pc', 'Bouw werkende PC', '', '')}${devBtn('parts', '+8 random onderdelen')}</div><div class="devrow">
       ${devBtn('rc', '+₿1.000', 1000)}${devBtn('rc', '+₿10.000', 10000)}${devBtn('frag', '+5 fragmenten', 5)}${devBtn('finish', 'Timers klaar')}</div><div class="devrow">
-      ${devBtn('heat', 'Heat 0', 0)}${devBtn('heat', 'Heat 90', 90)}${devBtn('ctfCode', 'Toon CTF-code')}</div></section>
+      ${devBtn('heat', 'Heat 0', 0)}${devBtn('heat', 'Heat 90', 90)}${devBtn('ctfCode', 'Toon CTF-woord')}</div></section>
     <section class="sgrp"><h4>⚡ Shop & events</h4><div class="devrow">
       ${devBtn('restock', 'Shop nu restocken')}<select id="devEvent">${EVENTS.map(e => `<option value="${e.id}">${e.icon} ${e.name}</option>`).join('')}</select>${devBtn('event', 'Start event')}</div></section>
     <section class="sgrp"><h4>💾 Save</h4><div class="devrow">${devBtn('copyMain', 'Kopieer echte save')}${devBtn('wipe', 'Beta-save wissen')}</div></section>`);
@@ -4840,7 +4874,7 @@ document.addEventListener('click', e => {
     case 'pcOC': PC().oc = +el.dataset.v; save(); renderPC(); break;
     case 'pcMine': if (pcOnline()) { PC().mining = !PC().mining; save(); renderPC(); } break;
     case 'ctfStart': startCTF(+el.dataset.v); break;
-    case 'ctfKey': ctfInput(el.dataset.v === 'del' || el.dataset.v === 'ok' ? el.dataset.v : +el.dataset.v); break;
+    case 'ctfKey': ctfInput(el.dataset.v); break;
     case 'ctfClose': ctf = null; renderPC(); break;
     case 'bounty': startBounty(+el.dataset.v); break;
     case 'compile': startCompile(el.dataset.ref); break;
@@ -4955,6 +4989,11 @@ document.addEventListener('change', e => {
 document.addEventListener('keydown', e => {
   if (blocked) return;
   if (e.target.matches('textarea, input, select')) return;
+  if (ctf && !ctf.done && !$('win-pc').hidden && !e.ctrlKey && !e.metaKey && !e.altKey) {   // typen in de CTF
+    if (/^[a-z]$/i.test(e.key)) { e.preventDefault(); return ctfInput(e.key.toUpperCase()); }
+    if (e.key === 'Backspace') { e.preventDefault(); return ctfInput('del'); }
+    if (e.key === 'Enter') { e.preventDefault(); return ctfInput('ok'); }
+  }
   if (e.code === 'Space' && !e.repeat) { e.preventDefault(); roll(); }
   if (e.ctrlKey || e.metaKey || e.altKey || $('modal').innerHTML) return;
   const apps = ['up', 'shop', 'inv', 'casino', 'career', 'term', 'stats', 'cat', 'set'];
